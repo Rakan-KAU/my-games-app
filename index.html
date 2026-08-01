@@ -3,154 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة الألعاب - Azure Cloud</title>
+    <title>لوحة التحكم السحابية - Azure Management</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; direction: rtl; }
-        .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { color: #38bdf8; text-align: center; margin-bottom: 20px; }
-        .form-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        input, button { padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; flex: 1; min-width: 150px; }
-        button { background: #0284c7; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #0369a1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: right; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #0b0f19; color: #f1f5f9; display: flex; min-height: 100vh; }
+        
+        /* القائمة الجانبية */
+        .sidebar { width: 250px; background: #111827; border-left: 1px solid #1f2937; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar h2 { color: #38bdf8; font-size: 18px; text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1f2937; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: #0284c7; color: #ffffff; }
+
+        /* المحتوى الرئيسي */
+        .main-content { flex: 1; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header h1 { font-size: 24px; color: #f8fafc; }
+        
+        /* البطاقات والشهادات */
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        input { padding: 10px 14px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 14px; width: 100%; }
+        input:focus { outline: none; border-color: #38bdf8; }
+        .btn-add { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-add:hover { background: #059669; }
+
+        /* الجدول */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #334155; font-size: 14px; }
         th { background: #0f172a; color: #38bdf8; }
-        .btn-delete { background: #ef4444; padding: 6px 12px; border-radius: 4px; border: none; color: white; cursor: pointer; }
-        .btn-delete:hover { background: #dc2626; }
-        .status { margin-top: 10px; padding: 10px; border-radius: 6px; text-align: center; font-size: 14px; display: none; }
+        tr:hover { background: #1e293b; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-del:hover { background: #dc2626; }
+
+        /* الرسائل */
+        .status { padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; display: none; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🎮 لوحة تحكم ألعاب الشركة (Azure Connected)</h1>
-    
-    <div id="statusMessage" class="status"></div>
-
-    <div class="form-group">
-        <input type="text" id="gameTitle" placeholder="اسم اللعبة">
-        <input type="text" id="gamePlatform" placeholder="المنصة">
-        <input type="number" id="gamePrice" placeholder="السعر ($)">
-        <button onclick="addGame()">إضافة للسحابة</button>
+    <!-- القائمة الجانبية -->
+    <div class="sidebar">
+        <h2>⚡ Azure Cloud</h2>
+        <button class="nav-btn active" onclick="switchTab('games')">🎮 إدارة الألعاب</button>
+        <button class="nav-btn" onclick="switchTab('employees')">👥 إدارة الموظفين</button>
+        <button class="nav-btn" onclick="switchTab('customers')">🏢 إدارة العملاء</button>
+        <button class="nav-btn" onclick="switchTab('orders')">📦 إدارة الطلبات</button>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>اسم اللعبة</th>
-                <th>المنصة</th>
-                <th>السعر</th>
-                <th>الإجراء</th>
-            </tr>
-        </thead>
-        <tbody id="gamesTableBody">
-            <tr><td colspan="4" style="text-align:center;">جاري جلب البيانات من السحابة...</td></tr>
-        </tbody>
-    </table>
-</div>
+    <!-- المنطقة الرئيسية -->
+    <div class="main-content">
+        <div id="statusMsg" class="status"></div>
+
+        <!-- 1. قسم الألعاب -->
+        <div id="games" class="tab-content active">
+            <div class="header"><h1>🎮 قاعدة بيانات الألعاب</h1></div>
+            <div class="card">
+                <div class="form-grid">
+                    <input type="text" id="g_title" placeholder="اسم اللعبة">
+                    <input type="text" id="g_platform" placeholder="المنصة (PS5, PC...)">
+                    <input type="number" id="g_price" placeholder="السعر ($)">
+                    <input type="text" id="g_genre" placeholder="التصنيف (Genre)">
+                </div>
+                <button class="btn-add" onclick="addData('games')">إضافة لعبة جديدة</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead><tr><th>اسم اللعبة</th><th>المنصة</th><th>السعر</th><th>التصنيف</th><th>الإجراء</th></tr></thead>
+                    <tbody id="games_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. قسم الموظفين -->
+        <div id="employees" class="tab-content">
+            <div class="header"><h1>👥 قاعدة بيانات الموظفين</h1></div>
+            <div class="card">
+                <div class="form-grid">
+                    <input type="text" id="e_name" placeholder="اسم الموظف">
+                    <input type="text" id="e_role" placeholder="المسمى الوظيفي (Role)">
+                    <input type="number" id="e_salary" placeholder="الراتب ($)">
+                </div>
+                <button class="btn-add" onclick="addData('employees')">إضافة موظف جديد</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead><tr><th>اسم الموظف</th><th>الوظيفة</th><th>الراتب</th><th>الإجراء</th></tr></thead>
+                    <tbody id="employees_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. قسم العملاء -->
+        <div id="customers" class="tab-content">
+            <div class="header"><h1>🏢 قاعدة بيانات العملاء</h1></div>
+            <div class="card">
+                <div class="form-grid">
+                    <input type="text" id="c_name" placeholder="اسم العميل">
+                    <input type="text" id="c_city" placeholder="المدينة (City)">
+                    <input type="text" id="c_phone" placeholder="رقم الهاتف">
+                </div>
+                <button class="btn-add" onclick="addData('customers')">إضافة عميل جديد</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead><tr><th>الاسم</th><th>المدينة</th><th>الهاتف</th><th>الإجراء</th></tr></thead>
+                    <tbody id="customers_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. قسم الطلبات -->
+        <div id="orders" class="tab-content">
+            <div class="header"><h1>📦 إدارة الطلبات</h1></div>
+            <div class="card">
+                <div class="form-grid">
+                    <input type="text" id="o_customerId" placeholder="رقم العميل (CustomerId)">
+                    <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
+                    <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
+                </div>
+                <button class="btn-add" onclick="addData('orders')">إضافة طلب جديد</button>
+            </div>
+            <div class="card">
+                <table>
+                    <thead><tr><th>رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الإجراء</th></tr></thead>
+                    <tbody id="orders_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
 <script>
-    const AZURE_API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+    const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+    let currentTab = 'games';
 
-    function showStatus(msg, isError = false) {
-        const el = document.getElementById('statusMessage');
+    function showStatus(msg, isErr = false) {
+        const el = document.getElementById('statusMsg');
         el.innerText = msg;
         el.style.display = 'block';
-        el.style.backgroundColor = isError ? '#7f1d1d' : '#065f46';
+        el.style.backgroundColor = isErr ? '#7f1d1d' : '#065f46';
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // عرض القائمة القادمة من السحابة
-    function renderTable(data) {
-        const tbody = document.getElementById('gamesTableBody');
-        tbody.innerHTML = '';
-
-        if (!data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب مسجلة في السحابة حالياً.</td></tr>';
-            return;
-        }
-
-        data.forEach(game => {
-            const priceDisplay = (game.price !== "" && game.price !== undefined && !isNaN(game.price)) ? '$' + game.price : '-';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${game.title || '-'}</td>
-                    <td>${game.platform || '-'}</td>
-                    <td>${priceDisplay}</td>
-                    <td><button class="btn-delete" onclick="deleteGame('${game.id}')">حذف</button></td>
-                </tr>
-            `;
-        });
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+        event.target.classList.add('active');
+        loadData(tab);
     }
 
-    // جلب البيانات الفعلية من السحابة
-    async function fetchGames() {
+    async function loadData(type) {
         try {
-            const res = await fetch(AZURE_API_URL, { cache: "no-store" });
-            if (!res.ok) throw new Error();
+            const res = await fetch(`${API_URL}?type=${type}`, { cache: "no-store" });
             const data = await res.json();
-            renderTable(data);
+            renderTable(type, data);
         } catch (err) {
             showStatus("فشل جلب البيانات من السحابة", true);
         }
     }
 
-    // إرسال الإدخال للسحابة
-    async function addGame() {
-        const title = document.getElementById('gameTitle').value;
-        const platform = document.getElementById('gamePlatform').value;
-        const price = document.getElementById('gamePrice').value;
+    function renderTable(type, data) {
+        const tbody = document.getElementById(`${type}_table`);
+        tbody.innerHTML = '';
 
-        if (!title) {
-            alert("يرجى إدخال اسم اللعبة!");
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد بيانات مسجلة.</td></tr>`;
             return;
+        }
+
+        data.forEach(item => {
+            let row = '';
+            if (type === 'games') {
+                row = `<td>${item.title || '-'}</td><td>${item.platform || '-'}</td><td>$${item.price || '0'}</td><td>${item.genre || 'General'}</td>
+                       <td><button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.genre || 'General'}')">حذف</button></td>`;
+            } else if (type === 'employees') {
+                row = `<td>${item.name || '-'}</td><td>${item.role || 'Employee'}</td><td>$${item.salary || '0'}</td>
+                       <td><button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.role || 'Employee'}')">حذف</button></td>`;
+            } else if (type === 'customers') {
+                row = `<td>${item.name || '-'}</td><td>${item.city || 'Jeddah'}</td><td>${item.phone || '-'}</td>
+                       <td><button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button></td>`;
+            } else if (type === 'orders') {
+                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td>
+                       <td><button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button></td>`;
+            }
+            tbody.innerHTML += `<tr>${row}</tr>`;
+        });
+    }
+
+    async function addData(type) {
+        let body = { type: type };
+
+        if (type === 'games') {
+            const title = document.getElementById('g_title').value;
+            if (!title) return alert('أدخل اسم اللعبة');
+            body.title = title;
+            body.platform = document.getElementById('g_platform').value || '-';
+            body.price = document.getElementById('g_price').value || '0';
+            body.genre = document.getElementById('g_genre').value || 'General';
+        } else if (type === 'employees') {
+            const name = document.getElementById('e_name').value;
+            if (!name) return alert('أدخل اسم الموظف');
+            body.name = name;
+            body.role = document.getElementById('e_role').value || 'Employee';
+            body.salary = document.getElementById('e_salary').value || '0';
+        } else if (type === 'customers') {
+            const name = document.getElementById('c_name').value;
+            if (!name) return alert('أدخل اسم العميل');
+            body.name = name;
+            body.city = document.getElementById('c_city').value || 'Jeddah';
+            body.phone = document.getElementById('c_phone').value || '-';
+        } else if (type === 'orders') {
+            const item = document.getElementById('o_item').value;
+            if (!item) return alert('أدخل اسم المنتج');
+            body.item = item;
+            body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
+            body.total = document.getElementById('o_total').value || '0';
         }
 
         try {
             showStatus("جاري الإرسال للسحابة...");
-            const res = await fetch(AZURE_API_URL, {
+            const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title, platform, price })
+                body: JSON.stringify(body)
             });
-
             if (res.ok) {
-                const updatedList = await res.json();
+                const updated = await res.json();
                 showStatus("تمت الإضافة بنجاح!");
-                document.getElementById('gameTitle').value = '';
-                document.getElementById('gamePlatform').value = '';
-                document.getElementById('gamePrice').value = '';
-                renderTable(updatedList);
+                renderTable(type, updated);
             }
         } catch (err) {
             showStatus("حدث خطأ في الاتصال", true);
         }
     }
 
-    // حذف عنصر
-    async function deleteGame(id) {
+    async function deleteData(type, id, pkValue) {
         if (!confirm("هل أنت متأكد من الحذف؟")) return;
-
         try {
-            showStatus("جاري الحذف من السحابة...");
-            const res = await fetch(AZURE_API_URL, {
+            showStatus("جاري الحذف...");
+            const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "delete", id: String(id) })
+                body: JSON.stringify({ type: type, action: "delete", id: id, pkValue: pkValue })
             });
-
             if (res.ok) {
-                const updatedList = await res.json();
+                const updated = await res.json();
                 showStatus("تم الحذف بنجاح!");
-                renderTable(updatedList);
+                renderTable(type, updated);
             }
         } catch (err) {
             showStatus("حدث خطأ في الاتصال", true);
         }
     }
 
-    fetchGames();
+    loadData('games');
 </script>
-
 </body>
 </html>
