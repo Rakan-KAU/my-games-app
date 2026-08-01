@@ -8,11 +8,11 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #070913; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* 🎮 1. واجهة البداية (Hero Screen) */
+        /* 🎮 1. واجهة البداية */
         #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, rgba(7, 9, 19, 0.94), rgba(15, 23, 42, 0.98)), 
-                        url('https://m.media-amazon.com/images/M/MVBmM2FlMmE1ZTktYmQ0Yi00M2I0LWI3ZmUtMWI5MDgwYjM4MWUzXkEyXkFqcGc@._V1_.jpg') center/cover no-repeat;
+                        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px;
         }
         .hero-title { font-size: 52px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 0 35px rgba(56, 189, 248, 0.4); }
@@ -42,21 +42,19 @@
         .login-box button { width: 100%; padding: 13px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .login-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
 
-        /* 🛒 3. متجر العملاء بالأغلفة الرسمية */
+        /* 🛒 3. متجر العملاء (بدون صور نهائياً) */
         #storeWrapper { display: none; padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 15px; }
         .store-header h1 { font-size: 28px; color: #10b981; font-weight: 800; }
         .btn-back { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .game-card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
-        .game-card:hover { border-color: #10b981; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); }
-        .game-img { width: 100%; height: 280px; object-fit: cover; background: #0b0f19; }
-        .game-info { padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .game-title { font-size: 18px; font-weight: bold; color: #f8fafc; margin-bottom: 8px; }
-        .game-badge { background: #0b0f19; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block; width: fit-content; margin-bottom: 10px; }
-        .game-price { font-size: 20px; font-weight: 800; color: #10b981; margin-bottom: 12px; }
-        .btn-buy { background: #10b981; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .game-card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .game-card:hover { border-color: #10b981; transform: translateY(-4px); }
+        .game-title { font-size: 20px; font-weight: bold; color: #f8fafc; margin-bottom: 8px; }
+        .game-badge { background: #0b0f19; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block; width: fit-content; margin-bottom: 12px; border: 1px solid #1f2937; }
+        .game-price { font-size: 22px; font-weight: 800; color: #10b981; margin-bottom: 15px; }
+        .btn-buy { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn-buy:hover { background: #059669; }
 
         /* 📊 4. لوحة الإدارة */
@@ -70,7 +68,7 @@
 
         .main-content { flex: 1; padding: 35px; background: #070913; }
         .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 22px; margin-bottom: 22px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 15px; }
         input, select { padding: 11px 14px; border-radius: 8px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; width: 100%; outline: none; }
         .btn-add { background: #059669; color: white; border: none; padding: 11px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-cancel { background: #475569; color: white; border: none; padding: 11px 18px; border-radius: 8px; cursor: pointer; display: none; margin-right: 10px; }
@@ -89,7 +87,7 @@
 </head>
 <body>
 
-    <!-- 🎮 واجهة التترحيب -->
+    <!-- 🎮 1. واجهة البداية -->
     <div id="heroScreen">
         <h1 class="hero-title">Rakan Gaming Studio</h1>
         <p class="hero-subtitle">مرحباً بك في المنصة الموحدة لألعاب وتطوير راكان استديو</p>
@@ -99,7 +97,7 @@
         </div>
     </div>
 
-    <!-- 🔒 تسجيل الدخول -->
+    <!-- 🔒 2. تسجيل الدخول -->
     <div id="loginModal">
         <div class="login-box">
             <h2>تسجيل دخول الموظفين والإدارة</h2>
@@ -111,7 +109,7 @@
         </div>
     </div>
 
-    <!-- 🛒 متجر العملاء -->
+    <!-- 🛒 3. متجر العملاء (بدون صور) -->
     <div id="storeWrapper">
         <div class="store-header">
             <h1>🛍️ متجر ألعاب Rakan Studio</h1>
@@ -122,7 +120,7 @@
         </div>
     </div>
 
-    <!-- 📊 لوحة الإدارة -->
+    <!-- 📊 4. لوحة الإدارة -->
     <div id="appWrapper">
         <div class="sidebar">
             <h2>RAKAN GAMING</h2>
@@ -139,11 +137,11 @@
 
             <!-- 1. الألعاب -->
             <div id="games" class="tab-content active">
-                <div class="header"><h1>🎮 إدارة الألعاب والصور</h1></div>
+                <div class="header"><h1>🎮 إدارة الألعاب</h1></div>
                 <div class="card">
                     <input type="hidden" id="g_id">
                     <div class="form-grid">
-                        <input type="text" id="g_title" placeholder="اسم اللعبة (مثل: Rocket League, Elden Ring, GTA 6...)">
+                        <input type="text" id="g_title" placeholder="اسم اللعبة">
                         <select id="g_platform">
                             <option value="PlayStation 5">PlayStation 5</option>
                             <option value="PC Gaming">PC Gaming</option>
@@ -159,7 +157,6 @@
                             <option value="Casual">Casual</option>
                             <option value="General">General</option>
                         </select>
-                        <input type="text" id="g_image" placeholder="رابط غلاف اللعبة الأصلي (اختياري)">
                     </div>
                     <button class="btn-add" id="g_btn" onclick="addData('games')">إضافة لعبة جديدة</button>
                     <button class="btn-cancel" id="g_cancel" onclick="resetForm('games')">إلغاء التعديل</button>
@@ -317,33 +314,6 @@
         loadStoreGames();
     }
 
-    // الأغلفة الأصلية المعتمدة للألعاب
-    function getGameImage(title) {
-        const t = (title || "").toLowerCase();
-        if (t.includes('rocket')) {
-            return 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Rocket_League_coverart.jpg'; // غلاف روكت ليج الأصلي
-        }
-        if (t.includes('elden')) {
-            return 'https://m.media-amazon.com/images/M/MVBmM2FlMmE1ZTktYmQ0Yi00M2I0LWI3ZmUtMWI5MDgwYjM4MWUzXkEyXkFqcGc@._V1_.jpg'; // غلاف إيلدن رينج الأصلي
-        }
-        if (t.includes('gta 6') || t.includes('gta vi') || t.includes('جراند 6') || t.includes('جراند')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/5/53/Grand_Theft_Auto_VI_cover_art.png'; // غلاف جراند 6 الأصلي
-        }
-        if (t.includes('fifa 24') || t.includes('fc 24') || t.includes('فيفا 24')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/0/03/EA_Sports_FC_24_cover.jpg'; // غلاف فيفا 24 (FC 24) الأصلي
-        }
-        if (t.includes('fifa 23') || t.includes('فيفا 23')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/a/a6/FIFA_23_Cover.jpg'; // غلاف فيفا 23 الأصلي
-        }
-        if (t.includes('fifa 25') || t.includes('fc 25') || t.includes('فيفا 25')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/0/0c/EA_Sports_FC_25_cover.jpg'; // غلاف فيفا 25 الأصلي
-        }
-        if (t.includes('minecraft') || t.includes('ماين كرافت')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover_art.png'; // غلاف ماينكرافت الأصلي
-        }
-        return 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Rocket_League_coverart.jpg';
-    }
-
     async function loadStoreGames() {
         const grid = document.getElementById('store_games_grid');
         grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>';
@@ -358,19 +328,15 @@
             }
 
             games.forEach(game => {
-                const imgUrl = game.image || getGameImage(game.title);
                 grid.innerHTML += `
                     <div class="game-card">
-                        <img src="${imgUrl}" class="game-img" alt="${game.title}">
-                        <div class="game-info">
-                            <div>
-                                <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
-                                <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
-                            </div>
-                            <div>
-                                <div class="game-price">$${game.price || '0'}</div>
-                                <button class="btn-buy" onclick="buyGame('${game.title}', '${game.price}')">شراء الآن 🚀</button>
-                            </div>
+                        <div>
+                            <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
+                            <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
+                        </div>
+                        <div>
+                            <div class="game-price">$${game.price || '0'}</div>
+                            <button class="btn-buy" onclick="buyGame('${game.title}', '${game.price}')">شراء الآن 🚀</button>
                         </div>
                     </div>
                 `;
@@ -486,7 +452,6 @@
             document.getElementById('g_platform').value = item.platform || 'PlayStation 5';
             document.getElementById('g_price').value = item.price || '';
             document.getElementById('g_genre').value = item.genre || 'General';
-            document.getElementById('g_image').value = item.image || '';
             document.getElementById('g_btn').innerText = 'حفظ التعديلات';
             document.getElementById('g_cancel').style.display = 'inline-block';
         } else if (type === 'employees') {
@@ -520,7 +485,6 @@
             document.getElementById('g_id').value = '';
             document.getElementById('g_title').value = '';
             document.getElementById('g_price').value = '';
-            document.getElementById('g_image').value = '';
             document.getElementById('g_btn').innerText = 'إضافة لعبة جديدة';
             document.getElementById('g_cancel').style.display = 'none';
         } else if (type === 'employees') {
@@ -557,7 +521,6 @@
             body.platform = document.getElementById('g_platform').value;
             body.price = document.getElementById('g_price').value || '0';
             body.genre = document.getElementById('g_genre').value;
-            body.image = document.getElementById('g_image').value || '';
         } else if (type === 'employees') {
             const id = document.getElementById('e_id').value;
             const name = document.getElementById('e_name').value;
