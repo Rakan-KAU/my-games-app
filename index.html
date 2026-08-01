@@ -372,10 +372,9 @@
                 body: JSON.stringify(body)
             });
             if (res.ok) {
-                alert("لقد تم إرسال طلبك بنجاح");
-                if (loadedData['orders']) {
-                    loadData('orders');
-                }
+                alert("تم إرسال طلبك بنجاح، وسوف نتواصل معك في أقرب وقت.");
+                // تحديث بيانات الطلبات مباشرة في الخادم والمحلي
+                await loadData('orders');
             }
         } catch (err) {
             alert("حدث خطأ أثناء إرسال الطلب.");
