@@ -355,11 +355,12 @@
 
     async function buyGame(title, price) {
         const customerName = prompt("أدخل اسمك لإتمام الطلب:");
-        if (!customerName) return;
+        if (!customerName || customerName.trim() === "") return;
 
+        // إرسال البيانات بدقة متوافقة مع PartitionKey لجدول الطلبات (customerId)
         const body = {
             type: 'orders',
-            customerId: customerName,
+            customerId: customerName.trim(),
             item: title,
             total: price || '0',
             status: 'Pending'
@@ -373,7 +374,7 @@
             });
             if (res.ok) {
                 alert("تم إرسال طلبك بنجاح، وسوف نتواصل معك في أقرب وقت.");
-                // تحديث بيانات الطلبات مباشرة في الخادم والمحلي
+                // تحديث مباشر صريح لبيانات جدول الطلبات من السحابة
                 await loadData('orders');
             }
         } catch (err) {
