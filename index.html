@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة قاعدة بيانات الألعاب</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; margin: 40px; background-color: #f4f6f8; text-align: center; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, button { padding: 10px; margin: 5px; font-size: 15px; border-radius: 5px; border: 1px solid #ccc; }
+        button { cursor: pointer; background-color: #0078d4; color: white; border: none; font-weight: bold; }
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li { background: #f9f9f9; margin: 8px 0; padding: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; border-radius: 5px; }
+        .delete-btn { background-color: #d9534f; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎮 قائمة الألعاب (Azure)</h2>
+    
+    <input type="text" id="gameInput" placeholder="اكتب اسم اللعبة...">
+    <button onclick="addGame()">إضافة</button>
+
+    <ul id="gamesList">
+        <!-- ستظهر البيانات هنا -->
+    </ul>
+</div>
+
+<script>
+    // سنضع رابط Azure Function الخاص بك هنا لاحقاً
+    const API_URL = "https://YOUR-AZURE-FUNCTION-URL.azurewebsites.net/api/games";
+
+    async function fetchGames() {
+        try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            const list = document.getElementById("gamesList");
+            list.innerHTML = "";
+            data.forEach(game => {
+                list.innerHTML += `
+                    <li>
+                        ${game.name}
+                        <button class="delete-btn" onclick="deleteGame('${game.id}')">حذف</button>
+                    </li>`;
+            });
+        } catch (err) { console.log("في انتظار الربط مع السحابة..."); }
+    }
+
+    async function addGame() {
+        const input = document.getElementById("gameInput");
+        if (!input.value) return;
+        await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: input.value }) });
+        input.value = "";
+        fetchGames();
+    }
+
+    async function deleteGame(id) {
+        await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
+        fetchGames();
+    }
+
+    fetchGames();
+</script>
+
+</body>
+</html>
