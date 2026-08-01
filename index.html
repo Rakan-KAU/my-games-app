@@ -3,254 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الشركة | Admin Dashboard</title>
+    <title>لوحة إدارة الألعاب - Azure Cloud</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
-        .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1, h2 { color: #1a252f; }
-        
-        /* شاشة تسجيل الدخول */
-        #login-screen { max-width: 350px; margin: 50px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        /* التبويبات */
-        .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .tab-btn { padding: 10px 20px; border: none; background: #e4e6eb; cursor: pointer; border-radius: 6px; font-weight: bold; }
-        .tab-btn.active { background: #0078d4; color: white; }
-        
-        /* النماذج والجداول */
-        .form-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-        button { padding: 10px 18px; border: none; background: #28a745; color: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        button.delete-btn { background: #dc3545; padding: 6px 12px; }
-        button.logout-btn { background: #6c757d; float: left; }
-        
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; direction: rtl; }
+        .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { color: #38bdf8; text-align: center; margin-bottom: 20px; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input, select, button { padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; flex: 1; min-width: 150px; }
+        button { background: #0284c7; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #0369a1; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #0078d4; color: white; }
-        .search-box { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #0078d4; border-radius: 6px; }
-        .hidden { display: none; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: right; }
+        th { background: #0f172a; color: #38bdf8; }
+        .btn-delete { background: #ef4444; padding: 6px 12px; border-radius: 4px; border: none; color: white; cursor: pointer; }
+        .btn-delete:hover { background: #dc2626; }
+        .status { margin-top: 10px; padding: 10px; border-radius: 6px; text-align: center; font-size: 14px; display: none; }
     </style>
 </head>
 <body>
 
-    <!-- 1️⃣ شاشة تسجيل دخول الأدمن -->
-    <div id="login-screen">
-        <h2>🔐 دخول المسؤول (Admin)</h2>
-        <input type="text" id="username" placeholder="اسم المستخدم (admin)" style="width:100%; margin-bottom:10px;"><br>
-        <input type="password" id="password" placeholder="كلمة المرور (1234)" style="width:100%; margin-bottom:15px;"><br>
-        <button onclick="login()" style="width:100%;">تسجيل الدخول</button>
-        <p id="login-error" style="color:red; display:none; margin-top:10px;">بيانات الدخول خاطئة!</p>
+<div class="container">
+    <h1>🎮 لوحة تحكم ألعاب الشركة (Azure Connected)</h1>
+    
+    <div id="statusMessage" class="status"></div>
+
+    <div class="form-group">
+        <input type="text" id="gameTitle" placeholder="اسم اللعبة (مثال: Rocket League)">
+        <input type="text" id="gamePlatform" placeholder="المنصة (مثال: PS5 / PC)">
+        <input type="number" id="gamePrice" placeholder="السعر ($)">
+        <button onclick="addGame()">إضافة للـ Azure</button>
     </div>
 
-    <!-- 2️⃣ لوحة التحكم الرئيسية -->
-    <div id="admin-dashboard" class="container hidden">
-        <button class="logout-btn" onclick="logout()">خروج 🚪</button>
-        <h1>🏢 لوحة إدارة الشركة والألعاب</h1>
-        <p style="color: #666;">مرحباً بك يا أدمن، لديك كامل الصلاحيات للتحكم بالأسعار والموظفين عبر سحابة Azure.</p>
-
-        <!-- التبويبات -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('employees')">👥 إدارة الموظفين</button>
-            <button class="tab-btn" onclick="switchTab('games')">🎮 إدارة الألعاب والأسعار</button>
-        </div>
-
-        <!-- 👥 قسم الموظفين -->
-        <div id="employees-section">
-            <h2>قائمة الموظفين</h2>
-            <input type="text" id="empSearch" class="search-box" placeholder="🔍 استعلام / بحث عن موظف..." onkeyup="searchEmp()">
-            
-            <div class="form-group">
-                <input type="text" id="empName" placeholder="اسم الموظف">
-                <input type="text" id="empRole" placeholder="المسمى الوظيفي">
-                <input type="number" id="empSalary" placeholder="الراتب ($)">
-                <button onclick="addEmployee()">إضافة موظف</button>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>الاسم</th>
-                        <th>الوظيفة</th>
-                        <th>الراتب</th>
-                        <th>التحكم</th>
-                    </tr>
-                </thead>
-                <tbody id="empTable">
-                    <!-- الموظفون سيظهرون هنا -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 🎮 قسم الألعاب والأسعار -->
-        <div id="games-section" class="hidden">
-            <h2>قائمة الألعاب والأسعار</h2>
-            <input type="text" id="gameSearch" class="search-box" placeholder="🔍 استعلام / بحث عن لعبة..." onkeyup="searchGame()">
-            
-            <div class="form-group">
-                <input type="text" id="gameTitle" placeholder="اسم اللعبة">
-                <input type="number" id="gamePrice" placeholder="السعر ($)">
-                <button onclick="addGame()">إضافة لعبة</button>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>اسم اللعبة</th>
-                        <th>السعر</th>
-                        <th>التحكم بالأسعار والمنتج</th>
-                    </tr>
-                </thead>
-                <tbody id="gameTable">
-                    <!-- الألعاب ستظهر هنا -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>اسم اللعبة</th>
+                <th>المنصة</th>
+                <th>السعر</th>
+                <th>الإجراء</th>
+            </tr>
+        </thead>
+        <tbody id="gamesTableBody">
+            <tr><td colspan="4" style="text-align:center;">جاري تحميل البيانات من Azure...</td></tr>
+        </tbody>
+    </table>
+</div>
 
 <script>
-    // رابط الـ Azure Function الخاص بك
-    const API_URL = "https://rakan-kau-bbfdhbbubbajgtf6.centralindia-01.azurewebsites.net/api/games";
+    // رابط الـ API الخاص بـ Azure Function حقك
+    const AZURE_API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
 
-    let employees = [
-        { id: 1, name: "راكان", role: "مدير النظام", salary: 15000 },
-        { id: 2, name: "أحمد علي", role: "مطور ألعاب", salary: 9000 }
-    ];
-
-    let games = [
-        { id: 1, title: "Rocket League", price: 20 },
-        { id: 2, title: "FC 24", price: 60 }
-    ];
-
-    // تسجيل الدخول
-    function login() {
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
-        if(u === 'admin' && p === '1234') {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-dashboard').classList.remove('hidden');
-            fetchDataFromAzure();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-        }
+    function showStatus(msg, isError = false) {
+        const el = document.getElementById('statusMessage');
+        el.innerText = msg;
+        el.style.display = 'block';
+        el.style.backgroundColor = isError ? '#7f1d1d' : '#065f46';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    function logout() {
-        document.getElementById('login-screen').classList.remove('hidden');
-        document.getElementById('admin-dashboard').classList.add('hidden');
-    }
-
-    function switchTab(tab) {
-        const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(b => b.classList.remove('active'));
-        
-        if(tab === 'employees') {
-            document.getElementById('employees-section').classList.remove('hidden');
-            document.getElementById('games-section').classList.add('hidden');
-            btns[0].classList.add('active');
-        } else {
-            document.getElementById('employees-section').classList.add('hidden');
-            document.getElementById('games-section').classList.remove('hidden');
-            btns[1].classList.add('active');
-        }
-    }
-
-    // جلب البيانات من Azure Function
-    async function fetchDataFromAzure() {
+    // 1. جلب البيانات من Azure
+    async function fetchGames() {
         try {
-            const res = await fetch(API_URL);
-            if(res.ok) {
-                const cloudData = await res.json();
-                if(cloudData && cloudData.length > 0) {
-                    games = cloudData;
-                }
+            const res = await fetch(AZURE_API_URL);
+            const data = await res.json();
+            const tbody = document.getElementById('gamesTableBody');
+            tbody.innerHTML = '';
+
+            if(data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب حالياً. أضف لعبة جديدة!</td></tr>';
+                return;
             }
-        } catch(err) {
-            console.log("جاري التنسيق مع السحابة المحليّة والافتراضية...");
-        }
-        renderData();
-    }
 
-    function renderData() {
-        // جدول الموظفين
-        const empT = document.getElementById('empTable');
-        empT.innerHTML = employees.map(e => `
-            <tr>
-                <td>${e.name}</td>
-                <td>${e.role}</td>
-                <td>$${e.salary}</td>
-                <td><button class="delete-btn" onclick="deleteEmp(${e.id})">حذف</button></td>
-            </tr>
-        `).join('');
-
-        // جدول الألعاب
-        const gameT = document.getElementById('gameTable');
-        gameT.innerHTML = games.map(g => `
-            <tr>
-                <td>${g.title || g.name}</td>
-                <td>$${g.price || 0}</td>
-                <td><button class="delete-btn" onclick="deleteGame('${g.id}')">حذف</button></td>
-            </tr>
-        `).join('');
-    }
-
-    // إضافة وحذف موظف
-    function addEmployee() {
-        const name = document.getElementById('empName').value;
-        const role = document.getElementById('empRole').value;
-        const salary = document.getElementById('empSalary').value;
-        if(name && role && salary) {
-            employees.push({ id: Date.now(), name, role, salary });
-            renderData();
-            document.getElementById('empName').value = '';
-            document.getElementById('empRole').value = '';
-            document.getElementById('empSalary').value = '';
+            data.forEach(game => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${game.title}</td>
+                        <td>${game.platform}</td>
+                        <td>${game.price === 0 ? 'مجانية' : '$' + game.price}</td>
+                        <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف</button></td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            console.error(err);
+            showStatus("فشل الاتصال بـ Azure API", true);
         }
     }
-    function deleteEmp(id) { employees = employees.filter(e => e.id !== id); renderData(); }
 
-    // إضافة لعبة وإرسالها لـ Azure
+    // 2. إضافة لعبة جديدة إلى Azure
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
+        const platform = document.getElementById('gamePlatform').value;
         const price = document.getElementById('gamePrice').value;
-        if(title && price) {
-            const newGame = { title, price };
-            games.push(newGame);
-            renderData();
-            
-            // إرسال للسحابة
-            try {
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newGame)
-                });
-            } catch(e) { console.log("تعذر الحفظ السحابي التلقائي"); }
 
-            document.getElementById('gameTitle').value = '';
-            document.getElementById('gamePrice').value = '';
+        if (!title || !platform) {
+            alert("يرجى تعبئة اسم اللعبة والمنصة!");
+            return;
+        }
+
+        const newGame = { title, platform, price: parseFloat(price) || 0 };
+
+        try {
+            showStatus("جاري الحفظ في Azure...");
+            const res = await fetch(AZURE_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newGame)
+            });
+
+            if (res.ok) {
+                showStatus("تمت إضافة اللعبة إلى Azure بنجاح! 🚀");
+                document.getElementById('gameTitle').value = '';
+                document.getElementById('gamePlatform').value = '';
+                document.getElementById('gamePrice').value = '';
+                fetchGames();
+            } else {
+                showStatus("خطأ أثناء الإضافة", true);
+            }
+        } catch (err) {
+            showStatus("حدث خطأ أثناء إرسال البيانات", true);
         }
     }
 
-    // حذف لعبة من Azure
+    // 3. حذف لعبة من Azure
     async function deleteGame(id) {
-        games = games.filter(g => g.id !== id);
-        renderData();
+        if(!confirm("هل أنت تأكد من حذف اللعبة؟")) return;
+
         try {
-            await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
-        } catch(e) { console.log("تعذر الحذف السحابي التلقائي"); }
+            showStatus("جاري الحذف من Azure...");
+            const res = await fetch(`${AZURE_API_URL}?id=${id}`, { method: "DELETE" });
+            if (res.ok) {
+                showStatus("تم الحذف بنجاح!");
+                fetchGames();
+            } else {
+                showStatus("خطأ أثناء الحذف", true);
+            }
+        } catch (err) {
+            showStatus("حدث خطأ أثناء عملية الحذف", true);
+        }
     }
 
-    function searchEmp() {
-        const query = document.getElementById('empSearch').value.toLowerCase();
-        const rows = document.querySelectorAll('#empTable tr');
-        rows.forEach(r => r.style.display = r.innerText.toLowerCase().includes(query) ? '' : 'none');
-    }
-    function searchGame() {
-        const query = document.getElementById('gameSearch').value.toLowerCase();
-        const rows = document.querySelectorAll('#gameTable tr');
-        rows.forEach(r => r.style.display = r.innerText.toLowerCase().includes(query) ? '' : 'none');
-    }
+    // تشغيل جلب الألعاب عند فتح الصفحة مباشرة
+    fetchGames();
 </script>
 
 </body>
