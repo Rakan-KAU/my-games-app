@@ -1,200 +1,591 @@
-const https = require('https');
-const crypto = require('crypto');
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rakan Gaming Studio</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #070913; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        
+        /* 🎮 1. الواجهة الرئيسية (Hero Screen) */
+        #heroScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(7, 9, 19, 0.94), rgba(15, 23, 42, 0.98)), 
+                        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px;
+        }
+        .hero-title { font-size: 52px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 0 35px rgba(56, 189, 248, 0.4); }
+        .hero-subtitle { font-size: 18px; color: #94a3b8; margin-bottom: 35px; }
+        .btn-group { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        
+        .btn-store { padding: 16px 40px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3); }
+        .btn-store:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5); }
+        
+        .btn-admin { padding: 16px 40px; background: linear-gradient(135deg, #0284c7, #1d4ed8); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3); }
+        .btn-admin:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(2, 132, 199, 0.5); }
 
-const host = "rakan-games-97.documents.azure.com";
-const key = "2BJn1QZXDSs6G0TDox5ffHW474HkUfB8Qzk2rtpSUZ3WCKJTvibB0RFQWQLElqfLI9EzXc2bwpUyACDbRaV5Hw==";
-const dbId = "GamingStoreDB";
+        /* 🔒 2. نافذة تسجيل دخول الموظفين/الإدارة */
+        #loginModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 19, 0.96); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(8px);
+        }
+        .login-box {
+            background: #111827; border: 1px solid #1f2937; padding: 40px; border-radius: 16px;
+            width: 100%; max-width: 400px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 22px; font-weight: 800; }
+        .login-box input {
+            width: 100%; padding: 12px 16px; margin-bottom: 15px; border-radius: 8px;
+            border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none;
+        }
+        .login-box button { width: 100%; padding: 13px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .login-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
 
-const config = {
-    games: { coll: "Games", pkField: "genre", defaultPk: "General" },
-    employees: { coll: "Employees", pkField: "role", defaultPk: "Employee" },
-    customers: { coll: "Costomers", pkField: "city", defaultPk: "Jeddah" },
-    orders: { coll: "Orders", pkField: "customerId", defaultPk: "CUST-01" }
-};
+        /* 🛒 3. واجهة متجر العملاء (Customer Store) */
+        #storeWrapper { display: none; padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 15px; }
+        .store-header h1 { font-size: 28px; color: #10b981; font-weight: 800; }
+        .btn-back { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .game-card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
+        .game-card:hover { border-color: #10b981; transform: translateY(-5px); }
+        .game-title { font-size: 20px; font-weight: bold; color: #f8fafc; margin-bottom: 8px; }
+        .game-badge { background: #0b0f19; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block; width: fit-content; margin-bottom: 12px; }
+        .game-price { font-size: 22px; font-weight: 800; color: #10b981; margin-bottom: 15px; }
+        .btn-buy { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-buy:hover { background: #059669; }
 
-function getAuthHeader(verb, resourceType, resourceLink, date) {
-    const keyBuff = Buffer.from(key, "base64");
-    const text = (verb || "").toLowerCase() + "\n" +
-                 (resourceType || "").toLowerCase() + "\n" +
-                 (resourceLink || "") + "\n" +
-                 date.toLowerCase() + "\n" +
-                 "" + "\n";
-    const sig = crypto.createHmac("sha256", keyBuff).update(Buffer.from(text, "utf8")).digest("base64");
-    return encodeURIComponent(`type=master&ver=1.0&sig=${sig}`);
-}
+        /* 📊 4. لوحة الإدارة والموظفين (Admin Dashboard) */
+        #appWrapper { display: none; flex: 1; width: 100%; }
+        .sidebar { width: 270px; background: #111827; border-left: 1px solid #1f2937; padding: 25px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 800; }
+        .admin-badge { text-align: center; color: #10b981; font-size: 12px; font-weight: 600; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 1px solid #1f2937; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
+        .btn-logout { margin-top: auto; background: #2d1215; color: #fca5a5; }
 
-function getCosmosDocs(collId) {
-    return new Promise((resolve) => {
-        const date = new Date().toUTCString();
-        const resourceLink = `dbs/${dbId}/colls/${collId}`;
-        const path = `/dbs/${dbId}/colls/${collId}/docs`;
-        const auth = getAuthHeader("get", "docs", resourceLink, date);
+        .main-content { flex: 1; padding: 35px; background: #070913; }
+        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 22px; margin-bottom: 22px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 15px; }
+        input, select { padding: 11px 14px; border-radius: 8px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; width: 100%; outline: none; }
+        .btn-add { background: #059669; color: white; border: none; padding: 11px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-cancel { background: #475569; color: white; border: none; padding: 11px 18px; border-radius: 8px; cursor: pointer; display: none; margin-right: 10px; }
 
-        const req = https.request({
-            hostname: host,
-            port: 443,
-            path: path,
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'x-ms-date': date,
-                'x-ms-version': '2018-12-31',
-                'Authorization': auth,
-                'x-ms-documentdb-query-enablecrosspartition': 'true'
-            }
-        }, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => {
-                try {
-                    const parsed = JSON.parse(data);
-                    resolve(parsed.Documents || []);
-                } catch (e) {
-                    resolve([]);
-                }
-            });
-        });
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid #1f2937; font-size: 14px; }
+        th { background: #0b0f19; color: #38bdf8; }
+        tr:hover { background: #1a2234; }
+        .btn-promote { background: #d97706; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 5px; }
+        .btn-del { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
 
-        req.on('error', () => resolve([]));
-        req.end();
-    });
-}
+        .status { padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
 
-function saveCosmosDoc(collId, doc, pkValue) {
-    return new Promise((resolve) => {
-        const date = new Date().toUTCString();
-        const resourceLink = `dbs/${dbId}/colls/${collId}`;
-        const path = `/dbs/${dbId}/colls/${collId}/docs`;
-        const auth = getAuthHeader("post", "docs", resourceLink, date);
+    <!-- 🎮 1. الواجهة الرئيسية الرئيسية -->
+    <div id="heroScreen">
+        <h1 class="hero-title">Rakan Gaming Studio</h1>
+        <p class="hero-subtitle">مرحباً بك في المنصة الموحدة لألعاب وتطوير راكان استديو</p>
+        <div class="btn-group">
+            <button class="btn-store" onclick="openCustomerStore()">🛒 الدخول كعميل (المتجر)</button>
+            <button class="btn-admin" onclick="openLoginModal()">🔐 الدخول كإدارة / موظف</button>
+        </div>
+    </div>
 
-        const postData = JSON.stringify(doc);
+    <!-- 🔒 2. نافذة تسجيل الدخول للموظفين -->
+    <div id="loginModal">
+        <div class="login-box">
+            <h2>تسجيل دخول الموظفين والإدارة</h2>
+            <input type="text" id="username" placeholder="اسم المستخدم">
+            <input type="password" id="password" placeholder="كلمة المرور">
+            <button onclick="checkLogin()">دخول لوحة التحكّم</button>
+            <button onclick="closeLoginModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
+            <div id="loginError" class="login-error">خطأ في اسم المستخدم أو كلمة المرور!</div>
+        </div>
+    </div>
 
-        const req = https.request({
-            hostname: host,
-            port: 443,
-            path: path,
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'x-ms-date': date,
-                'x-ms-version': '2018-12-31',
-                'Authorization': auth,
-                'x-ms-documentdb-partitionkey': JSON.stringify([pkValue]),
-                'x-ms-documentdb-is-upsert': 'true',
-                'Content-Length': Buffer.byteLength(postData)
-            }
-        }, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => resolve(true));
-        });
+    <!-- 🛒 3. متجر العملاء -->
+    <div id="storeWrapper">
+        <div class="store-header">
+            <h1>🛍️ متجر ألعاب Rakan Studio</h1>
+            <button class="btn-back" onclick="logout()">الرجوع للرئيسية</button>
+        </div>
+        <div id="store_status" class="status"></div>
+        <div class="games-grid" id="store_games_grid">
+            <p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب المتاحة في المتجر...</p>
+        </div>
+    </div>
 
-        req.on('error', () => resolve(false));
-        req.write(postData);
-        req.end();
-    });
-}
+    <!-- 📊 4. لوحة الإدارة والموظفين -->
+    <div id="appWrapper">
+        <div class="sidebar">
+            <h2>RAKAN GAMING</h2>
+            <div class="admin-badge">👑 مسؤول النظام (Admin)</div>
+            <button class="nav-btn active" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
+            <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين والترقيات</button>
+            <button class="nav-btn" onclick="switchTab('customers', event)">🏢 سجل العملاء</button>
+            <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات والمبيعات</button>
+            <button class="nav-btn btn-logout" onclick="logout()">تسجيل الخروج</button>
+        </div>
 
-function deleteCosmosDoc(collId, docId, pkValue) {
-    return new Promise((resolve) => {
-        const date = new Date().toUTCString();
-        const resourceLink = `dbs/${dbId}/colls/${collId}/docs/${docId}`;
-        const path = `/dbs/${dbId}/colls/${collId}/docs/${docId}`;
-        const auth = getAuthHeader("delete", "docs", resourceLink, date);
+        <div class="main-content">
+            <div id="statusMsg" class="status"></div>
 
-        const req = https.request({
-            hostname: host,
-            port: 443,
-            path: path,
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'x-ms-date': date,
-                'x-ms-version': '2018-12-31',
-                'Authorization': auth,
-                'x-ms-documentdb-partitionkey': JSON.stringify([pkValue])
-            }
-        }, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => resolve(true));
-        });
+            <!-- 1. الألعاب -->
+            <div id="games" class="tab-content active">
+                <div class="header"><h1>🎮 إدارة الألعاب</h1></div>
+                <div class="card">
+                    <input type="hidden" id="g_id">
+                    <div class="form-grid">
+                        <input type="text" id="g_title" placeholder="اسم اللعبة">
+                        <select id="g_platform">
+                            <option value="PlayStation 5">PlayStation 5</option>
+                            <option value="PC Gaming">PC Gaming</option>
+                            <option value="Xbox Series X">Xbox Series X</option>
+                            <option value="Multi-Platform">Multi-Platform (متعدد المنصات)</option>
+                        </select>
+                        <input type="number" id="g_price" placeholder="السعر ($)">
+                        <select id="g_genre">
+                            <option value="Action">Action</option>
+                            <option value="Sports / Racing">Sports / Racing</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Strategy">Strategy</option>
+                            <option value="Casual">Casual</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <button class="btn-add" id="g_btn" onclick="addData('games')">إضافة لعبة جديدة</button>
+                    <button class="btn-cancel" id="g_cancel" onclick="resetForm('games')">إلغاء التعديل</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>اسم اللعبة</th><th>المنصة</th><th>السعر</th><th>التصنيف</th><th>الإجراءات</th></tr></thead>
+                        <tbody id="games_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
 
-        req.on('error', () => resolve(false));
-        req.end();
-    });
-}
+            <!-- 2. الموظفين -->
+            <div id="employees" class="tab-content">
+                <div class="header"><h1>👥 الموظفين والترقيات الوظيفية</h1></div>
+                <div class="card">
+                    <input type="hidden" id="e_id">
+                    <div class="form-grid">
+                        <input type="text" id="e_name" placeholder="اسم الموظف">
+                        <select id="e_role">
+                            <option value="Junior Developer">مطور مبتدئ (Junior Developer)</option>
+                            <option value="Senior Developer">مطور رئيسي (Senior Developer)</option>
+                            <option value="Sales Specialist">أخصائي مبيعات (Sales Specialist)</option>
+                            <option value="Sales Manager">مدير مبيعات (Sales Manager)</option>
+                            <option value="Lead Designer">مصمم رئيسي (Lead Designer)</option>
+                            <option value="IT Support Lead">رئيس الدعم الفني (IT Support Lead)</option>
+                            <option value="Executive Manager">إدارة تنفيذية (Executive Manager)</option>
+                        </select>
+                        <input type="number" id="e_salary" placeholder="الراتب ($)">
+                    </div>
+                    <button class="btn-add" id="e_btn" onclick="addData('employees')">إضافة موظف جديد</button>
+                    <button class="btn-cancel" id="e_cancel" onclick="resetForm('employees')">إلغاء التعديل</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>اسم الموظف</th><th>المسمى الوظيفي / الرتبة</th><th>الراتب</th><th>الترقية / الإجراءات</th></tr></thead>
+                        <tbody id="employees_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
 
-module.exports = async function (context, req) {
-    const headers = {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-    };
+            <!-- 3. العملاء -->
+            <div id="customers" class="tab-content">
+                <div class="header"><h1>🏢 سجل العملاء</h1></div>
+                <div class="card">
+                    <input type="hidden" id="c_id">
+                    <div class="form-grid">
+                        <input type="text" id="c_name" placeholder="اسم العميل">
+                        <select id="c_region">
+                            <option value="Makkah">منطقة مكة المكرمة</option>
+                            <option value="Riyadh">منطقة الرياض</option>
+                            <option value="Eastern Province">المنطقة الشرقية</option>
+                            <option value="Asir">منطقة عسير</option>
+                            <option value="Madinah">منطقة المدينة المنورة</option>
+                            <option value="Qassim">منطقة القصيم</option>
+                            <option value="Tabuk">منطقة تبوك</option>
+                            <option value="Hail">منطقة حائل</option>
+                            <option value="Jazan">منطقة جازان</option>
+                            <option value="Najran">منطقة نجران</option>
+                            <option value="Bahah">منطقة الباحة</option>
+                            <option value="Northern Borders">منطقة الحدود الشمالية</option>
+                            <option value="Jowf">منطقة الجوف</option>
+                        </select>
+                        <select id="c_city">
+                            <option value="Jeddah">جدة</option>
+                            <option value="Riyadh">الرياض</option>
+                            <option value="Makkah">مكة المكرمة</option>
+                            <option value="Madinah">المدينة المنورة</option>
+                            <option value="Dammam">الدمام</option>
+                            <option value="Khobar">الخبر</option>
+                            <option value="Dhahran">الظهران</option>
+                            <option value="Ahsa">الأحساء</option>
+                            <option value="Jubail">جُبيل</option>
+                            <option value="Taif">الطائف</option>
+                            <option value="Abha">أبها</option>
+                            <option value="Khamis Mushait">خميس مشيط</option>
+                            <option value="Tabuk">تبوك</option>
+                            <option value="Buraidah">بريدة</option>
+                            <option value="Onaizah">عنيزة</option>
+                            <option value="Hail">حائل</option>
+                            <option value="Jazan">جازان</option>
+                            <option value="Najran">نجران</option>
+                            <option value="Bahah">الباحة</option>
+                            <option value="Sakaka">سكاكا</option>
+                            <option value="Arar">عرعر</option>
+                            <option value="Yanbu">ينبع</option>
+                        </select>
+                        <input type="text" id="c_phone" placeholder="رقم الهاتف">
+                    </div>
+                    <button class="btn-add" id="c_btn" onclick="addData('customers')">إضافة عميل جديد</button>
+                    <button class="btn-cancel" id="c_cancel" onclick="resetForm('customers')">إلغاء التعديل</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>الاسم</th><th>المنطقة</th><th>المدينة</th><th>الهاتف</th><th>الإجراءات</th></tr></thead>
+                        <tbody id="customers_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
 
-    if (req.method === "OPTIONS") {
-        context.res = { status: 200, headers: headers };
-        return;
+            <!-- 4. الطلبات -->
+            <div id="orders" class="tab-content">
+                <div class="header"><h1>📦 إدارة الطلبات والمبيعات</h1></div>
+                <div class="card">
+                    <input type="hidden" id="o_id">
+                    <div class="form-grid">
+                        <input type="text" id="o_customerId" placeholder="رقم العميل (CustomerId)">
+                        <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
+                        <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
+                        <select id="o_status">
+                            <option value="Completed">مكتمل (Completed)</option>
+                            <option value="Pending">قيد المعالجة (Pending)</option>
+                            <option value="Cancelled">ملغي (Cancelled)</option>
+                        </select>
+                    </div>
+                    <button class="btn-add" id="o_btn" onclick="addData('orders')">إضافة طلب جديد</button>
+                    <button class="btn-cancel" id="o_cancel" onclick="resetForm('orders')">إلغاء التعديل</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+                        <tbody id="orders_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+    let currentTab = 'games';
+    let loadedData = {};
+
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+
+    function checkLogin() {
+        const user = document.getElementById('username').value.trim();
+        const pass = document.getElementById('password').value.trim();
+        const err = document.getElementById('loginError');
+
+        if ((user === "راكان" || user.toLowerCase() === "rakan") && pass === "123456789") {
+            document.getElementById('heroScreen').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'flex';
+            loadData('games');
+        } else {
+            err.style.display = 'block';
+        }
     }
 
-    try {
-        const type = (req.query && req.query.type) || (req.body && req.body.type) || "games";
-        const targetConfig = config[type] || config.games;
-        const collId = targetConfig.coll;
+    function openCustomerStore() {
+        document.getElementById('heroScreen').style.display = 'none';
+        document.getElementById('storeWrapper').style.display = 'block';
+        loadStoreGames();
+    }
 
-        if (req.method === "POST") {
-            const body = req.body || {};
-
-            if (body.action === "delete" && body.id) {
-                const pkValue = body.pkValue || targetConfig.defaultPk;
-                await deleteCosmosDoc(collId, String(body.id), pkValue);
-            } else {
-                let docId = body.id;
-
-                // إذا كانت إضافة جديدة (وليس تعديل)، نحسب الرقم التسلسلي القادم (1, 2, 3...)
-                if (!docId) {
-                    const existingDocs = await getCosmosDocs(collId);
-                    let maxId = 0;
-                    existingDocs.forEach(d => {
-                        const num = parseInt(d.id, 10);
-                        if (!isNaN(num) && num > maxId) {
-                            maxId = num;
-                        }
-                    });
-                    docId = String(maxId + 1);
-                }
-
-                const newDoc = {
-                    id: String(docId),
-                    ...body
-                };
-                delete newDoc.type;
-                delete newDoc.action;
-
-                const pkField = targetConfig.pkField;
-                if (!newDoc[pkField]) {
-                    newDoc[pkField] = targetConfig.defaultPk;
-                }
-
-                await saveCosmosDoc(collId, newDoc, newDoc[pkField]);
+    async function loadStoreGames() {
+        const grid = document.getElementById('store_games_grid');
+        grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>';
+        try {
+            const res = await fetch(`${API_URL}?type=games`, { cache: "no-store" });
+            const games = await res.json();
+            grid.innerHTML = '';
+            
+            if (!games || games.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">لا توجد ألعاب متاحة حالياً.</p>';
+                return;
             }
+
+            games.forEach(game => {
+                grid.innerHTML += `
+                    <div class="game-card">
+                        <div>
+                            <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
+                            <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
+                        </div>
+                        <div>
+                            <div class="game-price">$${game.price || '0'}</div>
+                            <button class="btn-buy" onclick="buyGame('${game.title}', '${game.price}')">شراء الآن 🚀</button>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#ef4444;">حدث خطأ في تحميل الألعاب</p>';
+        }
+    }
+
+    async function buyGame(title, price) {
+        const customerName = prompt("أدخل اسمك لإتمام الطلب:");
+        if (!customerName) return;
+
+        const body = {
+            type: 'orders',
+            customerId: customerName,
+            item: title,
+            total: price || '0',
+            status: 'Pending'
+        };
+
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                alert(`شكراً لك يا ${customerName}! تم إرسال طلب شراء (${title}) بنجاح إلى الإدارة.`);
+            }
+        } catch (err) {
+            alert("حدث خطأ أثناء إرسال الطلب.");
+        }
+    }
+
+    function logout() { location.reload(); }
+
+    function showStatus(msg, isErr = false) {
+        const el = document.getElementById('statusMsg');
+        el.innerText = msg;
+        el.style.display = 'block';
+        el.style.backgroundColor = isErr ? '#7f1d1d' : '#065f46';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    function switchTab(tab, evt) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+        if (evt) evt.target.classList.add('active');
+        loadData(tab);
+    }
+
+    async function loadData(type) {
+        try {
+            const res = await fetch(`${API_URL}?type=${type}`, { cache: "no-store" });
+            const data = await res.json();
+            loadedData[type] = data;
+            renderTable(type, data);
+        } catch (err) {
+            showStatus("فشل جلب البيانات من السحابة", true);
+        }
+    }
+
+    function renderTable(type, data) {
+        const tbody = document.getElementById(`${type}_table`);
+        tbody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد بيانات مسجلة.</td></tr>`;
+            return;
         }
 
-        const docs = await getCosmosDocs(collId);
-
-        context.res = {
-            status: 200,
-            headers: headers,
-            body: docs
-        };
-    } catch (err) {
-        context.res = {
-            status: 500,
-            headers: headers,
-            body: { error: err.message }
-        };
+        data.forEach(item => {
+            let row = '';
+            if (type === 'games') {
+                row = `<td>${item.title || '-'}</td><td>${item.platform || '-'}</td><td>$${item.price || '0'}</td><td>${item.genre || 'General'}</td>
+                       <td>
+                           <button class="btn-promote" onclick="editData('games', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.genre || 'General'}')">حذف</button>
+                       </td>`;
+            } else if (type === 'employees') {
+                row = `<td>${item.name || '-'}</td><td><strong style="color:#38bdf8">${item.role || 'Senior Developer'}</strong></td><td>$${item.salary || '0'}</td>
+                       <td>
+                           <button class="btn-promote" onclick="editData('employees', '${item.id}')">ترقية / تعديل</button>
+                           <button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.role || 'Senior Developer'}')">حذف</button>
+                       </td>`;
+            } else if (type === 'customers') {
+                row = `<td>${item.name || '-'}</td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'Jeddah'}</td><td>${item.phone || '-'}</td>
+                       <td>
+                           <button class="btn-promote" onclick="editData('customers', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
+                       </td>`;
+            } else if (type === 'orders') {
+                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td>${item.status || 'Completed'}</td>
+                       <td>
+                           <button class="btn-promote" onclick="editData('orders', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button>
+                       </td>`;
+            }
+            tbody.innerHTML += `<tr>${row}</tr>`;
+        });
     }
-};
+
+    function editData(type, id) {
+        const item = loadedData[type].find(x => x.id === id);
+        if (!item) return;
+
+        if (type === 'games') {
+            document.getElementById('g_id').value = item.id;
+            document.getElementById('g_title').value = item.title || '';
+            document.getElementById('g_platform').value = item.platform || 'PlayStation 5';
+            document.getElementById('g_price').value = item.price || '';
+            document.getElementById('g_genre').value = item.genre || 'General';
+            document.getElementById('g_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('g_cancel').style.display = 'inline-block';
+        } else if (type === 'employees') {
+            document.getElementById('e_id').value = item.id;
+            document.getElementById('e_name').value = item.name || '';
+            document.getElementById('e_role').value = item.role || 'Senior Developer';
+            document.getElementById('e_salary').value = item.salary || '';
+            document.getElementById('e_btn').innerText = 'حفظ الترقية / التعديل';
+            document.getElementById('e_cancel').style.display = 'inline-block';
+        } else if (type === 'customers') {
+            document.getElementById('c_id').value = item.id;
+            document.getElementById('c_name').value = item.name || '';
+            document.getElementById('c_region').value = item.region || 'Makkah';
+            document.getElementById('c_city').value = item.city || 'Jeddah';
+            document.getElementById('c_phone').value = item.phone || '';
+            document.getElementById('c_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('c_cancel').style.display = 'inline-block';
+        } else if (type === 'orders') {
+            document.getElementById('o_id').value = item.id;
+            document.getElementById('o_customerId').value = item.customerId || '';
+            document.getElementById('o_item').value = item.item || '';
+            document.getElementById('o_total').value = item.total || '';
+            document.getElementById('o_status').value = item.status || 'Completed';
+            document.getElementById('o_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('o_cancel').style.display = 'inline-block';
+        }
+    }
+
+    function resetForm(type) {
+        if (type === 'games') {
+            document.getElementById('g_id').value = '';
+            document.getElementById('g_title').value = '';
+            document.getElementById('g_price').value = '';
+            document.getElementById('g_btn').innerText = 'إضافة لعبة جديدة';
+            document.getElementById('g_cancel').style.display = 'none';
+        } else if (type === 'employees') {
+            document.getElementById('e_id').value = '';
+            document.getElementById('e_name').value = '';
+            document.getElementById('e_salary').value = '';
+            document.getElementById('e_btn').innerText = 'إضافة موظف جديد';
+            document.getElementById('e_cancel').style.display = 'none';
+        } else if (type === 'customers') {
+            document.getElementById('c_id').value = '';
+            document.getElementById('c_name').value = '';
+            document.getElementById('c_phone').value = '';
+            document.getElementById('c_btn').innerText = 'إضافة عميل جديد';
+            document.getElementById('c_cancel').style.display = 'none';
+        } else if (type === 'orders') {
+            document.getElementById('o_id').value = '';
+            document.getElementById('o_customerId').value = '';
+            document.getElementById('o_item').value = '';
+            document.getElementById('o_total').value = '';
+            document.getElementById('o_btn').innerText = 'إضافة طلب جديد';
+            document.getElementById('o_cancel').style.display = 'none';
+        }
+    }
+
+    async function addData(type) {
+        let body = { type: type };
+
+        if (type === 'games') {
+            const id = document.getElementById('g_id').value;
+            const title = document.getElementById('g_title').value;
+            if (!title) return alert('أدخل اسم اللعبة');
+            if (id) body.id = id;
+            body.title = title;
+            body.platform = document.getElementById('g_platform').value;
+            body.price = document.getElementById('g_price').value || '0';
+            body.genre = document.getElementById('g_genre').value;
+        } else if (type === 'employees') {
+            const id = document.getElementById('e_id').value;
+            const name = document.getElementById('e_name').value;
+            if (!name) return alert('أدخل اسم الموظف');
+            if (id) body.id = id;
+            body.name = name;
+            body.role = document.getElementById('e_role').value;
+            body.salary = document.getElementById('e_salary').value || '0';
+        } else if (type === 'customers') {
+            const id = document.getElementById('c_id').value;
+            const name = document.getElementById('c_name').value;
+            if (!name) return alert('أدخل اسم العميل');
+            if (id) body.id = id;
+            body.name = name;
+            body.region = document.getElementById('c_region').value;
+            body.city = document.getElementById('c_city').value;
+            body.phone = document.getElementById('c_phone').value || '-';
+        } else if (type === 'orders') {
+            const id = document.getElementById('o_id').value;
+            const item = document.getElementById('o_item').value;
+            if (!item) return alert('أدخل اسم المنتج');
+            if (id) body.id = id;
+            body.item = item;
+            body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
+            body.total = document.getElementById('o_total').value || '0';
+            body.status = document.getElementById('o_status').value;
+        }
+
+        try {
+            showStatus("جاري الحفظ في السحابة...");
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                const updated = await res.json();
+                showStatus("تم الحفظ بنجاح!");
+                resetForm(type);
+                renderTable(type, updated);
+            }
+        } catch (err) {
+            showStatus("حدث خطأ في الاتصال", true);
+        }
+    }
+
+    async function deleteData(type, id, pkValue) {
+        if (!confirm("هل أنت متأكد من الحذف؟")) return;
+        try {
+            showStatus("جاري الحذف...");
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: type, action: "delete", id: id, pkValue: pkValue })
+            });
+            if (res.ok) {
+                const updated = await res.json();
+                showStatus("تم الحذف بنجاح!");
+                renderTable(type, updated);
+            }
+        } catch (err) {
+            showStatus("حدث خطأ في الاتصال", true);
+        }
+    }
+</script>
+</body>
+</html>
