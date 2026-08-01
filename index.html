@@ -1,64 +1,159 @@
-// ذاكرة سحابية في السيرفر
-global.gamesDatabase = global.gamesDatabase || [
-    { id: 1, title: "Rocket League", platform: "PS5 / PC", price: 0 },
-    { id: 2, title: "FC 26", platform: "PS5", price: 69.99 }
-];
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة إدارة الألعاب - Azure Cloud</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px; direction: rtl; }
+        .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { color: #38bdf8; text-align: center; margin-bottom: 20px; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input, button { padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; flex: 1; min-width: 150px; }
+        button { background: #0284c7; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #0369a1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: right; }
+        th { background: #0f172a; color: #38bdf8; }
+        .btn-delete { background: #ef4444; padding: 6px 12px; border-radius: 4px; border: none; color: white; cursor: pointer; }
+        .btn-delete:hover { background: #dc2626; }
+        .status { margin-top: 10px; padding: 10px; border-radius: 6px; text-align: center; font-size: 14px; display: none; }
+    </style>
+</head>
+<body>
 
-module.exports = async function (context, req) {
-    // إعدادات الـ CORS الكاملة لمنع أي حظر
-    const headers = {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-    };
+<div class="container">
+    <h1>🎮 لوحة تحكم ألعاب الشركة (Azure Connected)</h1>
+    
+    <div id="statusMessage" class="status"></div>
 
-    // التعامل مع طلبات التصفح السريعة
-    if (req.method === "OPTIONS") {
-        context.res = { status: 200, headers: headers };
-        return;
+    <div class="form-group">
+        <input type="text" id="gameTitle" placeholder="اسم اللعبة (مثال: Rocket League)">
+        <input type="text" id="gamePlatform" placeholder="المنصة (مثال: PS5 / PC)">
+        <input type="number" id="gamePrice" placeholder="السعر ($)">
+        <button onclick="addGame()">إضافة للسحابة</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>اسم اللعبة</th>
+                <th>المنصة</th>
+                <th>السعر</th>
+                <th>الإجراء</th>
+            </tr>
+        </thead>
+        <tbody id="gamesTableBody">
+            <tr><td colspan="4" style="text-align:center;">جاري جلب البيانات الكاملة من سحابة Azure...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const AZURE_API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+
+    function showStatus(msg, isError = false) {
+        const el = document.getElementById('statusMessage');
+        el.innerText = msg;
+        el.style.display = 'block';
+        el.style.backgroundColor = isError ? '#7f1d1d' : '#065f46';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // 1. جلب البيانات (GET)
-    if (req.method === "GET") {
-        context.res = {
-            status: 200,
-            headers: headers,
-            body: global.gamesDatabase
-        };
-        return;
-    }
+    function renderTable(data) {
+        const tbody = document.getElementById('gamesTableBody');
+        tbody.innerHTML = '';
 
-    // 2. الإضافة والحذف (POST)
-    if (req.method === "POST") {
-        const body = req.body || {};
-
-        // إذا كان الطلب حذف
-        if (body.action === "delete") {
-            global.gamesDatabase = global.gamesDatabase.filter(g => g.id != body.id);
-            context.res = {
-                status: 200,
-                headers: headers,
-                body: global.gamesDatabase
-            };
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب مسجلة في السحابة حالياً.</td></tr>';
             return;
         }
 
-        // إذا كان الطلب إضافة لعبة جديد
-        if (body.title) {
-            const newGame = {
-                id: Date.now(),
-                title: body.title,
-                platform: body.platform,
-                price: parseFloat(body.price) || 0
-            };
-            global.gamesDatabase.push(newGame);
-            context.res = {
-                status: 200,
-                headers: headers,
-                body: global.gamesDatabase
-            };
-            return;
+        data.forEach(game => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${game.title}</td>
+                    <td>${game.platform}</td>
+                    <td>${game.price === 0 ? 'مجانية' : '$' + game.price}</td>
+                    <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف من السحابة</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    // 🌐 1. جلب البيانات كاملة من السحابة فور فتح الموقع
+    async function fetchGames() {
+        try {
+            const res = await fetch(AZURE_API_URL, { cache: "no-store" });
+            if(!res.ok) throw new Error();
+            const data = await res.json();
+            renderTable(data);
+        } catch (err) {
+            showStatus("فشل الاتصال بـ Azure API", true);
         }
     }
-};
+
+    // ➕ 2. إضافة لعبة جديدة إلى السحابة
+    async function addGame() {
+        const title = document.getElementById('gameTitle').value;
+        const platform = document.getElementById('gamePlatform').value;
+        const price = document.getElementById('gamePrice').value;
+
+        if (!title || !platform) {
+            alert("يرجى تعبئة اسم اللعبة والمنصة!");
+            return;
+        }
+
+        try {
+            showStatus("جاري الإضافة للسحابة...");
+            const res = await fetch(AZURE_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, platform, price: parseFloat(price) || 0 })
+            });
+
+            if (res.ok) {
+                const updatedData = await res.json();
+                showStatus("تمت الإضافة للسحابة بنجاح! 🚀");
+                document.getElementById('gameTitle').value = '';
+                document.getElementById('gamePlatform').value = '';
+                document.getElementById('gamePrice').value = '';
+                renderTable(updatedData);
+            } else {
+                showStatus("خطأ أثناء الإضافة", true);
+            }
+        } catch (err) {
+            showStatus("حدث خطأ في الاتصال بالسيرفر", true);
+        }
+    }
+
+    // ❌ 3. حذف لعبة من السحابة
+    async function deleteGame(id) {
+        if(!confirm("هل أنت متأكد من حذف هذه اللعبة من السحابة؟")) return;
+
+        try {
+            showStatus("جاري الحذف من السحابة...");
+            const res = await fetch(AZURE_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "delete", id: id })
+            });
+
+            if (res.ok) {
+                const updatedData = await res.json();
+                showStatus("تم الحذف من السحابة بنجاح!");
+                renderTable(updatedData);
+            } else {
+                showStatus("خطأ أثناء الحذف", true);
+            }
+        } catch (err) {
+            showStatus("حدث خطأ في الاتصال بالسيرفر", true);
+        }
+    }
+
+    // تشغيل الجلب التلقائي
+    fetchGames();
+</script>
+
+</body>
+</html>
