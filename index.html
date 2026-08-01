@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody id="gamesTableBody">
-            <tr><td colspan="4" style="text-align:center;">جاري جلب البيانات الفعلية من السحابة...</td></tr>
+            <tr><td colspan="4" style="text-align:center;">جاري جلب البيانات من السحابة...</td></tr>
         </tbody>
     </table>
 </div>
@@ -60,33 +60,34 @@
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // عرض البيانات القادمة من السحابة فقط
+    // عرض القادمة من السحابة فقط بدون أي إضافات
     function renderTable(data) {
         const tbody = document.getElementById('gamesTableBody');
         tbody.innerHTML = '';
 
         if (!data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد أي ألعاب مسجلة في السحابة حالياً.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب مسجلة في السحابة حالياً.</td></tr>';
             return;
         }
 
         data.forEach(game => {
+            const priceDisplay = (game.price !== "" && game.price !== undefined && !isNaN(game.price)) ? '$' + game.price : '-';
             tbody.innerHTML += `
                 <tr>
-                    <td>${game.title || 'بدون عنوان'}</td>
-                    <td>${game.platform || 'غير محدد'}</td>
-                    <td>${game.price !== undefined ? '$' + game.price : 'غير محدد'}</td>
+                    <td>${game.title || '-'}</td>
+                    <td>${game.platform || '-'}</td>
+                    <td>${priceDisplay}</td>
                     <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف</button></td>
                 </tr>
             `;
         });
     }
 
-    // جلب البيانات الفعليه فقط
+    // جلب البيانات الفعلية من السحابة
     async function fetchGames() {
         try {
             const res = await fetch(AZURE_API_URL, { cache: "no-store" });
-            if(!res.ok) throw new Error();
+            if (!res.ok) throw new Error();
             const data = await res.json();
             renderTable(data);
         } catch (err) {
@@ -94,44 +95,44 @@
         }
     }
 
-    // إضافة بيانات حقيقية من إدخالك أنت
+    // إرسال الإدخال الحقيقي فقط
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const platform = document.getElementById('gamePlatform').value;
         const price = document.getElementById('gamePrice').value;
 
         if (!title) {
-            alert("يرجى كتابة اسم اللعبة على الأقل!");
+            alert("يرجى إدخال اسم اللعبة!");
             return;
         }
 
         try {
-            showStatus("جاري الإضافة...");
+            showStatus("جاري الإرسال للسحابة...");
             const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title, platform, price: parseFloat(price) || 0 })
+                body: JSON.stringify({ title, platform, price })
             });
 
             if (res.ok) {
-                const updatedData = await res.json();
+                const updatedList = await res.json();
                 showStatus("تمت الإضافة بنجاح!");
                 document.getElementById('gameTitle').value = '';
                 document.getElementById('gamePlatform').value = '';
                 document.getElementById('gamePrice').value = '';
-                renderTable(updatedData);
+                renderTable(updatedList);
             }
         } catch (err) {
             showStatus("حدث خطأ في الاتصال", true);
         }
     }
 
-    // حذف عنصر من السحابة
+    // حذف عنصر
     async function deleteGame(id) {
-        if(!confirm("تأكيد الحذف؟")) return;
+        if (!confirm("هل أنت متأكد من الحذف؟")) return;
 
         try {
-            showStatus("جاري الحذف...");
+            showStatus("جاري الحذف من السحابة...");
             const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -139,9 +140,9 @@
             });
 
             if (res.ok) {
-                const updatedData = await res.json();
+                const updatedList = await res.json();
                 showStatus("تم الحذف بنجاح!");
-                renderTable(updatedData);
+                renderTable(updatedList);
             }
         } catch (err) {
             showStatus("حدث خطأ في الاتصال", true);
