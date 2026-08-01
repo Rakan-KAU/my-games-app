@@ -353,7 +353,6 @@
         }
     }
 
-    // الدالة الموحدة تماماً لعملية الشراء وإرسال الطلب للسحابة بنفس مسار الإدارة
     async function buyGame(title, price) {
         const customerName = prompt("أدخل اسمك لإتمام الطلب:");
         if (!customerName || customerName.trim() === "") return;
