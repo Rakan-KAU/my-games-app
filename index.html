@@ -554,6 +554,7 @@
             const item = document.getElementById('o_item').value;
             if (!item) return alert('أدخل اسم المنتج');
             if (id) body.id = id;
+            body.type = 'orders';
             body.item = item;
             body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
             body.total = document.getElementById('o_total').value || '0';
