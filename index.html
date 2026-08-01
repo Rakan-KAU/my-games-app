@@ -439,10 +439,11 @@
                            <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
+                const pk = item.customerId || 'CUST-01';
                 row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
                        <td>
                            <button class="btn-promote" onclick="editData('orders', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button>
+                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${pk}')">حذف</button>
                        </td>`;
             }
             tbody.innerHTML += `<tr>${row}</tr>`;
