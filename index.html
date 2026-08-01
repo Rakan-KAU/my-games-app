@@ -8,7 +8,7 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #070913; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* 🎮 1. الواجهة الرئيسية (Hero Screen) */
+        /* 🎮 1. واجهة البداية (Hero Screen) */
         #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, rgba(7, 9, 19, 0.94), rgba(15, 23, 42, 0.98)), 
@@ -25,7 +25,7 @@
         .btn-admin { padding: 16px 40px; background: linear-gradient(135deg, #0284c7, #1d4ed8); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3); }
         .btn-admin:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(2, 132, 199, 0.5); }
 
-        /* 🔒 2. نافذة تسجيل دخول الموظفين/الإدارة */
+        /* 🔒 2. تسجيل الدخول */
         #loginModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(7, 9, 19, 0.96); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(8px);
@@ -42,22 +42,24 @@
         .login-box button { width: 100%; padding: 13px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .login-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
 
-        /* 🛒 3. واجهة متجر العملاء (Customer Store) */
+        /* 🛒 3. متجر العملاء بالصور */
         #storeWrapper { display: none; padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 15px; }
         .store-header h1 { font-size: 28px; color: #10b981; font-weight: 800; }
         .btn-back { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        .game-card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
-        .game-card:hover { border-color: #10b981; transform: translateY(-5px); }
-        .game-title { font-size: 20px; font-weight: bold; color: #f8fafc; margin-bottom: 8px; }
-        .game-badge { background: #0b0f19; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block; width: fit-content; margin-bottom: 12px; }
-        .game-price { font-size: 22px; font-weight: 800; color: #10b981; margin-bottom: 15px; }
-        .btn-buy { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .game-card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
+        .game-card:hover { border-color: #10b981; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); }
+        .game-img { width: 100%; height: 160px; object-fit: cover; background: #0b0f19; }
+        .game-info { padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .game-title { font-size: 18px; font-weight: bold; color: #f8fafc; margin-bottom: 8px; }
+        .game-badge { background: #0b0f19; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block; width: fit-content; margin-bottom: 10px; }
+        .game-price { font-size: 20px; font-weight: 800; color: #10b981; margin-bottom: 12px; }
+        .btn-buy { background: #10b981; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn-buy:hover { background: #059669; }
 
-        /* 📊 4. لوحة الإدارة والموظفين (Admin Dashboard) */
+        /* 📊 4. لوحة الإدارة */
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #111827; border-left: 1px solid #1f2937; padding: 25px 20px; display: flex; flex-direction: column; gap: 10px; }
         .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 800; }
@@ -68,7 +70,7 @@
 
         .main-content { flex: 1; padding: 35px; background: #070913; }
         .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 22px; margin-bottom: 22px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
         input, select { padding: 11px 14px; border-radius: 8px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; width: 100%; outline: none; }
         .btn-add { background: #059669; color: white; border: none; padding: 11px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-cancel { background: #475569; color: white; border: none; padding: 11px 18px; border-radius: 8px; cursor: pointer; display: none; margin-right: 10px; }
@@ -87,7 +89,7 @@
 </head>
 <body>
 
-    <!-- 🎮 1. الواجهة الرئيسية الرئيسية -->
+    <!-- 🎮 واجهة الترحيب -->
     <div id="heroScreen">
         <h1 class="hero-title">Rakan Gaming Studio</h1>
         <p class="hero-subtitle">مرحباً بك في المنصة الموحدة لألعاب وتطوير راكان استديو</p>
@@ -97,7 +99,7 @@
         </div>
     </div>
 
-    <!-- 🔒 2. نافذة تسجيل الدخول للموظفين -->
+    <!-- 🔒 تسجيل الدخول -->
     <div id="loginModal">
         <div class="login-box">
             <h2>تسجيل دخول الموظفين والإدارة</h2>
@@ -109,19 +111,18 @@
         </div>
     </div>
 
-    <!-- 🛒 3. متجر العملاء -->
+    <!-- 🛒 متجر العملاء -->
     <div id="storeWrapper">
         <div class="store-header">
             <h1>🛍️ متجر ألعاب Rakan Studio</h1>
             <button class="btn-back" onclick="logout()">الرجوع للرئيسية</button>
         </div>
-        <div id="store_status" class="status"></div>
         <div class="games-grid" id="store_games_grid">
-            <p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب المتاحة في المتجر...</p>
+            <p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>
         </div>
     </div>
 
-    <!-- 📊 4. لوحة الإدارة والموظفين -->
+    <!-- 📊 لوحة الإدارة -->
     <div id="appWrapper">
         <div class="sidebar">
             <h2>RAKAN GAMING</h2>
@@ -138,11 +139,11 @@
 
             <!-- 1. الألعاب -->
             <div id="games" class="tab-content active">
-                <div class="header"><h1>🎮 إدارة الألعاب</h1></div>
+                <div class="header"><h1>🎮 إدارة الألعاب والصور</h1></div>
                 <div class="card">
                     <input type="hidden" id="g_id">
                     <div class="form-grid">
-                        <input type="text" id="g_title" placeholder="اسم اللعبة">
+                        <input type="text" id="g_title" placeholder="اسم اللعبة (مثل: Rocket League, Elden Ring, Minecraft...)">
                         <select id="g_platform">
                             <option value="PlayStation 5">PlayStation 5</option>
                             <option value="PC Gaming">PC Gaming</option>
@@ -158,6 +159,7 @@
                             <option value="Casual">Casual</option>
                             <option value="General">General</option>
                         </select>
+                        <input type="text" id="g_image" placeholder="رابط صورة اللعبة (اختياري، يتم وضعه تلقائياً)">
                     </div>
                     <button class="btn-add" id="g_btn" onclick="addData('games')">إضافة لعبة جديدة</button>
                     <button class="btn-cancel" id="g_cancel" onclick="resetForm('games')">إلغاء التعديل</button>
@@ -315,6 +317,18 @@
         loadStoreGames();
     }
 
+    // قاموس الصور التلقائي لأشهر الألعاب المطلوبة
+    function getGameImage(title) {
+        const t = (title || "").toLowerCase();
+        if (t.includes('rocket')) return 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80';
+        if (t.includes('elden')) return 'https://images.unsplash.com/photo-1612287233202-b51b3661633d?auto=format&fit=crop&w=600&q=80';
+        if (t.includes('minecraft')) return 'https://images.unsplash.com/photo-1627856013091-fed6e4e30bba?auto=format&fit=crop&w=600&q=80';
+        if (t.includes('fifa') || t.includes('fc') || t.includes('23') || t.includes('24') || t.includes('25') || t.includes('26') || t.includes('27')) {
+            return 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80';
+        }
+        return 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=600&q=80';
+    }
+
     async function loadStoreGames() {
         const grid = document.getElementById('store_games_grid');
         grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>';
@@ -329,15 +343,19 @@
             }
 
             games.forEach(game => {
+                const imgUrl = game.image || getGameImage(game.title);
                 grid.innerHTML += `
                     <div class="game-card">
-                        <div>
-                            <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
-                            <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
-                        </div>
-                        <div>
-                            <div class="game-price">$${game.price || '0'}</div>
-                            <button class="btn-buy" onclick="buyGame('${game.title}', '${game.price}')">شراء الآن 🚀</button>
+                        <img src="${imgUrl}" class="game-img" alt="${game.title}">
+                        <div class="game-info">
+                            <div>
+                                <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
+                                <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
+                            </div>
+                            <div>
+                                <div class="game-price">$${game.price || '0'}</div>
+                                <button class="btn-buy" onclick="buyGame('${game.title}', '${game.price}')">شراء الآن 🚀</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -453,6 +471,7 @@
             document.getElementById('g_platform').value = item.platform || 'PlayStation 5';
             document.getElementById('g_price').value = item.price || '';
             document.getElementById('g_genre').value = item.genre || 'General';
+            document.getElementById('g_image').value = item.image || '';
             document.getElementById('g_btn').innerText = 'حفظ التعديلات';
             document.getElementById('g_cancel').style.display = 'inline-block';
         } else if (type === 'employees') {
@@ -486,6 +505,7 @@
             document.getElementById('g_id').value = '';
             document.getElementById('g_title').value = '';
             document.getElementById('g_price').value = '';
+            document.getElementById('g_image').value = '';
             document.getElementById('g_btn').innerText = 'إضافة لعبة جديدة';
             document.getElementById('g_cancel').style.display = 'none';
         } else if (type === 'employees') {
@@ -522,6 +542,7 @@
             body.platform = document.getElementById('g_platform').value;
             body.price = document.getElementById('g_price').value || '0';
             body.genre = document.getElementById('g_genre').value;
+            body.image = document.getElementById('g_image').value || '';
         } else if (type === 'employees') {
             const id = document.getElementById('e_id').value;
             const name = document.getElementById('e_name').value;
@@ -534,7 +555,7 @@
             const id = document.getElementById('c_id').value;
             const name = document.getElementById('c_name').value;
             if (!name) return alert('أدخل اسم العميل');
-            if (id) body.id = id;
+            if (id) body.id, body.id = id;
             body.name = name;
             body.region = document.getElementById('c_region').value;
             body.city = document.getElementById('c_city').value;
