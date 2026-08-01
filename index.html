@@ -3,14 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة الشركة - Azure Cloud Admin</title>
+    <title>NEXUS GAMING CLOUD STUDIO</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; }
         
-        #loginScreen {
+        /* 1. الواجهة الرئيسية الأولى (Hero Landing Page) */
+        #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 15, 25, 0.98); display: flex; justify-content: center; align-items: center; z-index: 999;
+            background: linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.95)), 
+                        url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px;
+        }
+        #heroScreen h1 { font-size: 42px; color: #38bdf8; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
+        #heroScreen p { font-size: 18px; color: #94a3b8; max-width: 600px; margin-bottom: 30px; }
+        .btn-enter { padding: 15px 40px; background: #0284c7; color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4); }
+        .btn-enter:hover { background: #0369a1; transform: translateY(-2px); }
+
+        /* 2. شاشة تسجيل الدخول (Modal) */
+        #loginModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11, 15, 25, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001;
         }
         .login-box {
             background: #111827; border: 1px solid #1f2937; padding: 40px; border-radius: 16px;
@@ -29,15 +42,17 @@
         .login-box button:hover { background: #0369a1; }
         .login-error { color: #ef4444; font-size: 13px; margin-top: 10px; display: none; }
 
+        /* 3. لوحة التحكم الرئيسية (App Wrapper) */
+        #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 260px; background: #111827; border-left: 1px solid #1f2937; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .sidebar h2 { color: #38bdf8; font-size: 18px; text-align: center; margin-bottom: 5px; }
+        .sidebar h2 { color: #38bdf8; font-size: 16px; text-align: center; margin-bottom: 5px; }
         .admin-badge { text-align: center; color: #10b981; font-size: 12px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1f2937; }
         .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .nav-btn:hover, .nav-btn.active { background: #0284c7; color: #ffffff; }
         .btn-logout { margin-top: auto; background: #7f1d1d; color: #fca5a5; }
         .btn-logout:hover { background: #991b1b; color: white; }
 
-        .main-content { flex: 1; padding: 30px; display: none; }
+        .main-content { flex: 1; padding: 30px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .header h1 { font-size: 22px; color: #f8fafc; }
         
@@ -66,137 +81,152 @@
 </head>
 <body>
 
-    <!-- 🔒 شاشة تسجيل الدخول -->
-    <div id="loginScreen">
+    <!-- 🌐 1. الواجهة الترحيبية الغلاف -->
+    <div id="heroScreen">
+        <h1>NEXUS GAMING CLOUD STUDIO</h1>
+        <p>المنصة السحابية الموحدة لإدارة الألعاب والموظفين والعملاء والطلبات بذكاء</p>
+        <button class="btn-enter" onclick="openLoginModal()">تسجيل الدخول للنظام</button>
+    </div>
+
+    <!-- 🔒 2. نافذة تسجيل الدخول -->
+    <div id="loginModal">
         <div class="login-box">
-            <h2>⚡ بوابة النظام السحابي</h2>
-            <p>سجل دخولك كمسؤول إدارة الشركة</p>
+            <h2>⚡ تسجيل الدخول</h2>
+            <p>أدخل بيانات مسؤول النظام</p>
             <input type="text" id="username" placeholder="اسم المستخدم">
             <input type="password" id="password" placeholder="كلمة المرور">
             <button onclick="checkLogin()">دخول لوحة التحكم</button>
-            <div id="loginError" class="login-error">خطأ في اسم المستخدم أو كلمة المرور!</div>
+            <div id="loginError" class="login-error">خطأ في البيانات المدخلة!</div>
         </div>
     </div>
 
-    <!-- 📊 القائمة الجانبية -->
-    <div class="sidebar" id="sidebar" style="display:none;">
-        <h2>🏢 الشركة السحابية</h2>
-        <div class="admin-badge">👑 مسؤول النظام (Admin)</div>
-        <button class="nav-btn active" onclick="switchTab('games', event)">🎮 إدارة الألعاب</button>
-        <button class="nav-btn" onclick="switchTab('employees', event)">👥 إدارة الموظفين</button>
-        <button class="nav-btn" onclick="switchTab('customers', event)">🏢 إدارة العملاء</button>
-        <button class="nav-btn" onclick="switchTab('orders', event)">📦 إدارة الطلبات</button>
-        <button class="nav-btn btn-logout" onclick="logout()">تسجيل الخروج</button>
-    </div>
-
-    <!-- 💻 المحتوى الرئيسي -->
-    <div class="main-content" id="mainContent">
-        <div id="statusMsg" class="status"></div>
-
-        <!-- 1. قسم الألعاب -->
-        <div id="games" class="tab-content active">
-            <div class="header"><h1>🎮 قاعدة بيانات الألعاب</h1></div>
-            <div class="card">
-                <input type="hidden" id="g_id">
-                <div class="form-grid">
-                    <input type="text" id="g_title" placeholder="اسم اللعبة">
-                    <select id="g_platform">
-                        <option value="PC">PC (بي سي)</option>
-                        <option value="PS5">PlayStation 5 (سوني)</option>
-                        <option value="Xbox">Xbox</option>
-                        <option value="Multi-Platform">Multi-Platform (متعدد المنصات)</option>
-                    </select>
-                    <input type="number" id="g_price" placeholder="السعر ($)">
-                    <select id="g_genre">
-                        <option value="Action">Action</option>
-                        <option value="Sports">Sports</option>
-                        <option value="RPG">RPG</option>
-                        <option value="Strategy">Strategy</option>
-                        <option value="General">General</option>
-                    </select>
-                </div>
-                <button class="btn-add" id="g_btn" onclick="addData('games')">إضافة لعبة جديدة</button>
-                <button class="btn-cancel" id="g_cancel" onclick="resetForm('games')">إلغاء التعديل</button>
-            </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>اسم اللعبة</th><th>المنصة</th><th>السعر</th><th>التصنيف</th><th>الإجراء</th></tr></thead>
-                    <tbody id="games_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
-                </table>
-            </div>
+    <!-- 📊 3. اللوحة الرئيسية للموقع -->
+    <div id="appWrapper">
+        <div class="sidebar">
+            <h2>NEXUS CLOUD</h2>
+            <div class="admin-badge">👑 مسؤول النظام (Admin)</div>
+            <button class="nav-btn active" onclick="switchTab('games', event)">🎮 إدارة الألعاب</button>
+            <button class="nav-btn" onclick="switchTab('employees', event)">👥 إدارة الموظفين</button>
+            <button class="nav-btn" onclick="switchTab('customers', event)">🏢 إدارة العملاء</button>
+            <button class="nav-btn" onclick="switchTab('orders', event)">📦 إدارة الطلبات</button>
+            <button class="nav-btn btn-logout" onclick="logout()">تسجيل الخروج</button>
         </div>
 
-        <!-- 2. قسم الموظفين -->
-        <div id="employees" class="tab-content">
-            <div class="header"><h1>👥 قاعدة بيانات الموظفين</h1></div>
-            <div class="card">
-                <input type="hidden" id="e_id">
-                <div class="form-grid">
-                    <input type="text" id="e_name" placeholder="اسم الموظف">
-                    <select id="e_role">
-                        <option value="Admin">Admin (مدير)</option>
-                        <option value="Developer">Developer (مطور)</option>
-                        <option value="IT Support">IT Support (دعم فني)</option>
-                        <option value="Manager">Manager (مشرف)</option>
-                        <option value="Employee">Employee (موظف)</option>
-                    </select>
-                    <input type="number" id="e_salary" placeholder="الراتب ($)">
-                </div>
-                <button class="btn-add" id="e_btn" onclick="addData('employees')">إضافة موظف جديد</button>
-                <button class="btn-cancel" id="e_cancel" onclick="resetForm('employees')">إلغاء التعديل</button>
-            </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>اسم الموظف</th><th>الوظيفة</th><th>الراتب</th><th>الإجراء</th></tr></thead>
-                    <tbody id="employees_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
-                </table>
-            </div>
-        </div>
+        <div class="main-content">
+            <div id="statusMsg" class="status"></div>
 
-        <!-- 3. قسم العملاء -->
-        <div id="customers" class="tab-content">
-            <div class="header"><h1>🏢 قاعدة بيانات العملاء</h1></div>
-            <div class="card">
-                <input type="hidden" id="c_id">
-                <div class="form-grid">
-                    <input type="text" id="c_name" placeholder="اسم العميل">
-                    <select id="c_city">
-                        <option value="Jeddah">جدة (Jeddah)</option>
-                        <option value="Riyadh">الرياض (Riyadh)</option>
-                        <option value="Dammam">الدمام (Dammam)</option>
-                        <option value="Mecca">مكة (Mecca)</option>
-                    </select>
-                    <input type="text" id="c_phone" placeholder="رقم الهاتف">
+            <!-- 1. الألعاب -->
+            <div id="games" class="tab-content active">
+                <div class="header"><h1>🎮 قاعدة بيانات الألعاب</h1></div>
+                <div class="card">
+                    <input type="hidden" id="g_id">
+                    <div class="form-grid">
+                        <input type="text" id="g_title" placeholder="اسم اللعبة">
+                        <select id="g_platform">
+                            <option value="PlayStation 5">PlayStation 5</option>
+                            <option value="PC Gaming">PC Gaming</option>
+                            <option value="Xbox Series X">Xbox Series X</option>
+                            <option value="Multi-Platform">Multi-Platform (متعدد المنصات)</option>
+                        </select>
+                        <input type="number" id="g_price" placeholder="السعر ($)">
+                        <select id="g_genre">
+                            <option value="Action">Action</option>
+                            <option value="Sports / Racing">Sports / Racing</option>
+                            <option value="RPG">RPG</option>
+                            <option value="Strategy">Strategy</option>
+                            <option value="Casual">Casual</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <button class="btn-add" id="g_btn" onclick="addData('games')">إضافة لعبة جديدة</button>
+                    <button class="btn-cancel" id="g_cancel" onclick="resetForm('games')">إلغاء التعديل</button>
                 </div>
-                <button class="btn-add" id="c_btn" onclick="addData('customers')">إضافة عميل جديد</button>
-                <button class="btn-cancel" id="c_cancel" onclick="resetForm('customers')">إلغاء التعديل</button>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>اسم اللعبة</th><th>المنصة</th><th>السعر</th><th>التصنيف</th><th>الإجراء</th></tr></thead>
+                        <tbody id="games_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>الاسم</th><th>المدينة</th><th>الهاتف</th><th>الإجراء</th></tr></thead>
-                    <tbody id="customers_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
-                </table>
-            </div>
-        </div>
 
-        <!-- 4. قسم الطلبات -->
-        <div id="orders" class="tab-content">
-            <div class="header"><h1>📦 إدارة الطلبات</h1></div>
-            <div class="card">
-                <input type="hidden" id="o_id">
-                <div class="form-grid">
-                    <input type="text" id="o_customerId" placeholder="رقم العميل (CustomerId)">
-                    <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
-                    <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
+            <!-- 2. الموظفين -->
+            <div id="employees" class="tab-content">
+                <div class="header"><h1>👥 قاعدة بيانات الموظفين</h1></div>
+                <div class="card">
+                    <input type="hidden" id="e_id">
+                    <div class="form-grid">
+                        <input type="text" id="e_name" placeholder="اسم الموظف">
+                        <select id="e_role">
+                            <option value="Admin">Admin (مدير نظام)</option>
+                            <option value="Developer">Developer (مطور ألعاب)</option>
+                            <option value="IT Support">IT Support (دعم فني)</option>
+                            <option value="Manager">Manager (مشرف)</option>
+                            <option value="HR">HR (موارد بشرية)</option>
+                            <option value="Employee">Employee (موظف)</option>
+                        </select>
+                        <input type="number" id="e_salary" placeholder="الراتب ($)">
+                    </div>
+                    <button class="btn-add" id="e_btn" onclick="addData('employees')">إضافة موظف جديد</button>
+                    <button class="btn-cancel" id="e_cancel" onclick="resetForm('employees')">إلغاء التعديل</button>
                 </div>
-                <button class="btn-add" id="o_btn" onclick="addData('orders')">إضافة طلب جديد</button>
-                <button class="btn-cancel" id="o_cancel" onclick="resetForm('orders')">إلغاء التعديل</button>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>اسم الموظف</th><th>الوظيفة</th><th>الراتب</th><th>الإجراء</th></tr></thead>
+                        <tbody id="employees_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الإجراء</th></tr></thead>
-                    <tbody id="orders_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
-                </table>
+
+            <!-- 3. العملاء -->
+            <div id="customers" class="tab-content">
+                <div class="header"><h1>🏢 قاعدة بيانات العملاء</h1></div>
+                <div class="card">
+                    <input type="hidden" id="c_id">
+                    <div class="form-grid">
+                        <input type="text" id="c_name" placeholder="اسم العميل">
+                        <select id="c_city">
+                            <option value="Jeddah">جدة (Jeddah)</option>
+                            <option value="Riyadh">الرياض (Riyadh)</option>
+                            <option value="Dammam">الدمام (Dammam)</option>
+                            <option value="Mecca">مكة (Mecca)</option>
+                        </select>
+                        <input type="text" id="c_phone" placeholder="رقم الهاتف">
+                    </div>
+                    <button class="btn-add" id="c_btn" onclick="addData('customers')">إضافة عميل جديد</button>
+                    <button class="btn-cancel" id="c_cancel" onclick="resetForm('customers')">إلغاء التعديل</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>الاسم</th><th>المدينة</th><th>الهاتف</th><th>الإجراء</th></tr></thead>
+                        <tbody id="customers_table"><tr><td colspan="4" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. الطلبات -->
+            <div id="orders" class="tab-content">
+                <div class="header"><h1>📦 إدارة الطلبات</h1></div>
+                <div class="card">
+                    <input type="hidden" id="o_id">
+                    <div class="form-grid">
+                        <input type="text" id="o_customerId" placeholder="رقم العميل (CustomerId)">
+                        <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
+                        <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
+                        <select id="o_status">
+                            <option value="Completed">Completed (مكتمل)</option>
+                            <option value="Pending">Pending (قيد الانتظار)</option>
+                            <option value="Cancelled">Cancelled (ملغي)</option>
+                        </select>
+                    </div>
+                    <button class="btn-add" id="o_btn" onclick="addData('orders')">إضافة طلب جديد</button>
+                    <button class="btn-cancel" id="o_cancel" onclick="resetForm('orders')">إلغاء التعديل</button>
+                </div>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراء</th></tr></thead>
+                        <tbody id="orders_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -206,14 +236,18 @@
     let currentTab = 'games';
     let loadedData = {};
 
+    function openLoginModal() {
+        document.getElementById('loginModal').style.display = 'flex';
+    }
+
     function checkLogin() {
         const pass = document.getElementById('password').value;
         const err = document.getElementById('loginError');
 
         if (pass === "راكان1234" || pass === "rakan1234") {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'flex';
-            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('heroScreen').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
         } else {
             err.style.display = 'block';
@@ -280,7 +314,7 @@
                            <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
-                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td>
+                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td>${item.status || 'Completed'}</td>
                        <td>
                            <button class="btn-edit" onclick="editData('orders', '${item.id}')">تعديل</button>
                            <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button>
@@ -297,7 +331,7 @@
         if (type === 'games') {
             document.getElementById('g_id').value = item.id;
             document.getElementById('g_title').value = item.title || '';
-            document.getElementById('g_platform').value = item.platform || 'PC';
+            document.getElementById('g_platform').value = item.platform || 'PlayStation 5';
             document.getElementById('g_price').value = item.price || '';
             document.getElementById('g_genre').value = item.genre || 'General';
             document.getElementById('g_btn').innerText = 'حفظ التعديلات';
@@ -321,6 +355,7 @@
             document.getElementById('o_customerId').value = item.customerId || '';
             document.getElementById('o_item').value = item.item || '';
             document.getElementById('o_total').value = item.total || '';
+            document.getElementById('o_status').value = item.status || 'Completed';
             document.getElementById('o_btn').innerText = 'حفظ التعديلات';
             document.getElementById('o_cancel').style.display = 'inline-block';
         }
@@ -391,6 +426,7 @@
             body.item = item;
             body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
             body.total = document.getElementById('o_total').value || '0';
+            body.status = document.getElementById('o_status').value;
         }
 
         try {
