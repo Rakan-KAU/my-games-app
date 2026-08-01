@@ -254,7 +254,7 @@
                 <div class="card">
                     <input type="hidden" id="o_id">
                     <div class="form-grid">
-                        <input type="text" id="o_customerId" placeholder="رقم/اسم العميل (CustomerId)">
+                        <input type="text" id="o_customerId" placeholder="اسم العميل (CustomerId)">
                         <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
                         <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
                         <select id="o_status">
@@ -268,7 +268,7 @@
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>اسم / رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+                        <thead><tr><th>اسم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
                         <tbody id="orders_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                     </table>
                 </div>
@@ -353,11 +353,11 @@
         }
     }
 
+    // الدالة الموحدة تماماً لعملية الشراء وإرسال الطلب للسحابة بنفس مسار الإدارة
     async function buyGame(title, price) {
         const customerName = prompt("أدخل اسمك لإتمام الطلب:");
         if (!customerName || customerName.trim() === "") return;
 
-        // إرسال البيانات بدقة متوافقة مع PartitionKey لجدول الطلبات (customerId)
         const body = {
             type: 'orders',
             customerId: customerName.trim(),
@@ -374,8 +374,6 @@
             });
             if (res.ok) {
                 alert("تم إرسال طلبك بنجاح، وسوف نتواصل معك في أقرب وقت.");
-                // تحديث مباشر صريح لبيانات جدول الطلبات من السحابة
-                await loadData('orders');
             }
         } catch (err) {
             alert("حدث خطأ أثناء إرسال الطلب.");
@@ -442,7 +440,7 @@
                            <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
-                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
+                row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
                        <td>
                            <button class="btn-promote" onclick="editData('orders', '${item.id}')">تعديل</button>
                            <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button>
