@@ -8,7 +8,6 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; }
         
-        /* شاشة تسجيل الدخول */
         #loginScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(11, 15, 25, 0.98); display: flex; justify-content: center; align-items: center; z-index: 999;
@@ -23,7 +22,6 @@
             width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 8px;
             border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 14px; outline: none;
         }
-        .login-box input:focus { border-color: #0284c7; }
         .login-box button {
             width: 100%; padding: 12px; background: #0284c7; color: white; border: none;
             border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px;
@@ -31,7 +29,6 @@
         .login-box button:hover { background: #0369a1; }
         .login-error { color: #ef4444; font-size: 13px; margin-top: 10px; display: none; }
 
-        /* القائمة الجانبية */
         .sidebar { width: 260px; background: #111827; border-left: 1px solid #1f2937; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
         .sidebar h2 { color: #38bdf8; font-size: 18px; text-align: center; margin-bottom: 5px; }
         .admin-badge { text-align: center; color: #10b981; font-size: 12px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1f2937; }
@@ -40,21 +37,25 @@
         .btn-logout { margin-top: auto; background: #7f1d1d; color: #fca5a5; }
         .btn-logout:hover { background: #991b1b; color: white; }
 
-        /* المحتوى الرئيسي */
         .main-content { flex: 1; padding: 30px; display: none; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .header h1 { font-size: 22px; color: #f8fafc; }
         
         .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px; }
-        input { padding: 10px 14px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 14px; width: 100%; outline: none; }
-        input:focus { border-color: #38bdf8; }
+        input, select { padding: 10px 14px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 14px; width: 100%; outline: none; }
+        input:focus, select:focus { border-color: #38bdf8; }
+        
         .btn-add { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-add:hover { background: #059669; }
+        .btn-cancel { background: #64748b; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; display: none; margin-right: 10px; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #334155; font-size: 14px; }
         th { background: #0f172a; color: #38bdf8; }
+        
+        .btn-edit { background: #eab308; color: #0f172a; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 5px; }
+        .btn-edit:hover { background: #ca8a04; }
         .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-del:hover { background: #dc2626; }
 
@@ -70,7 +71,7 @@
         <div class="login-box">
             <h2>⚡ بوابة النظام السحابي</h2>
             <p>سجل دخولك كمسؤول إدارة الشركة</p>
-            <input type="text" id="username" placeholder="اسم المستخدم (مثلاً: Rakan)">
+            <input type="text" id="username" placeholder="اسم المستخدم">
             <input type="password" id="password" placeholder="كلمة المرور">
             <button onclick="checkLogin()">دخول لوحة التحكم</button>
             <div id="loginError" class="login-error">خطأ في اسم المستخدم أو كلمة المرور!</div>
@@ -96,13 +97,26 @@
         <div id="games" class="tab-content active">
             <div class="header"><h1>🎮 قاعدة بيانات الألعاب</h1></div>
             <div class="card">
+                <input type="hidden" id="g_id">
                 <div class="form-grid">
                     <input type="text" id="g_title" placeholder="اسم اللعبة">
-                    <input type="text" id="g_platform" placeholder="المنصة (PS5, PC...)">
+                    <select id="g_platform">
+                        <option value="PC">PC (بي سي)</option>
+                        <option value="PS5">PlayStation 5 (سوني)</option>
+                        <option value="Xbox">Xbox</option>
+                        <option value="Multi-Platform">Multi-Platform (متعدد المنصات)</option>
+                    </select>
                     <input type="number" id="g_price" placeholder="السعر ($)">
-                    <input type="text" id="g_genre" placeholder="التصنيف (Genre)">
+                    <select id="g_genre">
+                        <option value="Action">Action</option>
+                        <option value="Sports">Sports</option>
+                        <option value="RPG">RPG</option>
+                        <option value="Strategy">Strategy</option>
+                        <option value="General">General</option>
+                    </select>
                 </div>
-                <button class="btn-add" onclick="addData('games')">إضافة لعبة جديدة</button>
+                <button class="btn-add" id="g_btn" onclick="addData('games')">إضافة لعبة جديدة</button>
+                <button class="btn-cancel" id="g_cancel" onclick="resetForm('games')">إلغاء التعديل</button>
             </div>
             <div class="card">
                 <table>
@@ -116,12 +130,20 @@
         <div id="employees" class="tab-content">
             <div class="header"><h1>👥 قاعدة بيانات الموظفين</h1></div>
             <div class="card">
+                <input type="hidden" id="e_id">
                 <div class="form-grid">
                     <input type="text" id="e_name" placeholder="اسم الموظف">
-                    <input type="text" id="e_role" placeholder="المسمى الوظيفي (Role)">
+                    <select id="e_role">
+                        <option value="Admin">Admin (مدير)</option>
+                        <option value="Developer">Developer (مطور)</option>
+                        <option value="IT Support">IT Support (دعم فني)</option>
+                        <option value="Manager">Manager (مشرف)</option>
+                        <option value="Employee">Employee (موظف)</option>
+                    </select>
                     <input type="number" id="e_salary" placeholder="الراتب ($)">
                 </div>
-                <button class="btn-add" onclick="addData('employees')">إضافة موظف جديد</button>
+                <button class="btn-add" id="e_btn" onclick="addData('employees')">إضافة موظف جديد</button>
+                <button class="btn-cancel" id="e_cancel" onclick="resetForm('employees')">إلغاء التعديل</button>
             </div>
             <div class="card">
                 <table>
@@ -135,12 +157,19 @@
         <div id="customers" class="tab-content">
             <div class="header"><h1>🏢 قاعدة بيانات العملاء</h1></div>
             <div class="card">
+                <input type="hidden" id="c_id">
                 <div class="form-grid">
                     <input type="text" id="c_name" placeholder="اسم العميل">
-                    <input type="text" id="c_city" placeholder="المدينة (City)">
+                    <select id="c_city">
+                        <option value="Jeddah">جدة (Jeddah)</option>
+                        <option value="Riyadh">الرياض (Riyadh)</option>
+                        <option value="Dammam">الدمام (Dammam)</option>
+                        <option value="Mecca">مكة (Mecca)</option>
+                    </select>
                     <input type="text" id="c_phone" placeholder="رقم الهاتف">
                 </div>
-                <button class="btn-add" onclick="addData('customers')">إضافة عميل جديد</button>
+                <button class="btn-add" id="c_btn" onclick="addData('customers')">إضافة عميل جديد</button>
+                <button class="btn-cancel" id="c_cancel" onclick="resetForm('customers')">إلغاء التعديل</button>
             </div>
             <div class="card">
                 <table>
@@ -154,12 +183,14 @@
         <div id="orders" class="tab-content">
             <div class="header"><h1>📦 إدارة الطلبات</h1></div>
             <div class="card">
+                <input type="hidden" id="o_id">
                 <div class="form-grid">
                     <input type="text" id="o_customerId" placeholder="رقم العميل (CustomerId)">
                     <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
                     <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
                 </div>
-                <button class="btn-add" onclick="addData('orders')">إضافة طلب جديد</button>
+                <button class="btn-add" id="o_btn" onclick="addData('orders')">إضافة طلب جديد</button>
+                <button class="btn-cancel" id="o_cancel" onclick="resetForm('orders')">إلغاء التعديل</button>
             </div>
             <div class="card">
                 <table>
@@ -173,13 +204,12 @@
 <script>
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let currentTab = 'games';
+    let loadedData = {};
 
-    // 🔑 التحقق من الدخول
     function checkLogin() {
         const pass = document.getElementById('password').value;
         const err = document.getElementById('loginError');
 
-        // الرمز السري: راكان 1 2 3 4
         if (pass === "راكان1234" || pass === "rakan1234") {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
@@ -190,9 +220,7 @@
         }
     }
 
-    function logout() {
-        location.reload();
-    }
+    function logout() { location.reload(); }
 
     function showStatus(msg, isErr = false) {
         const el = document.getElementById('statusMsg');
@@ -215,6 +243,7 @@
         try {
             const res = await fetch(`${API_URL}?type=${type}`, { cache: "no-store" });
             const data = await res.json();
+            loadedData[type] = data;
             renderTable(type, data);
         } catch (err) {
             showStatus("فشل جلب البيانات من السحابة", true);
@@ -234,53 +263,138 @@
             let row = '';
             if (type === 'games') {
                 row = `<td>${item.title || '-'}</td><td>${item.platform || '-'}</td><td>$${item.price || '0'}</td><td>${item.genre || 'General'}</td>
-                       <td><button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.genre || 'General'}')">حذف</button></td>`;
+                       <td>
+                           <button class="btn-edit" onclick="editData('games', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.genre || 'General'}')">حذف</button>
+                       </td>`;
             } else if (type === 'employees') {
                 row = `<td>${item.name || '-'}</td><td>${item.role || 'Employee'}</td><td>$${item.salary || '0'}</td>
-                       <td><button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.role || 'Employee'}')">حذف</button></td>`;
+                       <td>
+                           <button class="btn-edit" onclick="editData('employees', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.role || 'Employee'}')">حذف</button>
+                       </td>`;
             } else if (type === 'customers') {
                 row = `<td>${item.name || '-'}</td><td>${item.city || 'Jeddah'}</td><td>${item.phone || '-'}</td>
-                       <td><button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button></td>`;
+                       <td>
+                           <button class="btn-edit" onclick="editData('customers', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
+                       </td>`;
             } else if (type === 'orders') {
                 row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td>
-                       <td><button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button></td>`;
+                       <td>
+                           <button class="btn-edit" onclick="editData('orders', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button>
+                       </td>`;
             }
             tbody.innerHTML += `<tr>${row}</tr>`;
         });
+    }
+
+    function editData(type, id) {
+        const item = loadedData[type].find(x => x.id === id);
+        if (!item) return;
+
+        if (type === 'games') {
+            document.getElementById('g_id').value = item.id;
+            document.getElementById('g_title').value = item.title || '';
+            document.getElementById('g_platform').value = item.platform || 'PC';
+            document.getElementById('g_price').value = item.price || '';
+            document.getElementById('g_genre').value = item.genre || 'General';
+            document.getElementById('g_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('g_cancel').style.display = 'inline-block';
+        } else if (type === 'employees') {
+            document.getElementById('e_id').value = item.id;
+            document.getElementById('e_name').value = item.name || '';
+            document.getElementById('e_role').value = item.role || 'Employee';
+            document.getElementById('e_salary').value = item.salary || '';
+            document.getElementById('e_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('e_cancel').style.display = 'inline-block';
+        } else if (type === 'customers') {
+            document.getElementById('c_id').value = item.id;
+            document.getElementById('c_name').value = item.name || '';
+            document.getElementById('c_city').value = item.city || 'Jeddah';
+            document.getElementById('c_phone').value = item.phone || '';
+            document.getElementById('c_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('c_cancel').style.display = 'inline-block';
+        } else if (type === 'orders') {
+            document.getElementById('o_id').value = item.id;
+            document.getElementById('o_customerId').value = item.customerId || '';
+            document.getElementById('o_item').value = item.item || '';
+            document.getElementById('o_total').value = item.total || '';
+            document.getElementById('o_btn').innerText = 'حفظ التعديلات';
+            document.getElementById('o_cancel').style.display = 'inline-block';
+        }
+    }
+
+    function resetForm(type) {
+        if (type === 'games') {
+            document.getElementById('g_id').value = '';
+            document.getElementById('g_title').value = '';
+            document.getElementById('g_price').value = '';
+            document.getElementById('g_btn').innerText = 'إضافة لعبة جديدة';
+            document.getElementById('g_cancel').style.display = 'none';
+        } else if (type === 'employees') {
+            document.getElementById('e_id').value = '';
+            document.getElementById('e_name').value = '';
+            document.getElementById('e_salary').value = '';
+            document.getElementById('e_btn').innerText = 'إضافة موظف جديد';
+            document.getElementById('e_cancel').style.display = 'none';
+        } else if (type === 'customers') {
+            document.getElementById('c_id').value = '';
+            document.getElementById('c_name').value = '';
+            document.getElementById('c_phone').value = '';
+            document.getElementById('c_btn').innerText = 'إضافة عميل جديد';
+            document.getElementById('c_cancel').style.display = 'none';
+        } else if (type === 'orders') {
+            document.getElementById('o_id').value = '';
+            document.getElementById('o_customerId').value = '';
+            document.getElementById('o_item').value = '';
+            document.getElementById('o_total').value = '';
+            document.getElementById('o_btn').innerText = 'إضافة طلب جديد';
+            document.getElementById('o_cancel').style.display = 'none';
+        }
     }
 
     async function addData(type) {
         let body = { type: type };
 
         if (type === 'games') {
+            const id = document.getElementById('g_id').value;
             const title = document.getElementById('g_title').value;
             if (!title) return alert('أدخل اسم اللعبة');
+            if (id) body.id = id;
             body.title = title;
-            body.platform = document.getElementById('g_platform').value || '-';
+            body.platform = document.getElementById('g_platform').value;
             body.price = document.getElementById('g_price').value || '0';
-            body.genre = document.getElementById('g_genre').value || 'General';
+            body.genre = document.getElementById('g_genre').value;
         } else if (type === 'employees') {
+            const id = document.getElementById('e_id').value;
             const name = document.getElementById('e_name').value;
             if (!name) return alert('أدخل اسم الموظف');
+            if (id) body.id = id;
             body.name = name;
-            body.role = document.getElementById('e_role').value || 'Employee';
+            body.role = document.getElementById('e_role').value;
             body.salary = document.getElementById('e_salary').value || '0';
         } else if (type === 'customers') {
+            const id = document.getElementById('c_id').value;
             const name = document.getElementById('c_name').value;
             if (!name) return alert('أدخل اسم العميل');
+            if (id) body.id = id;
             body.name = name;
-            body.city = document.getElementById('c_city').value || 'Jeddah';
+            body.city = document.getElementById('c_city').value;
             body.phone = document.getElementById('c_phone').value || '-';
         } else if (type === 'orders') {
+            const id = document.getElementById('o_id').value;
             const item = document.getElementById('o_item').value;
             if (!item) return alert('أدخل اسم المنتج');
+            if (id) body.id = id;
             body.item = item;
             body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
             body.total = document.getElementById('o_total').value || '0';
         }
 
         try {
-            showStatus("جاري الإرسال للسحابة...");
+            showStatus("جاري الحفظ في السحابة...");
             const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -288,7 +402,8 @@
             });
             if (res.ok) {
                 const updated = await res.json();
-                showStatus("تمت الإضافة بنجاح!");
+                showStatus("تم الحفظ بنجاح!");
+                resetForm(type);
                 renderTable(type, updated);
             }
         } catch (err) {
