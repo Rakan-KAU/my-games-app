@@ -19,7 +19,7 @@
         .tab-btn.active { background: #0078d4; color: white; }
         
         /* النماذج والجداول */
-        .form-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; wrap: wrap; }
+        .form-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
         button { padding: 10px 18px; border: none; background: #28a745; color: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
         button.delete-btn { background: #dc3545; padding: 6px 12px; }
@@ -43,11 +43,11 @@
         <p id="login-error" style="color:red; display:none; margin-top:10px;">بيانات الدخول خاطئة!</p>
     </div>
 
-    <!-- 2️⃣ لوحة التحكم الرئيسية (تظهر بعد الدخول) -->
+    <!-- 2️⃣ لوحة التحكم الرئيسية -->
     <div id="admin-dashboard" class="container hidden">
         <button class="logout-btn" onclick="logout()">خروج 🚪</button>
         <h1>🏢 لوحة إدارة الشركة والألعاب</h1>
-        <p style="color: #666;">مرحباً بك يا أدمن، لديك كامل الصلاحيات للتحكم بالأسعار والموظفين.</p>
+        <p style="color: #666;">مرحباً بك يا أدمن، لديك كامل الصلاحيات للتحكم بالأسعار والموظفين عبر سحابة Azure.</p>
 
         <!-- التبويبات -->
         <div class="tabs">
@@ -109,7 +109,9 @@
     </div>
 
 <script>
-    // بيانات أولية للعرض
+    // رابط الـ Azure Function الخاص بك
+    const API_URL = "https://rakan-kau-bbfdhbbubbajgtf6.centralindia-01.azurewebsites.net/api/games";
+
     let employees = [
         { id: 1, name: "راكان", role: "مدير النظام", salary: 15000 },
         { id: 2, name: "أحمد علي", role: "مطور ألعاب", salary: 9000 }
@@ -127,7 +129,7 @@
         if(u === 'admin' && p === '1234') {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-dashboard').classList.remove('hidden');
-            renderData();
+            fetchDataFromAzure();
         } else {
             document.getElementById('login-error').style.display = 'block';
         }
@@ -138,7 +140,6 @@
         document.getElementById('admin-dashboard').classList.add('hidden');
     }
 
-    // التنقل بين التبويبات
     function switchTab(tab) {
         const btns = document.querySelectorAll('.tab-btn');
         btns.forEach(b => b.classList.remove('active'));
@@ -154,7 +155,22 @@
         }
     }
 
-    // عرض البيانات
+    // جلب البيانات من Azure Function
+    async function fetchDataFromAzure() {
+        try {
+            const res = await fetch(API_URL);
+            if(res.ok) {
+                const cloudData = await res.json();
+                if(cloudData && cloudData.length > 0) {
+                    games = cloudData;
+                }
+            }
+        } catch(err) {
+            console.log("جاري التنسيق مع السحابة المحليّة والافتراضية...");
+        }
+        renderData();
+    }
+
     function renderData() {
         // جدول الموظفين
         const empT = document.getElementById('empTable');
@@ -171,9 +187,9 @@
         const gameT = document.getElementById('gameTable');
         gameT.innerHTML = games.map(g => `
             <tr>
-                <td>${g.title}</td>
-                <td>$${g.price}</td>
-                <td><button class="delete-btn" onclick="deleteGame(${g.id})">حذف</button></td>
+                <td>${g.title || g.name}</td>
+                <td>$${g.price || 0}</td>
+                <td><button class="delete-btn" onclick="deleteGame('${g.id}')">حذف</button></td>
             </tr>
         `).join('');
     }
@@ -193,20 +209,38 @@
     }
     function deleteEmp(id) { employees = employees.filter(e => e.id !== id); renderData(); }
 
-    // إضافة وحذف لعبة
-    function addGame() {
+    // إضافة لعبة وإرسالها لـ Azure
+    async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const price = document.getElementById('gamePrice').value;
         if(title && price) {
-            games.push({ id: Date.now(), title, price });
+            const newGame = { title, price };
+            games.push(newGame);
             renderData();
+            
+            // إرسال للسحابة
+            try {
+                await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newGame)
+                });
+            } catch(e) { console.log("تعذر الحفظ السحابي التلقائي"); }
+
             document.getElementById('gameTitle').value = '';
             document.getElementById('gamePrice').value = '';
         }
     }
-    function deleteGame(id) { games = games.filter(g => g.id !== id); renderData(); }
 
-    // البحث والاستعلام
+    // حذف لعبة من Azure
+    async function deleteGame(id) {
+        games = games.filter(g => g.id !== id);
+        renderData();
+        try {
+            await fetch(`${API_URL}?id=${id}`, { method: "DELETE" });
+        } catch(e) { console.log("تعذر الحذف السحابي التلقائي"); }
+    }
+
     function searchEmp() {
         const query = document.getElementById('empSearch').value.toLowerCase();
         const rows = document.querySelectorAll('#empTable tr');
