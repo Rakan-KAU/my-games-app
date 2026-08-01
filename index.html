@@ -60,7 +60,7 @@
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // عرض القادمة من السحابة فقط بدون أي إضافات
+    // عرض القائمة القادمة من السحابة
     function renderTable(data) {
         const tbody = document.getElementById('gamesTableBody');
         tbody.innerHTML = '';
@@ -77,7 +77,7 @@
                     <td>${game.title || '-'}</td>
                     <td>${game.platform || '-'}</td>
                     <td>${priceDisplay}</td>
-                    <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف</button></td>
+                    <td><button class="btn-delete" onclick="deleteGame('${game.id}')">حذف</button></td>
                 </tr>
             `;
         });
@@ -95,7 +95,7 @@
         }
     }
 
-    // إرسال الإدخال الحقيقي فقط
+    // إرسال الإدخال للسحابة
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const platform = document.getElementById('gamePlatform').value;
@@ -136,7 +136,7 @@
             const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "delete", id: id })
+                body: JSON.stringify({ action: "delete", id: String(id) })
             });
 
             if (res.ok) {
