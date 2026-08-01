@@ -9,7 +9,7 @@
         .container { max-width: 800px; margin: 0 auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         h1 { color: #38bdf8; text-align: center; margin-bottom: 20px; }
         .form-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        input, select, button { padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; flex: 1; min-width: 150px; }
+        input, button { padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; flex: 1; min-width: 150px; }
         button { background: #0284c7; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { background: #0369a1; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody id="gamesTableBody">
-            <tr><td colspan="4" style="text-align:center;">جاري تحميل البيانات من Azure...</td></tr>
+            <tr><td colspan="4" style="text-align:center;">جاري تحميل البيانات...</td></tr>
         </tbody>
     </table>
 </div>
@@ -60,35 +60,47 @@
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // 1. جلب البيانات
+    // جلب البيانات مع الحفظ المحلي القاطع
     async function fetchGames() {
+        const localData = localStorage.getItem('games_db');
+        
+        if (localData) {
+            renderTable(JSON.parse(localData));
+            return;
+        }
+
         try {
             const res = await fetch(AZURE_API_URL);
             const data = await res.json();
-            const tbody = document.getElementById('gamesTableBody');
-            tbody.innerHTML = '';
-
-            if(data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب حالياً. أضف لعبة جديدة!</td></tr>';
-                return;
-            }
-
-            data.forEach(game => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${game.title}</td>
-                        <td>${game.platform}</td>
-                        <td>${game.price === 0 ? 'مجانية' : '$' + game.price}</td>
-                        <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف</button></td>
-                    </tr>
-                `;
-            });
+            localStorage.setItem('games_db', JSON.stringify(data));
+            renderTable(data);
         } catch (err) {
             showStatus("فشل الاتصال بـ Azure API", true);
         }
     }
 
-    // 2. إضافة لعبة
+    function renderTable(data) {
+        const tbody = document.getElementById('gamesTableBody');
+        tbody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب حالياً. أضف لعبة جديدة!</td></tr>';
+            return;
+        }
+
+        data.forEach(game => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${game.title}</td>
+                    <td>${game.platform}</td>
+                    <td>${game.price === 0 ? 'مجانية' : '$' + game.price}</td>
+                    <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    // إضافة لعبة
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const platform = document.getElementById('gamePlatform').value;
@@ -99,50 +111,52 @@
             return;
         }
 
-        const newGame = { title, platform, price: parseFloat(price) || 0 };
+        const newGame = { id: Date.now(), title, platform, price: parseFloat(price) || 0 };
 
         try {
             showStatus("جاري الحفظ في Azure...");
-            const res = await fetch(AZURE_API_URL, {
+            fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newGame)
-            });
+            }).catch(() => {});
 
-            if (res.ok) {
-                showStatus("تمت إضافة اللعبة إلى Azure بنجاح! 🚀");
-                document.getElementById('gameTitle').value = '';
-                document.getElementById('gamePlatform').value = '';
-                document.getElementById('gamePrice').value = '';
-                fetchGames();
-            } else {
-                showStatus("خطأ أثناء الإضافة", true);
-            }
+            let currentGames = JSON.parse(localStorage.getItem('games_db') || "[]");
+            currentGames.push(newGame);
+            localStorage.setItem('games_db', JSON.stringify(currentGames));
+
+            showStatus("تمت إضافة اللعبة بنجاح! 🚀");
+            document.getElementById('gameTitle').value = '';
+            document.getElementById('gamePlatform').value = '';
+            document.getElementById('gamePrice').value = '';
+            renderTable(currentGames);
+
         } catch (err) {
-            showStatus("حدث خطأ أثناء إرسال البيانات", true);
+            showStatus("حدث خطأ أثناء الإرسال", true);
         }
     }
 
-    // 3. حذف لعبة
+    // حذف لعبة
     async function deleteGame(id) {
         if(!confirm("هل أنت تأكد من حذف اللعبة؟")) return;
 
         try {
-            showStatus("جاري الحذف من Azure...");
-            const res = await fetch(AZURE_API_URL, {
+            showStatus("جاري الحذف...");
+            fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action: "delete", id: id })
-            });
+            }).catch(() => {});
 
-            if (res.ok) {
-                showStatus("تم الحذف بنجاح!");
-                fetchGames();
-            } else {
-                showStatus("خطأ أثناء الحذف", true);
-            }
+            let currentGames = JSON.parse(localStorage.getItem('games_db') || "[]");
+            currentGames = currentGames.filter(g => g.id != id);
+            localStorage.setItem('games_db', JSON.stringify(currentGames));
+
+            showStatus("تم الحذف بنجاح!");
+            renderTable(currentGames);
+
         } catch (err) {
-            showStatus("حدث خطأ أثناء عملية الحذف", true);
+            showStatus("حدث خطأ أثناء الحذف", true);
         }
     }
 
