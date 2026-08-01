@@ -28,8 +28,8 @@
     <div id="statusMessage" class="status"></div>
 
     <div class="form-group">
-        <input type="text" id="gameTitle" placeholder="اسم اللعبة (مثال: Rocket League)">
-        <input type="text" id="gamePlatform" placeholder="المنصة (مثال: PS5 / PC)">
+        <input type="text" id="gameTitle" placeholder="اسم اللعبة">
+        <input type="text" id="gamePlatform" placeholder="المنصة">
         <input type="number" id="gamePrice" placeholder="السعر ($)">
         <button onclick="addGame()">إضافة للسحابة</button>
     </div>
@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody id="gamesTableBody">
-            <tr><td colspan="4" style="text-align:center;">جاري جلب البيانات الكاملة من سحابة Azure...</td></tr>
+            <tr><td colspan="4" style="text-align:center;">جاري جلب البيانات الفعلية من السحابة...</td></tr>
         </tbody>
     </table>
 </div>
@@ -60,28 +60,29 @@
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
+    // عرض البيانات القادمة من السحابة فقط
     function renderTable(data) {
         const tbody = document.getElementById('gamesTableBody');
         tbody.innerHTML = '';
 
         if (!data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب مسجلة في السحابة حالياً.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد أي ألعاب مسجلة في السحابة حالياً.</td></tr>';
             return;
         }
 
         data.forEach(game => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${game.title}</td>
-                    <td>${game.platform}</td>
-                    <td>${game.price === 0 ? 'مجانية' : '$' + game.price}</td>
-                    <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف من السحابة</button></td>
+                    <td>${game.title || 'بدون عنوان'}</td>
+                    <td>${game.platform || 'غير محدد'}</td>
+                    <td>${game.price !== undefined ? '$' + game.price : 'غير محدد'}</td>
+                    <td><button class="btn-delete" onclick="deleteGame(${game.id})">حذف</button></td>
                 </tr>
             `;
         });
     }
 
-    // 🌐 1. جلب البيانات كاملة من السحابة فور فتح الموقع
+    // جلب البيانات الفعليه فقط
     async function fetchGames() {
         try {
             const res = await fetch(AZURE_API_URL, { cache: "no-store" });
@@ -89,23 +90,23 @@
             const data = await res.json();
             renderTable(data);
         } catch (err) {
-            showStatus("فشل الاتصال بـ Azure API", true);
+            showStatus("فشل جلب البيانات من السحابة", true);
         }
     }
 
-    // ➕ 2. إضافة لعبة جديدة إلى السحابة
+    // إضافة بيانات حقيقية من إدخالك أنت
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const platform = document.getElementById('gamePlatform').value;
         const price = document.getElementById('gamePrice').value;
 
-        if (!title || !platform) {
-            alert("يرجى تعبئة اسم اللعبة والمنصة!");
+        if (!title) {
+            alert("يرجى كتابة اسم اللعبة على الأقل!");
             return;
         }
 
         try {
-            showStatus("جاري الإضافة للسحابة...");
+            showStatus("جاري الإضافة...");
             const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -114,25 +115,23 @@
 
             if (res.ok) {
                 const updatedData = await res.json();
-                showStatus("تمت الإضافة للسحابة بنجاح! 🚀");
+                showStatus("تمت الإضافة بنجاح!");
                 document.getElementById('gameTitle').value = '';
                 document.getElementById('gamePlatform').value = '';
                 document.getElementById('gamePrice').value = '';
                 renderTable(updatedData);
-            } else {
-                showStatus("خطأ أثناء الإضافة", true);
             }
         } catch (err) {
-            showStatus("حدث خطأ في الاتصال بالسيرفر", true);
+            showStatus("حدث خطأ في الاتصال", true);
         }
     }
 
-    // ❌ 3. حذف لعبة من السحابة
+    // حذف عنصر من السحابة
     async function deleteGame(id) {
-        if(!confirm("هل أنت متأكد من حذف هذه اللعبة من السحابة؟")) return;
+        if(!confirm("تأكيد الحذف؟")) return;
 
         try {
-            showStatus("جاري الحذف من السحابة...");
+            showStatus("جاري الحذف...");
             const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -141,13 +140,11 @@
 
             if (res.ok) {
                 const updatedData = await res.json();
-                showStatus("تم الحذف من السحابة بنجاح!");
+                showStatus("تم الحذف بنجاح!");
                 renderTable(updatedData);
-            } else {
-                showStatus("خطأ أثناء الحذف", true);
             }
         } catch (err) {
-            showStatus("حدث خطأ في الاتصال بالسيرفر", true);
+            showStatus("حدث خطأ في الاتصال", true);
         }
     }
 
