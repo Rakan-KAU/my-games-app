@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody id="gamesTableBody">
-            <tr><td colspan="4" style="text-align:center;">جاري تحميل البيانات...</td></tr>
+            <tr><td colspan="4" style="text-align:center;">جاري جلب الألعاب من سحابة Azure...</td></tr>
         </tbody>
     </table>
 </div>
@@ -60,31 +60,12 @@
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // جلب البيانات مع الحفظ المحلي القاطع
-    async function fetchGames() {
-        const localData = localStorage.getItem('games_db');
-        
-        if (localData) {
-            renderTable(JSON.parse(localData));
-            return;
-        }
-
-        try {
-            const res = await fetch(AZURE_API_URL);
-            const data = await res.json();
-            localStorage.setItem('games_db', JSON.stringify(data));
-            renderTable(data);
-        } catch (err) {
-            showStatus("فشل الاتصال بـ Azure API", true);
-        }
-    }
-
     function renderTable(data) {
         const tbody = document.getElementById('gamesTableBody');
         tbody.innerHTML = '';
 
         if (!data || data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب حالياً. أضف لعبة جديدة!</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد ألعاب حالياً في الكلاود. أضف لعبة جديدة!</td></tr>';
             return;
         }
 
@@ -100,7 +81,18 @@
         });
     }
 
-    // إضافة لعبة
+    // 1. جلب البيانات مباشرة من سيرفر Azure عند دخول الموقع
+    async function fetchGames() {
+        try {
+            const res = await fetch(AZURE_API_URL);
+            const data = await res.json();
+            renderTable(data);
+        } catch (err) {
+            showStatus("فشل الاتصال بـ Azure API", true);
+        }
+    }
+
+    // 2. إضافة لعبة في سيرفر Azure مباشرة
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const platform = document.getElementById('gamePlatform').value;
@@ -111,55 +103,54 @@
             return;
         }
 
-        const newGame = { id: Date.now(), title, platform, price: parseFloat(price) || 0 };
-
         try {
             showStatus("جاري الحفظ في Azure...");
-            fetch(AZURE_API_URL, {
+            const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newGame)
-            }).catch(() => {});
+                body: JSON.stringify({ title, platform, price: parseFloat(price) || 0 })
+            });
 
-            let currentGames = JSON.parse(localStorage.getItem('games_db') || "[]");
-            currentGames.push(newGame);
-            localStorage.setItem('games_db', JSON.stringify(currentGames));
-
-            showStatus("تمت إضافة اللعبة بنجاح! 🚀");
-            document.getElementById('gameTitle').value = '';
-            document.getElementById('gamePlatform').value = '';
-            document.getElementById('gamePrice').value = '';
-            renderTable(currentGames);
-
+            if (res.ok) {
+                const updatedGames = await res.json();
+                showStatus("تمت إضافة اللعبة إلى Azure بنجاح! 🚀");
+                document.getElementById('gameTitle').value = '';
+                document.getElementById('gamePlatform').value = '';
+                document.getElementById('gamePrice').value = '';
+                renderTable(updatedGames);
+            } else {
+                showStatus("خطأ أثناء الإضافة", true);
+            }
         } catch (err) {
-            showStatus("حدث خطأ أثناء الإرسال", true);
+            showStatus("حدث خطأ أثناء إرسال البيانات", true);
         }
     }
 
-    // حذف لعبة
+    // 3. حذف لعبة من سيرفر Azure مباشرة
     async function deleteGame(id) {
         if(!confirm("هل أنت تأكد من حذف اللعبة؟")) return;
 
         try {
-            showStatus("جاري الحذف...");
-            fetch(AZURE_API_URL, {
+            showStatus("جاري الحذف من Azure...");
+            const res = await fetch(AZURE_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ action: "delete", id: id })
-            }).catch(() => {});
+            });
 
-            let currentGames = JSON.parse(localStorage.getItem('games_db') || "[]");
-            currentGames = currentGames.filter(g => g.id != id);
-            localStorage.setItem('games_db', JSON.stringify(currentGames));
-
-            showStatus("تم الحذف بنجاح!");
-            renderTable(currentGames);
-
+            if (res.ok) {
+                const updatedGames = await res.json();
+                showStatus("تم الحذف من Azure بنجاح!");
+                renderTable(updatedGames);
+            } else {
+                showStatus("خطأ أثناء الحذف", true);
+            }
         } catch (err) {
-            showStatus("حدث خطأ أثناء الحذف", true);
+            showStatus("حدث خطأ أثناء عملية الحذف", true);
         }
     }
 
+    // التشغيل التلقائي فور دخول الموقع
     fetchGames();
 </script>
 
