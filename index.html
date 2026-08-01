@@ -50,7 +50,6 @@
 </div>
 
 <script>
-    // رابط الـ API الخاص بـ Azure Function حقك
     const AZURE_API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
 
     function showStatus(msg, isError = false) {
@@ -61,7 +60,7 @@
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 
-    // 1. جلب البيانات من Azure
+    // 1. جلب البيانات
     async function fetchGames() {
         try {
             const res = await fetch(AZURE_API_URL);
@@ -85,12 +84,11 @@
                 `;
             });
         } catch (err) {
-            console.error(err);
             showStatus("فشل الاتصال بـ Azure API", true);
         }
     }
 
-    // 2. إضافة لعبة جديدة إلى Azure
+    // 2. إضافة لعبة
     async function addGame() {
         const title = document.getElementById('gameTitle').value;
         const platform = document.getElementById('gamePlatform').value;
@@ -125,13 +123,18 @@
         }
     }
 
-    // 3. حذف لعبة من Azure
+    // 3. حذف لعبة
     async function deleteGame(id) {
         if(!confirm("هل أنت تأكد من حذف اللعبة؟")) return;
 
         try {
             showStatus("جاري الحذف من Azure...");
-            const res = await fetch(`${AZURE_API_URL}?id=${id}`, { method: "DELETE" });
+            const res = await fetch(AZURE_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "delete", id: id })
+            });
+
             if (res.ok) {
                 showStatus("تم الحذف بنجاح!");
                 fetchGames();
@@ -143,7 +146,6 @@
         }
     }
 
-    // تشغيل جلب الألعاب عند فتح الصفحة مباشرة
     fetchGames();
 </script>
 
