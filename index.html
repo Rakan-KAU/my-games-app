@@ -8,7 +8,6 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #070913; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* 🎮 1. واجهة البداية */
         #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, rgba(7, 9, 19, 0.94), rgba(15, 23, 42, 0.98)), 
@@ -25,7 +24,6 @@
         .btn-admin { padding: 16px 40px; background: linear-gradient(135deg, #0284c7, #1d4ed8); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3); }
         .btn-admin:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(2, 132, 199, 0.5); }
 
-        /* 🔒 2. تسجيل الدخول */
         #loginModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(7, 9, 19, 0.96); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(8px);
@@ -42,7 +40,6 @@
         .login-box button { width: 100%; padding: 13px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .login-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
 
-        /* 🛒 3. متجر العملاء بالأغلفة الرسمية */
         #storeWrapper { display: none; padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 15px; }
         .store-header h1 { font-size: 28px; color: #10b981; font-weight: 800; }
@@ -59,7 +56,6 @@
         .btn-buy { background: #10b981; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn-buy:hover { background: #059669; }
 
-        /* 📊 4. لوحة الإدارة */
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #111827; border-left: 1px solid #1f2937; padding: 25px 20px; display: flex; flex-direction: column; gap: 10px; }
         .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 800; }
@@ -89,7 +85,6 @@
 </head>
 <body>
 
-    <!-- 🎮 1. واجهة البداية -->
     <div id="heroScreen">
         <h1 class="hero-title">Rakan Gaming Studio</h1>
         <p class="hero-subtitle">مرحباً بك في المنصة الموحدة لألعاب وتطوير راكان استديو</p>
@@ -99,7 +94,6 @@
         </div>
     </div>
 
-    <!-- 🔒 2. تسجيل الدخول -->
     <div id="loginModal">
         <div class="login-box">
             <h2>تسجيل دخول الموظفين والإدارة</h2>
@@ -111,7 +105,6 @@
         </div>
     </div>
 
-    <!-- 🛒 3. متجر العملاء -->
     <div id="storeWrapper">
         <div class="store-header">
             <h1>🛍️ متجر ألعاب Rakan Studio</h1>
@@ -122,7 +115,6 @@
         </div>
     </div>
 
-    <!-- 📊 4. لوحة الإدارة -->
     <div id="appWrapper">
         <div class="sidebar">
             <h2>RAKAN GAMING</h2>
@@ -137,13 +129,12 @@
         <div class="main-content">
             <div id="statusMsg" class="status"></div>
 
-            <!-- 1. الألعاب -->
             <div id="games" class="tab-content active">
                 <div class="header"><h1>🎮 إدارة الألعاب</h1></div>
                 <div class="card">
                     <input type="hidden" id="g_id">
                     <div class="form-grid">
-                        <input type="text" id="g_title" placeholder="اسم اللعبة (مثل: Rocket League, Elden Ring, GTA 6, FC 24...)">
+                        <input type="text" id="g_title" placeholder="اسم اللعبة">
                         <select id="g_platform">
                             <option value="PlayStation 5">PlayStation 5</option>
                             <option value="PC Gaming">PC Gaming</option>
@@ -172,7 +163,6 @@
                 </div>
             </div>
 
-            <!-- 2. الموظفين -->
             <div id="employees" class="tab-content">
                 <div class="header"><h1>👥 الموظفين والترقيات الوظيفية</h1></div>
                 <div class="card">
@@ -201,7 +191,6 @@
                 </div>
             </div>
 
-            <!-- 3. العملاء -->
             <div id="customers" class="tab-content">
                 <div class="header"><h1>🏢 سجل العملاء</h1></div>
                 <div class="card">
@@ -260,13 +249,12 @@
                 </div>
             </div>
 
-            <!-- 4. الطلبات -->
             <div id="orders" class="tab-content">
                 <div class="header"><h1>📦 إدارة الطلبات والمبيعات</h1></div>
                 <div class="card">
                     <input type="hidden" id="o_id">
                     <div class="form-grid">
-                        <input type="text" id="o_customerId" placeholder="رقم العميل (CustomerId)">
+                        <input type="text" id="o_customerId" placeholder="رقم/اسم العميل (CustomerId)">
                         <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
                         <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
                         <select id="o_status">
@@ -280,7 +268,7 @@
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+                        <thead><tr><th>اسم / رقم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
                         <tbody id="orders_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                     </table>
                 </div>
@@ -317,30 +305,15 @@
         loadStoreGames();
     }
 
-    // قاموس الأغلفة الأصلية الدقيقة والأصلية 100%
     function getGameImage(title) {
         const t = (title || "").toLowerCase();
-        if (t.includes('rocket')) {
-            return 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Rocket_League_coverart.jpg'; // غلاف روكت ليج الأصلي
-        }
-        if (t.includes('elden')) {
-            return 'https://m.media-amazon.com/images/M/MVBmM2FlMmE1ZTktYmQ0Yi00M2I0LWI3ZmUtMWI5MDgwYjM4MWUzXkEyXkFqcGc@._V1_.jpg'; // غلاف إيلدن رينج الأصلي
-        }
-        if (t.includes('gta 6') || t.includes('gta vi') || t.includes('جراند 6') || t.includes('جراند')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/5/53/Grand_Theft_Auto_VI_cover_art.png'; // غلاف جراند 6 الأصلي من روكستار
-        }
-        if (t.includes('fifa 24') || t.includes('fc 24') || t.includes('فيفا 24')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/0/03/EA_Sports_FC_24_cover.jpg'; // غلاف FC 24 الأصلي
-        }
-        if (t.includes('fifa 23') || t.includes('فيفا 23')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/a/a6/FIFA_23_Cover.jpg'; // غلاف فيفا 23 الأصلي
-        }
-        if (t.includes('fifa 25') || t.includes('fc 25') || t.includes('فيفا 25')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/0/0c/EA_Sports_FC_25_cover.jpg'; // غلاف FC 25 الأصلي
-        }
-        if (t.includes('minecraft') || t.includes('ماين كرافت')) {
-            return 'https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover_art.png'; // غلاف ماينكرافت الأصلي
-        }
+        if (t.includes('rocket')) return 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Rocket_League_coverart.jpg';
+        if (t.includes('elden')) return 'https://m.media-amazon.com/images/M/MVBmM2FlMmE1ZTktYmQ0Yi00M2I0LWI3ZmUtMWI5MDgwYjM4MWUzXkEyXkFqcGc@._V1_.jpg';
+        if (t.includes('gta 6') || t.includes('gta vi') || t.includes('جراند 6') || t.includes('جراند')) return 'https://upload.wikimedia.org/wikipedia/en/5/53/Grand_Theft_Auto_VI_cover_art.png';
+        if (t.includes('fifa 24') || t.includes('fc 24') || t.includes('فيفا 24')) return 'https://upload.wikimedia.org/wikipedia/en/0/03/EA_Sports_FC_24_cover.jpg';
+        if (t.includes('fifa 23') || t.includes('فيفا 23')) return 'https://upload.wikimedia.org/wikipedia/en/a/a6/FIFA_23_Cover.jpg';
+        if (t.includes('fifa 25') || t.includes('fc 25') || t.includes('فيفا 25')) return 'https://upload.wikimedia.org/wikipedia/en/0/0c/EA_Sports_FC_25_cover.jpg';
+        if (t.includes('minecraft') || t.includes('ماين كرافت')) return 'https://upload.wikimedia.org/wikipedia/en/5/51/Minecraft_cover_art.png';
         return 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Rocket_League_coverart.jpg';
     }
 
@@ -399,7 +372,10 @@
                 body: JSON.stringify(body)
             });
             if (res.ok) {
-                alert(`شكراً لك يا ${customerName}! تم إرسال طلب شراء (${title}) بنجاح إلى الإدارة.`);
+                alert("لقد تم إرسال طلبك بنجاح");
+                if (loadedData['orders']) {
+                    loadData('orders');
+                }
             }
         } catch (err) {
             alert("حدث خطأ أثناء إرسال الطلب.");
@@ -466,7 +442,7 @@
                            <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
-                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td>${item.status || 'Completed'}</td>
+                row = `<td>${item.customerId || 'CUST-01'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
                        <td>
                            <button class="btn-promote" onclick="editData('orders', '${item.id}')">تعديل</button>
                            <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.customerId || 'CUST-01'}')">حذف</button>
@@ -509,7 +485,7 @@
             document.getElementById('o_customerId').value = item.customerId || '';
             document.getElementById('o_item').value = item.item || '';
             document.getElementById('o_total').value = item.total || '';
-            document.getElementById('o_status').value = item.status || 'Completed';
+            document.getElementById('o_status').value = item.status || 'Pending';
             document.getElementById('o_btn').innerText = 'حفظ التعديلات';
             document.getElementById('o_cancel').style.display = 'inline-block';
         }
