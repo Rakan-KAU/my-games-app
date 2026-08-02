@@ -8,7 +8,7 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* زر تغيير اللغة أعلى الصفحة */
+        /* زر تغيير اللغة يظهر فقط في الرئيسية والمتابعة والمتجر */
         .lang-switch-btn {
             position: fixed; top: 20px; left: 20px; z-index: 1002;
             background: #131b2e; color: #38bdf8; border: 1px solid #1f2937;
@@ -26,7 +26,7 @@
         .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-continue:hover { transform: translateY(-4px); box-shadow: 0 15px 45px rgba(16, 185, 129, 0.6); }
 
-        /* شاشة الاختيار الرئيسية */
+        /* شاشة الاختيار */
         #mainPortal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0b0f19; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 999; padding: 20px;
@@ -82,7 +82,7 @@
         .btn-buy { background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn-buy:hover { background: #059669; }
 
-        /* لوحة تحكم الإدارة */
+        /* لوحة تحكم الإدارة (بدون زر تغيير اللغة) */
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
         .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 900; letter-spacing: 1px; }
@@ -113,7 +113,7 @@
 </head>
 <body>
 
-    <!-- زر تغيير لغة الموقع -->
+    <!-- زر تغيير اللغة يظهر فقط في الشاشة الرئيسية ومتابعة -->
     <button class="lang-switch-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
 
     <!-- الشاشة الأولى -->
@@ -143,10 +143,10 @@
     <!-- نافذة تسجيل دخول الإدارة -->
     <div id="loginModal">
         <div class="login-box">
-            <h2 id="t_loginTitle">تسجيل دخول الإدارة</h2>
+            <h2>تسجيل دخول الإدارة</h2>
             <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
-            <button onclick="checkLogin()" id="t_loginBtn" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
-            <button onclick="closeLoginModal()" id="t_cancelBtn" style="background:#334155;">إلغاء</button>
+            <button onclick="checkLogin()" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
+            <button onclick="closeLoginModal()" style="background:#334155;">إلغاء</button>
             <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">الرجاء إدخال اسم المستخدم!</div>
         </div>
     </div>
@@ -198,7 +198,7 @@
                 <option value="ينبع">ينبع</option>
             </select>
             <button onclick="submitOrder()" id="t_confirmBtn">تأكيد وإرسال الطلب 🚀</button>
-            <button onclick="closeCheckoutModal()" id="t_closeModalBtn" style="background:#334155; margin-top:8px;">إلغاء</button>
+            <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
         </div>
     </div>
 
@@ -227,7 +227,7 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الإدارة -->
+    <!-- لوحة تحكم الإدارة (بدون زر تغيير اللغة) -->
     <div id="appWrapper">
         <div class="sidebar">
             <h2>⚡ RAKAN STUDIOS</h2>
@@ -396,7 +396,6 @@
     let selectedGameForCheckout = null;
     let currentLang = 'ar';
 
-    // نظام ترجمة لغة الموقع (العربية والإنجليزية)
     const translations = {
         ar: {
             heroTitle: "راكان جيمنج استديو",
@@ -476,11 +475,13 @@
     function showPortal() {
         document.getElementById('heroScreen').style.display = 'none';
         document.getElementById('mainPortal').style.display = 'flex';
+        document.getElementById('langBtn').style.display = 'block'; // يظهر في المتابعة
     }
 
     function backToHero() {
         document.getElementById('mainPortal').style.display = 'none';
         document.getElementById('heroScreen').style.display = 'flex';
+        document.getElementById('langBtn').style.display = 'block'; // يظهر في الرئيسية
     }
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -493,6 +494,7 @@
         if (user !== "") {
             document.getElementById('mainPortal').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('langBtn').style.display = 'none'; // يختفي تماماً في لوحة الموظفين والإدارة
             document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
         } else {
@@ -503,6 +505,7 @@
     function openCustomerStore() {
         document.getElementById('mainPortal').style.display = 'none';
         document.getElementById('storeWrapper').style.display = 'block';
+        document.getElementById('langBtn').style.display = 'block'; // يظهر في المتجر
         loadStoreGames();
     }
 
@@ -510,6 +513,7 @@
         document.getElementById('storeWrapper').style.display = 'none';
         document.getElementById('appWrapper').style.display = 'none';
         document.getElementById('mainPortal').style.display = 'flex';
+        document.getElementById('langBtn').style.display = 'block';
     }
 
     async function loadStoreGames() {
