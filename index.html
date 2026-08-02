@@ -417,11 +417,10 @@
                            <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
-                const pk = item.id || '1';
                 row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
                        <td>
                            <button class="btn-promote" onclick="editData('orders', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${pk}')">حذف</button>
+                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             }
             tbody.innerHTML += `<tr>${row}</tr>`;
@@ -556,12 +555,13 @@
 
     async function deleteData(type, id, pkValue) {
         if (!confirm("هل أنت متأكد من الحذف؟")) return;
+        const finalPk = pkValue && pkValue !== 'undefined' ? pkValue : id;
         try {
             showStatus("جاري الحذف...");
             const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type: type, action: "delete", id: id, pkValue: pkValue })
+                body: JSON.stringify({ type: type, action: "delete", id: String(id), pkValue: String(finalPk) })
             });
             if (res.ok) {
                 const updated = await res.json();
