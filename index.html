@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Rakan Gaming Studios</title>
+    <title id="pageTitle">⚡ Rakan Gaming Studios</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* الشاشة الرئيسية البسيطة والفخمة جداً */
+        /* زر تغيير اللغة أعلى الصفحة */
+        .lang-switch-btn {
+            position: fixed; top: 20px; left: 20px; z-index: 1002;
+            background: #131b2e; color: #38bdf8; border: 1px solid #1f2937;
+            padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .lang-switch-btn:hover { background: #1f2937; color: #10b981; }
+
+        /* الشاشة الرئيسية الأولى */
         #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #131b2e 0%, #0b0f19 100%);
@@ -18,7 +26,7 @@
         .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-continue:hover { transform: translateY(-4px); box-shadow: 0 15px 45px rgba(16, 185, 129, 0.6); }
 
-        /* شاشة الاختيار الرئيسية (المتجر يمين والموظفين يسار) */
+        /* شاشة الاختيار الرئيسية */
         #mainPortal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0b0f19; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 999; padding: 20px;
@@ -51,7 +59,7 @@
         }
         .login-box button { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
 
-        /* متجر العملاء بالتصنيفات الكثيرة والواسعة */
+        /* متجر العملاء */
         #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 20px; }
         .store-logo-area h1 { font-size: 26px; color: #10b981; font-weight: 900; }
@@ -105,37 +113,40 @@
 </head>
 <body>
 
-    <!-- الشاشة الأولى البسيطة (راكان جيمنج استديو + زر متابعة) -->
+    <!-- زر تغيير لغة الموقع -->
+    <button class="lang-switch-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
+
+    <!-- الشاشة الأولى -->
     <div id="heroScreen">
-        <h1 class="hero-main-title">راكان جيمنج استديو</h1>
-        <button class="btn-continue" onclick="showPortal()">متابعة ⬅</button>
+        <h1 class="hero-main-title" id="t_heroTitle">راكان جيمنج استديو</h1>
+        <button class="btn-continue" id="t_continueBtn" onclick="showPortal()">متابعة ⬅</button>
     </div>
 
-    <!-- شاشة الاختيار (متجر يمين وموظفين يسار) -->
+    <!-- شاشة الاختيار -->
     <div id="mainPortal">
-        <h2 class="portal-title">اختر الوجهة المطلوبة</h2>
+        <h2 class="portal-title" id="t_portalTitle">اختر الوجهة المطلوبة</h2>
         <div class="portal-options">
             <div class="portal-card store-card" onclick="openCustomerStore()">
-                <h3>🛒 تصفح المتجر</h3>
-                <p>تصفح أحدث الألعاب الرقمية عبر مختلف المنصات واستمتع بتجربة تسوق سريعة ومباشرة.</p>
-                <span style="color:#10b981; font-weight:bold;">دخول المتجر 🚀</span>
+                <h3 id="t_storeCardTitle">🛒 تصفح المتجر</h3>
+                <p id="t_storeCardDesc">تصفح أحدث الألعاب الرقمية عبر مختلف المنصات واستمتع بتجربة تسوق سريعة ومباشرة.</p>
+                <span style="color:#10b981; font-weight:bold;" id="t_storeCardAction">دخول المتجر 🚀</span>
             </div>
             <div class="portal-card admin-card" onclick="openLoginModal()">
-                <h3>👥 الموظفين وإدارة اللوحة</h3>
-                <p>لوحة التحكم الشاملة لإدارة الألعاب، الموظفين، سجل العملاء، ومتابعة الطلبات والمبيعات.</p>
-                <span style="color:#38bdf8; font-weight:bold;">دخول الإدارة 🔐</span>
+                <h3 id="t_adminCardTitle">👥 الموظفين وإدارة اللوحة</h3>
+                <p id="t_adminCardDesc">لوحة التحكم الشاملة لإدارة الألعاب، الموظفين، سجل العملاء، ومتابعة الطلبات والمبيعات.</p>
+                <span style="color:#38bdf8; font-weight:bold;" id="t_adminCardAction">دخول الإدارة 🔐</span>
             </div>
         </div>
-        <button onclick="backToHero()" class="btn-back" style="margin-top:40px;">الرجوع للرئيسية</button>
+        <button onclick="backToHero()" class="btn-back" id="t_backBtn" style="margin-top:40px;">الرجوع للرئيسية</button>
     </div>
 
     <!-- نافذة تسجيل دخول الإدارة -->
     <div id="loginModal">
         <div class="login-box">
-            <h2>تسجيل دخول الإدارة</h2>
+            <h2 id="t_loginTitle">تسجيل دخول الإدارة</h2>
             <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
-            <button onclick="checkLogin()" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
-            <button onclick="closeLoginModal()" style="background:#334155;">إلغاء</button>
+            <button onclick="checkLogin()" id="t_loginBtn" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
+            <button onclick="closeLoginModal()" id="t_cancelBtn" style="background:#334155;">إلغاء</button>
             <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">الرجاء إدخال اسم المستخدم!</div>
         </div>
     </div>
@@ -143,7 +154,7 @@
     <!-- نافذة إتمام الشراء للعميل -->
     <div id="checkoutModal">
         <div class="login-box">
-            <h2>🛒 إتمام طلب الشراء</h2>
+            <h2 id="t_checkoutTitle">🛒 إتمام طلب الشراء</h2>
             <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
             <input type="text" id="chk_name" placeholder="الاسم الكامل">
             <input type="text" id="chk_phone" placeholder="رقم الهاتف (مثال: 05xxxxxxxx)">
@@ -186,32 +197,27 @@
                 <option value="عرعر">عرعر</option>
                 <option value="ينبع">ينبع</option>
             </select>
-            <button onclick="submitOrder()">تأكيد وإرسال الطلب 🚀</button>
-            <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
+            <button onclick="submitOrder()" id="t_confirmBtn">تأكيد وإرسال الطلب 🚀</button>
+            <button onclick="closeCheckoutModal()" id="t_closeModalBtn" style="background:#334155; margin-top:8px;">إلغاء</button>
         </div>
     </div>
 
-    <!-- متجر العملاء مع الأقسام المتعددة -->
+    <!-- متجر العملاء -->
     <div id="storeWrapper">
         <div class="store-header">
             <div class="store-logo-area">
-                <h1>⚡ متجر RAKAN STUDIOS</h1>
+                <h1 id="t_storeHeaderTitle">⚡ متجر RAKAN STUDIOS</h1>
             </div>
-            <button class="btn-back" onclick="backToPortal()">الرئيسية ⬅</button>
+            <button class="btn-back" id="t_storeBackBtn" onclick="backToPortal()">الرئيسية ⬅</button>
         </div>
         <div class="store-layout">
             <div class="store-sidebar">
-                <h3>🎮 أقسام المنصات</h3>
-                <button class="filter-btn active" onclick="filterPlatform('All', event)">🔥 جميع الألعاب</button>
+                <h3 id="t_platformsHeader">🎮 أقسام المنصات</h3>
+                <button class="filter-btn active" id="t_filterAll" onclick="filterPlatform('All', event)">🔥 جميع الألعاب</button>
                 <button class="filter-btn" onclick="filterPlatform('PlayStation 5', event)">🎮 PlayStation 5</button>
                 <button class="filter-btn" onclick="filterPlatform('PC Gaming', event)">💻 PC Gaming</button>
                 <button class="filter-btn" onclick="filterPlatform('Xbox Series X', event)">🕹️ Xbox Series X</button>
                 <button class="filter-btn" onclick="filterPlatform('Multi-Platform', event)">🌐 Multi-Platform (متعدد)</button>
-                <h3 style="margin-top:20px;">🏷️ التصنيفات</h3>
-                <button class="filter-btn" onclick="filterGenre('Action', event)">💥 Action</button>
-                <button class="filter-btn" onclick="filterGenre('Sports / Racing', event)">🏎️ Sports & Racing</button>
-                <button class="filter-btn" onclick="filterGenre('RPG', event)">🛡️ RPG</button>
-                <button class="filter-btn" onclick="filterGenre('Strategy', event)">♟️ Strategy</button>
             </div>
             <div class="store-content">
                 <div class="games-grid" id="store_games_grid">
@@ -388,6 +394,84 @@
     let loadedData = {};
     let allStoreGames = [];
     let selectedGameForCheckout = null;
+    let currentLang = 'ar';
+
+    // نظام ترجمة لغة الموقع (العربية والإنجليزية)
+    const translations = {
+        ar: {
+            heroTitle: "راكان جيمنج استديو",
+            continueBtn: "متابعة ⬅",
+            portalTitle: "اختر الوجهة المطلوبة",
+            storeCardTitle: "🛒 تصفح المتجر",
+            storeCardDesc: "تصفح أحدث الألعاب الرقمية عبر مختلف المنصات واستمتع بتجربة تسوق سريعة ومباشرة.",
+            storeCardAction: "دخول المتجر 🚀",
+            adminCardTitle: "👥 الموظفين وإدارة اللوحة",
+            adminCardDesc: "لوحة التحكم الشاملة لإدارة الألعاب، الموظفين، سجل العملاء، ومتابعة الطلبات والمبيعات.",
+            adminCardAction: "دخول الإدارة 🔐",
+            backBtn: "الرجوع للرئيسية",
+            loginTitle: "تسجيل دخول الإدارة",
+            loginBtn: "دخول لوحة التحكّم",
+            cancelBtn: "إلغاء",
+            checkoutTitle: "🛒 إتمام طلب الشراء",
+            confirmBtn: "تأكيد وإرسال الطلب 🚀",
+            storeHeaderTitle: "⚡ متجر RAKAN STUDIOS",
+            platformsHeader: "🎮 أقسام المنصات",
+            filterAll: "🔥 جميع الألعاب",
+            langBtnText: "English 🌐"
+        },
+        en: {
+            heroTitle: "Rakan Gaming Studio",
+            continueBtn: "Continue ⬅",
+            portalTitle: "Select Destination",
+            storeCardTitle: "🛒 Browse Store",
+            storeCardDesc: "Browse the latest digital games across different platforms and enjoy a fast shopping experience.",
+            storeCardAction: "Enter Store 🚀",
+            adminCardTitle: "👥 Employees & Dashboard",
+            adminCardDesc: "Comprehensive control panel to manage games, employees, customer logs, and track sales.",
+            adminCardAction: "Enter Admin 🔐",
+            backBtn: "Back to Home",
+            loginTitle: "Admin Login",
+            loginBtn: "Enter Dashboard",
+            cancelBtn: "Cancel",
+            checkoutTitle: "🛒 Complete Order",
+            confirmBtn: "Confirm & Send Order 🚀",
+            storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
+            platformsHeader: "🎮 Platforms",
+            filterAll: "🔥 All Games",
+            langBtnText: "العربية 🌐"
+        }
+    };
+
+    function toggleLanguage() {
+        currentLang = (currentLang === 'ar') ? 'en' : 'ar';
+        const t = translations[currentLang];
+        const root = document.getElementById('htmlRoot');
+
+        root.setAttribute('lang', currentLang);
+        root.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+        document.getElementById('t_heroTitle').innerText = t.heroTitle;
+        document.getElementById('t_continueBtn').innerText = t.continueBtn;
+        document.getElementById('t_portalTitle').innerText = t.portalTitle;
+        document.getElementById('t_storeCardTitle').innerText = t.storeCardTitle;
+        document.getElementById('t_storeCardDesc').innerText = t.storeCardDesc;
+        document.getElementById('t_storeCardAction').innerText = t.storeCardAction;
+        document.getElementById('t_adminCardTitle').innerText = t.adminCardTitle;
+        document.getElementById('t_adminCardDesc').innerText = t.adminCardDesc;
+        document.getElementById('t_adminCardAction').innerText = t.adminCardAction;
+        document.getElementById('t_backBtn').innerText = t.backBtn;
+        document.getElementById('t_loginTitle').innerText = t.loginTitle;
+        document.getElementById('t_loginBtn').innerText = t.loginBtn;
+        document.getElementById('t_cancelBtn').innerText = t.cancelBtn;
+        document.getElementById('t_checkoutTitle').innerText = t.checkoutTitle;
+        document.getElementById('t_confirmBtn').innerText = t.confirmBtn;
+        document.getElementById('t_closeModalBtn').innerText = t.cancelBtn;
+        document.getElementById('t_storeHeaderTitle').innerText = t.storeHeaderTitle;
+        document.getElementById('t_storeBackBtn').innerText = t.backBtn;
+        document.getElementById('t_platformsHeader').innerText = t.platformsHeader;
+        document.getElementById('t_filterAll').innerText = t.filterAll;
+        document.getElementById('langBtn').innerText = t.langBtnText;
+    }
 
     function showPortal() {
         document.getElementById('heroScreen').style.display = 'none';
@@ -450,14 +534,6 @@
             const filtered = allStoreGames.filter(g => (g.platform || '').toLowerCase() === platform.toLowerCase());
             renderStoreGames(filtered);
         }
-    }
-
-    function filterGenre(genre, evt) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        if (evt) evt.target.classList.add('active');
-
-        const filtered = allStoreGames.filter(g => (g.genre || '').toLowerCase() === genre.toLowerCase());
-        renderStoreGames(filtered);
     }
 
     function renderStoreGames(games) {
