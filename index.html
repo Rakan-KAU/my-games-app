@@ -8,7 +8,7 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* زر تغيير اللغة يظهر فقط في الرئيسية والمتابعة والمتجر */
+        /* زر تغيير اللغة يظهر في الرئيسية، المتابعة، والمتجر */
         .lang-switch-btn {
             position: fixed; top: 20px; left: 20px; z-index: 1002;
             background: #131b2e; color: #38bdf8; border: 1px solid #1f2937;
@@ -82,7 +82,7 @@
         .btn-buy { background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn-buy:hover { background: #059669; }
 
-        /* لوحة تحكم الإدارة (بدون زر تغيير اللغة) */
+        /* لوحة تحكم الإدارة */
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
         .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 900; letter-spacing: 1px; }
@@ -113,7 +113,7 @@
 </head>
 <body>
 
-    <!-- زر تغيير اللغة يظهر فقط في الشاشة الرئيسية ومتابعة -->
+    <!-- زر تغيير اللغة (يظهر في الرئيسية، المتابعة، والمتجر، ويختفي في إدارة الموظفين) -->
     <button class="lang-switch-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
 
     <!-- الشاشة الأولى -->
@@ -227,7 +227,7 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الإدارة (بدون زر تغيير اللغة) -->
+    <!-- لوحة تحكم الإدارة -->
     <div id="appWrapper">
         <div class="sidebar">
             <h2>⚡ RAKAN STUDIOS</h2>
@@ -475,13 +475,13 @@
     function showPortal() {
         document.getElementById('heroScreen').style.display = 'none';
         document.getElementById('mainPortal').style.display = 'flex';
-        document.getElementById('langBtn').style.display = 'block'; // يظهر في المتابعة
+        document.getElementById('langBtn').style.display = 'block';
     }
 
     function backToHero() {
         document.getElementById('mainPortal').style.display = 'none';
         document.getElementById('heroScreen').style.display = 'flex';
-        document.getElementById('langBtn').style.display = 'block'; // يظهر في الرئيسية
+        document.getElementById('langBtn').style.display = 'block';
     }
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -494,7 +494,7 @@
         if (user !== "") {
             document.getElementById('mainPortal').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('langBtn').style.display = 'none'; // يختفي تماماً في لوحة الموظفين والإدارة
+            document.getElementById('langBtn').style.display = 'none'; // يختفي في لوحة الإدارة
             document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
         } else {
@@ -513,7 +513,7 @@
         document.getElementById('storeWrapper').style.display = 'none';
         document.getElementById('appWrapper').style.display = 'none';
         document.getElementById('mainPortal').style.display = 'flex';
-        document.getElementById('langBtn').style.display = 'block';
+        document.getElementById('langBtn').style.display = 'block'; // يظهر في شاشة المتابعة
     }
 
     async function loadStoreGames() {
