@@ -102,13 +102,13 @@
         </div>
     </div>
 
-    <!-- نافذة إتمام الشراء للعميل (مع إدخال البيانات الكاملة) -->
+    <!-- نافذة إتمام الشراء للعميل (يختار فيها كل تفاصيله بيده) -->
     <div id="checkoutModal">
         <div class="login-box">
             <h2>🛒 إتمام شراء اللعبة</h2>
             <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
             <input type="text" id="chk_name" placeholder="الاسم الكامل">
-            <input type="text" id="chk_phone" placeholder="رقم الهاتف">
+            <input type="text" id="chk_phone" placeholder="رقم الهاتف (مثال: 05xxxxxxxx)">
             <select id="chk_region">
                 <option value="منطقة مكة المكرمة">منطقة مكة المكرمة</option>
                 <option value="منطقة الرياض">منطقة الرياض</option>
@@ -425,21 +425,19 @@
             closeCheckoutModal();
             alert("جاري إرسال الطلب وحفظ بياناتك...");
 
-            // إرسال الطلب لقسم المبيعات
             await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderBody)
             });
 
-            // إرسال العميل لسجل العملاء مع كامل التفاصيل
             await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(customerBody)
             });
 
-            alert(`تم إتمام طلبك بنجاح يا ${name}!\nتم تسجيل طلبك في قسم الطلبات وإضافتك لسجل العملاء.`);
+            alert(`تم إتمام طلبك بنجاح يا ${name}!\nتم تسجيل طلبك في قسم الطلبات وحفظ بياناتك في سجل العملاء.`);
         } catch (err) {
             alert("حدث خطأ أثناء إتمام الشراء.");
         }
@@ -655,8 +653,7 @@
 
         try {
             showStatus("جاري الحذف...");
-            const res = await fetch(API, { ... }); // Standard delete
-            const res2 = await fetch(API_URL, {
+            const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
@@ -666,8 +663,8 @@
                     pkValue: finalPk 
                 })
             });
-            if (res2.ok) {
-                const updated = await res2.json();
+            if (res.ok) {
+                const updated = await res.json();
                 showStatus("تم الحذف بنجاح!");
                 renderTable(type, updated);
             }
