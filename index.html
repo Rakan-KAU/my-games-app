@@ -93,7 +93,7 @@
 
     <div id="loginModal">
         <div class="login-box">
-            <h2>تسجيل دخول الإدارة (بدون كلمة مرور)</h2>
+            <h2>تسجيل دخول الإدارة</h2>
             <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
             <button onclick="checkLogin()">دخول لوحة التحكّم</button>
             <button onclick="closeLoginModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
@@ -428,7 +428,7 @@
     }
 
     function editData(type, id) {
-        const item = loadedData[type].find(x => x.id === id);
+        const item = loadedData[type] ? loadedData[type].find(x => x.id === id) : null;
         if (!item) return;
 
         if (type === 'games') {
@@ -463,6 +463,7 @@
             document.getElementById('o_btn').innerText = 'حفظ التعديلات';
             document.getElementById('o_cancel').style.display = 'inline-block';
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function resetForm(type) {
@@ -496,38 +497,44 @@
 
     async function addData(type) {
         let body = { type: type };
+        let idField = '';
+
+        if (type === 'games') idField = 'g_id';
+        else if (type === 'employees') idField = 'e_id';
+        else if (type === 'customers') idField = 'c_id';
+        else if (type === 'orders') idField = 'o_id';
+
+        const idElement = document.getElementById(idField);
+        const id = idElement ? idElement.value.trim() : "";
+
+        if (id !== "") {
+            body.id = id;
+            body.pkValue = id;
+        }
 
         if (type === 'games') {
-            const id = document.getElementById('g_id').value;
             const title = document.getElementById('g_title').value;
             if (!title) return alert('أدخل اسم اللعبة');
-            if (id) body.id = id;
             body.title = title;
             body.platform = document.getElementById('g_platform').value;
             body.price = document.getElementById('g_price').value || '0';
             body.genre = document.getElementById('g_genre').value;
         } else if (type === 'employees') {
-            const id = document.getElementById('e_id').value;
             const name = document.getElementById('e_name').value;
             if (!name) return alert('أدخل اسم الموظف');
-            if (id) body.id = id;
             body.name = name;
             body.role = document.getElementById('e_role').value;
             body.salary = document.getElementById('e_salary').value || '0';
         } else if (type === 'customers') {
-            const id = document.getElementById('c_id').value;
             const name = document.getElementById('c_name').value;
             if (!name) return alert('أدخل اسم العميل');
-            if (id) body.id = id;
             body.name = name;
             body.region = document.getElementById('c_region').value;
             body.city = document.getElementById('c_city').value;
             body.phone = document.getElementById('c_phone').value || '-';
         } else if (type === 'orders') {
-            const id = document.getElementById('o_id').value;
             const item = document.getElementById('o_item').value;
             if (!item) return alert('أدخل اسم المنتج');
-            if (id) body.id = id;
             body.type = 'orders';
             body.item = item;
             body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
@@ -555,13 +562,20 @@
 
     async function deleteData(type, id, pkValue) {
         if (!confirm("هل أنت متأكد من الحذف؟")) return;
-        const finalPk = pkValue && pkValue !== 'undefined' ? pkValue : id;
+        const cleanId = String(id).trim();
+        const finalPk = (pkValue && pkValue !== 'undefined' && String(pkValue).trim() !== "") ? String(pkValue).trim() : cleanId;
+
         try {
             showStatus("جاري الحذف...");
             const res = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type: type, action: "delete", id: String(id), pkValue: String(finalPk) })
+                body: JSON.stringify({ 
+                    type: type, 
+                    action: "delete", 
+                    id: cleanId, 
+                    pkValue: finalPk 
+                })
             });
             if (res.ok) {
                 const updated = await res.json();
