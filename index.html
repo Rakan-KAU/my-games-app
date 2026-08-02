@@ -23,20 +23,20 @@
         .btn-admin { padding: 16px 40px; background: linear-gradient(135deg, #0284c7, #1d4ed8); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.3); }
         .btn-admin:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(2, 132, 199, 0.5); }
 
-        #loginModal {
+        #loginModal, #checkoutModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(7, 9, 19, 0.96); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(8px);
         }
         .login-box {
             background: #111827; border: 1px solid #1f2937; padding: 40px; border-radius: 16px;
-            width: 100%; max-width: 400px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
         .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 22px; font-weight: 800; }
-        .login-box input {
+        .login-box input, .login-box select {
             width: 100%; padding: 12px 16px; margin-bottom: 15px; border-radius: 8px;
-            border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none;
+            border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none; text-align: right;
         }
-        .login-box button { width: 100%; padding: 13px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .login-box button { width: 100%; padding: 13px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .login-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
 
         #storeWrapper { display: none; padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
@@ -91,13 +91,65 @@
         </div>
     </div>
 
+    <!-- نافذة تسجيل دخول الإدارة -->
     <div id="loginModal">
         <div class="login-box">
             <h2>تسجيل دخول الإدارة</h2>
             <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
-            <button onclick="checkLogin()">دخول لوحة التحكّم</button>
+            <button onclick="checkLogin()" style="background:#0284c7;">دخول لوحة التحكّم</button>
             <button onclick="closeLoginModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
             <div id="loginError" class="login-error">الرجاء إدخال اسم المستخدم!</div>
+        </div>
+    </div>
+
+    <!-- نافذة إتمام الشراء للعميل (مع إدخال البيانات الكاملة) -->
+    <div id="checkoutModal">
+        <div class="login-box">
+            <h2>🛒 إتمام شراء اللعبة</h2>
+            <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
+            <input type="text" id="chk_name" placeholder="الاسم الكامل">
+            <input type="text" id="chk_phone" placeholder="رقم الهاتف">
+            <select id="chk_region">
+                <option value="منطقة مكة المكرمة">منطقة مكة المكرمة</option>
+                <option value="منطقة الرياض">منطقة الرياض</option>
+                <option value="المنطقة الشرقية">المنطقة الشرقية</option>
+                <option value="منطقة عسير">منطقة عسير</option>
+                <option value="منطقة المدينة المنورة">منطقة المدينة المنورة</option>
+                <option value="منطقة القصيم">منطقة القصيم</option>
+                <option value="منطقة تبوك">منطقة تبوك</option>
+                <option value="منطقة حائل">منطقة حائل</option>
+                <option value="منطقة جازان">منطقة جازان</option>
+                <option value="منطقة نجران">منطقة نجران</option>
+                <option value="منطقة الباحة">منطقة الباحة</option>
+                <option value="منطقة الحدود الشمالية">منطقة الحدود الشمالية</option>
+                <option value="منطقة الجوف">منطقة الجوف</option>
+            </select>
+            <select id="chk_city">
+                <option value="جدة">جدة</option>
+                <option value="الرياض">الرياض</option>
+                <option value="مكة المكرمة">مكة المكرمة</option>
+                <option value="المدينة المنورة">المدينة المنورة</option>
+                <option value="الدمام">الدمام</option>
+                <option value="الخبر">الخبر</option>
+                <option value="الظهران">الظهران</option>
+                <option value="الأحساء">الأحساء</option>
+                <option value="الجبيل">الجبيل</option>
+                <option value="الطائف">الطائف</option>
+                <option value="أبها">أبها</option>
+                <option value="خميس مشيط">خميس مشيط</option>
+                <option value="تبوك">تبوك</option>
+                <option value="بريدة">بريدة</option>
+                <option value="عنيزة">عنيزة</option>
+                <option value="حائل">حائل</option>
+                <option value="جازان">جازان</option>
+                <option value="نجران">نجران</option>
+                <option value="الباحة">الباحة</option>
+                <option value="سكاكا">سكاكا</option>
+                <option value="عرعر">عرعر</option>
+                <option value="ينبع">ينبع</option>
+            </select>
+            <button onclick="submitOrder()">تأكيد وإرسال الطلب 🚀</button>
+            <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
         </div>
     </div>
 
@@ -275,6 +327,7 @@
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let currentTab = 'games';
     let loadedData = {};
+    let selectedGameForCheckout = null;
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
     function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
@@ -321,7 +374,7 @@
                         </div>
                         <div>
                             <div class="game-price">$${game.price || '0'}</div>
-                            <button class="btn-buy" onclick="buyGame('${game.title}', '${game.price}')">شراء الآن 🚀</button>
+                            <button class="btn-buy" onclick="openCheckout('${game.title}', '${game.price}')">شراء الآن 🚀</button>
                         </div>
                     </div>
                 `;
@@ -331,49 +384,62 @@
         }
     }
 
-    // شراء اللعبة وإضافتها للطلبات والعملاء تلقائياً
-    async function buyGame(title, price) {
-        const customerName = prompt("أدخل اسمك الكريم لإتمام الشراء:");
-        if (!customerName || customerName.trim() === "") return;
+    function openCheckout(title, price) {
+        selectedGameForCheckout = { title, price };
+        document.getElementById('checkoutGameTitle').innerText = `المنتج: ${title} ($${price})`;
+        document.getElementById('chk_name').value = '';
+        document.getElementById('chk_phone').value = '';
+        document.getElementById('checkoutModal').style.display = 'flex';
+    }
 
-        const cleanName = customerName.trim();
+    function closeCheckoutModal() {
+        document.getElementById('checkoutModal').style.display = 'none';
+    }
 
-        // 1. إرسال الطلب لقسم (الطلبات والمبيعات)
+    async function submitOrder() {
+        const name = document.getElementById('chk_name').value.trim();
+        const phone = document.getElementById('chk_phone').value.trim();
+        const region = document.getElementById('chk_region').value;
+        const city = document.getElementById('chk_city').value;
+
+        if (!name) return alert('الرجاء إدخال الاسم الكامل');
+        if (!phone) return alert('الرجاء إدخال رقم الهاتف');
+
         const orderBody = {
             type: 'orders',
-            customerId: cleanName,
-            item: title,
-            total: price || '0',
+            customerId: name,
+            item: selectedGameForCheckout.title,
+            total: selectedGameForCheckout.price || '0',
             status: 'Pending'
         };
 
-        // 2. إرسال العميل لقسم (سجل العملاء) تلقائياً
         const customerBody = {
             type: 'customers',
-            name: cleanName,
-            region: 'منطقة مكة المكرمة',
-            city: 'جدة',
-            phone: 'متجر إلكتروني'
+            name: name,
+            region: region,
+            city: city,
+            phone: phone
         };
 
         try {
-            showStatus("جاري معالجة الشراء وإنشاء الطلب...");
+            closeCheckoutModal();
+            alert("جاري إرسال الطلب وحفظ بياناتك...");
 
-            // تنفيذ الطلب
+            // إرسال الطلب لقسم المبيعات
             await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderBody)
             });
 
-            // تنفيذ إضافة العميل للسجل
+            // إرسال العميل لسجل العملاء مع كامل التفاصيل
             await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(customerBody)
             });
 
-            alert(`تم طلب لعبة "${title}" بنجاح يا ${cleanName}!\nتم تسجيل طلبك في قسم الطلبات وإضافتك إلى سجل العملاء.`);
+            alert(`تم إتمام طلبك بنجاح يا ${name}!\nتم تسجيل طلبك في قسم الطلبات وإضافتك لسجل العملاء.`);
         } catch (err) {
             alert("حدث خطأ أثناء إتمام الشراء.");
         }
@@ -589,7 +655,8 @@
 
         try {
             showStatus("جاري الحذف...");
-            const res = await fetch(API_URL, {
+            const res = await fetch(API, { ... }); // Standard delete
+            const res2 = await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
@@ -599,8 +666,8 @@
                     pkValue: finalPk 
                 })
             });
-            if (res.ok) {
-                const updated = await res.json();
+            if (res2.ok) {
+                const updated = await res2.json();
                 showStatus("تم الحذف بنجاح!");
                 renderTable(type, updated);
             }
