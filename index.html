@@ -8,13 +8,17 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* زر تغيير اللغة يظهر في الرئيسية، المتابعة، والمتجر */
-        .lang-switch-btn {
-            position: fixed; top: 20px; left: 20px; z-index: 1002;
-            background: #131b2e; color: #38bdf8; border: 1px solid #1f2937;
-            padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        /* الأزرار العلوية (زر اللغة وزر تسجيل دخول الإدارة) */
+        .top-nav-buttons {
+            position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 10px;
         }
-        .lang-switch-btn:hover { background: #1f2937; color: #10b981; }
+        .top-btn {
+            background: #131b2e; color: #38bdf8; border: 1px solid #1f2937;
+            padding: 9px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .top-btn:hover { background: #1f2937; color: #10b981; }
+        .admin-login-btn { background: #0284c7; color: white; border: none; }
+        .admin-login-btn:hover { background: #0369a1; color: white; }
 
         /* الشاشة الرئيسية الأولى */
         #heroScreen {
@@ -25,23 +29,6 @@
         .hero-main-title { font-size: 64px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 30px; text-shadow: 0 0 40px rgba(16, 185, 129, 0.4); }
         .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-continue:hover { transform: translateY(-4px); box-shadow: 0 15px 45px rgba(16, 185, 129, 0.6); }
-
-        /* شاشة الاختيار */
-        #mainPortal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0b0f19; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 999; padding: 20px;
-        }
-        .portal-title { font-size: 36px; font-weight: 900; color: #38bdf8; margin-bottom: 50px; text-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
-        .portal-options { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 800px; }
-        
-        .portal-card {
-            flex: 1; min-width: 300px; background: #131b2e; border: 1px solid #1f2937; border-radius: 20px; padding: 40px 30px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .portal-card:hover { border-color: #10b981; transform: translateY(-6px); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2); }
-        .portal-card h3 { font-size: 24px; color: #fff; margin-bottom: 15px; font-weight: 800; }
-        .portal-card p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
-        .portal-card.store-card { background: linear-gradient(135deg, #131b2e, #064e3b); border-color: #059669; }
-        .portal-card.admin-card { background: linear-gradient(135deg, #131b2e, #1e3a8a); border-color: #2563eb; }
 
         /* النوافذ المنبثقة */
         #loginModal, #checkoutModal {
@@ -113,40 +100,25 @@
 </head>
 <body>
 
-    <!-- زر تغيير اللغة (يظهر في الرئيسية، المتابعة، والمتجر، ويختفي في إدارة الموظفين) -->
-    <button class="lang-switch-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
-
-    <!-- الشاشة الأولى -->
-    <div id="heroScreen">
-        <h1 class="hero-main-title" id="t_heroTitle">راكان جيمنج استديو</h1>
-        <button class="btn-continue" id="t_continueBtn" onclick="showPortal()">متابعة ⬅</button>
+    <!-- الأزرار العلوية (اللغة وتسجيل دخول الإدارة) -->
+    <div class="top-nav-buttons">
+        <button class="top-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
+        <button class="top-btn admin-login-btn" id="t_adminLoginNav" onclick="openLoginModal()">تسجيل دخول الإدارة 🔐</button>
     </div>
 
-    <!-- شاشة الاختيار -->
-    <div id="mainPortal">
-        <h2 class="portal-title" id="t_portalTitle">اختر الوجهة المطلوبة</h2>
-        <div class="portal-options">
-            <div class="portal-card store-card" onclick="openCustomerStore()">
-                <h3 id="t_storeCardTitle">🛒 تصفح المتجر</h3>
-                <p id="t_storeCardDesc">تصفح أحدث الألعاب الرقمية عبر مختلف المنصات واستمتع بتجربة تسوق سريعة ومباشرة.</p>
-                <span style="color:#10b981; font-weight:bold;" id="t_storeCardAction">دخول المتجر 🚀</span>
-            </div>
-            <div class="portal-card admin-card" onclick="openLoginModal()">
-                <h3 id="t_adminCardTitle">👥 الموظفين وإدارة اللوحة</h3>
-                <p id="t_adminCardDesc">لوحة التحكم الشاملة لإدارة الألعاب، الموظفين، سجل العملاء، ومتابعة الطلبات والمبيعات.</p>
-                <span style="color:#38bdf8; font-weight:bold;" id="t_adminCardAction">دخول الإدارة 🔐</span>
-            </div>
-        </div>
-        <button onclick="backToHero()" class="btn-back" id="t_backBtn" style="margin-top:40px;">الرجوع للرئيسية</button>
+    <!-- الشاشة الأولى (الرئيسية تودي للمتجر مباشرة) -->
+    <div id="heroScreen">
+        <h1 class="hero-main-title" id="t_heroTitle">راكان جيمنج استديو</h1>
+        <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">متابعة إلى المتجر ⬅</button>
     </div>
 
     <!-- نافذة تسجيل دخول الإدارة -->
     <div id="loginModal">
         <div class="login-box">
-            <h2>تسجيل دخول الإدارة</h2>
+            <h2 id="t_loginTitle">تسجيل دخول الإدارة</h2>
             <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
-            <button onclick="checkLogin()" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
-            <button onclick="closeLoginModal()" style="background:#334155;">إلغاء</button>
+            <button onclick="checkLogin()" id="t_loginBtn" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
+            <button onclick="closeLoginModal()" id="t_cancelBtn" style="background:#334155;">إلغاء</button>
             <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">الرجاء إدخال اسم المستخدم!</div>
         </div>
     </div>
@@ -198,7 +170,7 @@
                 <option value="ينبع">ينبع</option>
             </select>
             <button onclick="submitOrder()" id="t_confirmBtn">تأكيد وإرسال الطلب 🚀</button>
-            <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
+            <button onclick="closeCheckoutModal()" id="t_closeModalBtn" style="background:#334155; margin-top:8px;">إلغاء</button>
         </div>
     </div>
 
@@ -208,7 +180,7 @@
             <div class="store-logo-area">
                 <h1 id="t_storeHeaderTitle">⚡ متجر RAKAN STUDIOS</h1>
             </div>
-            <button class="btn-back" id="t_storeBackBtn" onclick="backToPortal()">الرئيسية ⬅</button>
+            <button class="btn-back" id="t_storeBackBtn" onclick="backToHero()">الرئيسية ⬅</button>
         </div>
         <div class="store-layout">
             <div class="store-sidebar">
@@ -236,7 +208,7 @@
             <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين والترقيات</button>
             <button class="nav-btn" onclick="switchTab('customers', event)">🏢 سجل العملاء</button>
             <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات والمبيعات</button>
-            <button class="nav-btn btn-logout" onclick="backToPortal()">الرجوع للرئيسية</button>
+            <button class="nav-btn btn-logout" onclick="backToHero()">الرجوع للرئيسية</button>
         </div>
 
         <div class="main-content">
@@ -399,15 +371,8 @@
     const translations = {
         ar: {
             heroTitle: "راكان جيمنج استديو",
-            continueBtn: "متابعة ⬅",
-            portalTitle: "اختر الوجهة المطلوبة",
-            storeCardTitle: "🛒 تصفح المتجر",
-            storeCardDesc: "تصفح أحدث الألعاب الرقمية عبر مختلف المنصات واستمتع بتجربة تسوق سريعة ومباشرة.",
-            storeCardAction: "دخول المتجر 🚀",
-            adminCardTitle: "👥 الموظفين وإدارة اللوحة",
-            adminCardDesc: "لوحة التحكم الشاملة لإدارة الألعاب، الموظفين، سجل العملاء، ومتابعة الطلبات والمبيعات.",
-            adminCardAction: "دخول الإدارة 🔐",
-            backBtn: "الرجوع للرئيسية",
+            continueBtn: "متابعة إلى المتجر ⬅",
+            adminLoginNav: "تسجيل دخول الإدارة 🔐",
             loginTitle: "تسجيل دخول الإدارة",
             loginBtn: "دخول لوحة التحكّم",
             cancelBtn: "إلغاء",
@@ -416,19 +381,13 @@
             storeHeaderTitle: "⚡ متجر RAKAN STUDIOS",
             platformsHeader: "🎮 أقسام المنصات",
             filterAll: "🔥 جميع الألعاب",
+            backBtn: "الرئيسية ⬅",
             langBtnText: "English 🌐"
         },
         en: {
             heroTitle: "Rakan Gaming Studio",
-            continueBtn: "Continue ⬅",
-            portalTitle: "Select Destination",
-            storeCardTitle: "🛒 Browse Store",
-            storeCardDesc: "Browse the latest digital games across different platforms and enjoy a fast shopping experience.",
-            storeCardAction: "Enter Store 🚀",
-            adminCardTitle: "👥 Employees & Dashboard",
-            adminCardDesc: "Comprehensive control panel to manage games, employees, customer logs, and track sales.",
-            adminCardAction: "Enter Admin 🔐",
-            backBtn: "Back to Home",
+            continueBtn: "Continue to Store ⬅",
+            adminLoginNav: "Admin Login 🔐",
             loginTitle: "Admin Login",
             loginBtn: "Enter Dashboard",
             cancelBtn: "Cancel",
@@ -437,6 +396,7 @@
             storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
             platformsHeader: "🎮 Platforms",
             filterAll: "🔥 All Games",
+            backBtn: "Home ⬅",
             langBtnText: "العربية 🌐"
         }
     };
@@ -451,14 +411,7 @@
 
         document.getElementById('t_heroTitle').innerText = t.heroTitle;
         document.getElementById('t_continueBtn').innerText = t.continueBtn;
-        document.getElementById('t_portalTitle').innerText = t.portalTitle;
-        document.getElementById('t_storeCardTitle').innerText = t.storeCardTitle;
-        document.getElementById('t_storeCardDesc').innerText = t.storeCardDesc;
-        document.getElementById('t_storeCardAction').innerText = t.storeCardAction;
-        document.getElementById('t_adminCardTitle').innerText = t.adminCardTitle;
-        document.getElementById('t_adminCardDesc').innerText = t.adminCardDesc;
-        document.getElementById('t_adminCardAction').innerText = t.adminCardAction;
-        document.getElementById('t_backBtn').innerText = t.backBtn;
+        document.getElementById('t_adminLoginNav').innerText = t.adminLoginNav;
         document.getElementById('t_loginTitle').innerText = t.loginTitle;
         document.getElementById('t_loginBtn').innerText = t.loginBtn;
         document.getElementById('t_cancelBtn').innerText = t.cancelBtn;
@@ -472,16 +425,20 @@
         document.getElementById('langBtn').innerText = t.langBtnText;
     }
 
-    function showPortal() {
+    function openCustomerStore() {
         document.getElementById('heroScreen').style.display = 'none';
-        document.getElementById('mainPortal').style.display = 'flex';
+        document.getElementById('storeWrapper').style.display = 'block';
         document.getElementById('langBtn').style.display = 'block';
+        document.getElementById('t_adminLoginNav').style.display = 'block';
+        loadStoreGames();
     }
 
     function backToHero() {
-        document.getElementById('mainPortal').style.display = 'none';
+        document.getElementById('storeWrapper').style.display = 'none';
+        document.getElementById('appWrapper').style.display = 'none';
         document.getElementById('heroScreen').style.display = 'flex';
         document.getElementById('langBtn').style.display = 'block';
+        document.getElementById('t_adminLoginNav').style.display = 'block';
     }
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -492,28 +449,15 @@
         const err = document.getElementById('loginError');
 
         if (user !== "") {
-            document.getElementById('mainPortal').style.display = 'none';
+            document.getElementById('heroScreen').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('langBtn').style.display = 'none'; // يختفي في لوحة الإدارة
+            document.getElementById('t_adminLoginNav').style.display = 'none'; // يختفي في لوحة الإدارة
             document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
         } else {
             err.style.display = 'block';
         }
-    }
-
-    function openCustomerStore() {
-        document.getElementById('mainPortal').style.display = 'none';
-        document.getElementById('storeWrapper').style.display = 'block';
-        document.getElementById('langBtn').style.display = 'block'; // يظهر في المتجر
-        loadStoreGames();
-    }
-
-    function backToPortal() {
-        document.getElementById('storeWrapper').style.display = 'none';
-        document.getElementById('appWrapper').style.display = 'none';
-        document.getElementById('mainPortal').style.display = 'flex';
-        document.getElementById('langBtn').style.display = 'block'; // يظهر في شاشة المتابعة
     }
 
     async function loadStoreGames() {
