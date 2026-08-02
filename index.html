@@ -331,29 +331,51 @@
         }
     }
 
+    // شراء اللعبة وإضافتها للطلبات والعملاء تلقائياً
     async function buyGame(title, price) {
-        const customerName = prompt("أدخل اسمك لإتمام الطلب:");
+        const customerName = prompt("أدخل اسمك الكريم لإتمام الشراء:");
         if (!customerName || customerName.trim() === "") return;
 
-        const body = {
+        const cleanName = customerName.trim();
+
+        // 1. إرسال الطلب لقسم (الطلبات والمبيعات)
+        const orderBody = {
             type: 'orders',
-            customerId: customerName.trim(),
+            customerId: cleanName,
             item: title,
             total: price || '0',
             status: 'Pending'
         };
 
+        // 2. إرسال العميل لقسم (سجل العملاء) تلقائياً
+        const customerBody = {
+            type: 'customers',
+            name: cleanName,
+            region: 'منطقة مكة المكرمة',
+            city: 'جدة',
+            phone: 'متجر إلكتروني'
+        };
+
         try {
-            const res = await fetch(API_URL, {
+            showStatus("جاري معالجة الشراء وإنشاء الطلب...");
+
+            // تنفيذ الطلب
+            await fetch(API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
+                body: JSON.stringify(orderBody)
             });
-            if (res.ok) {
-                alert("تم إرسال طلبك بنجاح، وسوف نتواصل معك في أقرب وقت.");
-            }
+
+            // تنفيذ إضافة العميل للسجل
+            await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(customerBody)
+            });
+
+            alert(`تم طلب لعبة "${title}" بنجاح يا ${cleanName}!\nتم تسجيل طلبك في قسم الطلبات وإضافتك إلى سجل العملاء.`);
         } catch (err) {
-            alert("حدث خطأ أثناء إرسال الطلب.");
+            alert("حدث خطأ أثناء إتمام الشراء.");
         }
     }
 
