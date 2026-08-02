@@ -193,43 +193,43 @@
                     <div class="form-grid">
                         <input type="text" id="c_name" placeholder="اسم العميل">
                         <select id="c_region">
-                            <option value="Makkah">منطقة مكة المكرمة</option>
-                            <option value="Riyadh">منطقة الرياض</option>
-                            <option value="Eastern Province">المنطقة الشرقية</option>
-                            <option value="Asir">منطقة عسير</option>
-                            <option value="Madinah">منطقة المدينة المنورة</option>
-                            <option value="Qassim">منطقة القصيم</option>
-                            <option value="Tabuk">منطقة تبوك</option>
-                            <option value="Hail">منطقة حائل</option>
-                            <option value="Jazan">منطقة جازان</option>
-                            <option value="Najran">منطقة نجران</option>
-                            <option value="Bahah">منطقة الباحة</option>
-                            <option value="Northern Borders">منطقة الحدود الشمالية</option>
-                            <option value="Jowf">منطقة الجوف</option>
+                            <option value="منطقة مكة المكرمة">منطقة مكة المكرمة</option>
+                            <option value="منطقة الرياض">منطقة الرياض</option>
+                            <option value="المنطقة الشرقية">المنطقة الشرقية</option>
+                            <option value="منطقة عسير">منطقة عسير</option>
+                            <option value="منطقة المدينة المنورة">منطقة المدينة المنورة</option>
+                            <option value="منطقة القصيم">منطقة القصيم</option>
+                            <option value="منطقة تبوك">منطقة تبوك</option>
+                            <option value="منطقة حائل">منطقة حائل</option>
+                            <option value="منطقة جازان">منطقة جازان</option>
+                            <option value="منطقة نجران">منطقة نجران</option>
+                            <option value="منطقة الباحة">منطقة الباحة</option>
+                            <option value="منطقة الحدود الشمالية">منطقة الحدود الشمالية</option>
+                            <option value="منطقة الجوف">منطقة الجوف</option>
                         </select>
                         <select id="c_city">
-                            <option value="Jeddah">جدة</option>
-                            <option value="Riyadh">الرياض</option>
-                            <option value="Makkah">مكة المكرمة</option>
-                            <option value="Madinah">المدينة المنورة</option>
-                            <option value="Dammam">الدمام</option>
-                            <option value="Khobar">الخبر</option>
-                            <option value="Dhahran">الظهران</option>
-                            <option value="Ahsa">الأحساء</option>
-                            <option value="Jubail">جُبيل</option>
-                            <option value="Taif">الطائف</option>
-                            <option value="Abha">أبها</option>
-                            <option value="Khamis Mushait">خميس مشيط</option>
-                            <option value="Tabuk">تبوك</option>
-                            <option value="Buraidah">بريدة</option>
-                            <option value="Onaizah">عنيزة</option>
-                            <option value="Hail">حائل</option>
-                            <option value="Jazan">جازان</option>
-                            <option value="Najran">نجران</option>
-                            <option value="Bahah">الباحة</option>
-                            <option value="Sakaka">سكاكا</option>
-                            <option value="Arar">عرعر</option>
-                            <option value="Yanbu">ينبع</option>
+                            <option value="جدة">جدة</option>
+                            <option value="الرياض">الرياض</option>
+                            <option value="مكة المكرمة">مكة المكرمة</option>
+                            <option value="المدينة المنورة">المدينة المنورة</option>
+                            <option value="الدمام">الدمام</option>
+                            <option value="الخبر">الخبر</option>
+                            <option value="الظهران">الظهران</option>
+                            <option value="الأحساء">الأحساء</option>
+                            <option value="الجبيل">الجبيل</option>
+                            <option value="الطائف">الطائف</option>
+                            <option value="أبها">أبها</option>
+                            <option value="خميس مشيط">خميس مشيط</option>
+                            <option value="تبوك">تبوك</option>
+                            <option value="بريدة">بريدة</option>
+                            <option value="عنيزة">عنيزة</option>
+                            <option value="حائل">حائل</option>
+                            <option value="جازان">جازان</option>
+                            <option value="نجران">نجران</option>
+                            <option value="الباحة">الباحة</option>
+                            <option value="سكاكا">سكاكا</option>
+                            <option value="عرعر">عرعر</option>
+                            <option value="ينبع">ينبع</option>
                         </select>
                         <input type="text" id="c_phone" placeholder="رقم الهاتف">
                     </div>
@@ -402,19 +402,19 @@
                 row = `<td>${item.title || '-'}</td><td>${item.platform || '-'}</td><td>$${item.price || '0'}</td><td>${item.genre || 'General'}</td>
                        <td>
                            <button class="btn-promote" onclick="editData('games', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.genre || 'General'}')">حذف</button>
+                           <button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'employees') {
                 row = `<td>${item.name || '-'}</td><td><strong style="color:#38bdf8">${item.role || 'Senior Developer'}</strong></td><td>$${item.salary || '0'}</td>
                        <td>
                            <button class="btn-promote" onclick="editData('employees', '${item.id}')">ترقية / تعديل</button>
-                           <button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.role || 'Senior Developer'}')">حذف</button>
+                           <button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'customers') {
-                row = `<td>${item.name || '-'}</td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'Jeddah'}</td><td>${item.phone || '-'}</td>
+                row = `<td>${item.name || '-'}</td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'جدة'}</td><td>${item.phone || '-'}</td>
                        <td>
                            <button class="btn-promote" onclick="editData('customers', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.city || 'Jeddah'}')">حذف</button>
+                           <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
                 row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
@@ -449,8 +449,8 @@
         } else if (type === 'customers') {
             document.getElementById('c_id').value = item.id;
             document.getElementById('c_name').value = item.name || '';
-            document.getElementById('c_region').value = item.region || 'Makkah';
-            document.getElementById('c_city').value = item.city || 'Jeddah';
+            document.getElementById('c_region').value = item.region || 'منطقة مكة المكرمة';
+            document.getElementById('c_city').value = item.city || 'جدة';
             document.getElementById('c_phone').value = item.phone || '';
             document.getElementById('c_btn').innerText = 'حفظ التعديلات';
             document.getElementById('c_cancel').style.display = 'inline-block';
