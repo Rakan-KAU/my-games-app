@@ -3,109 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Rakan Gaming Studio | منصة الألعاب المتطورة</title>
+    <title>⚡ Rakan Gaming Studios</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #030712; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* واجهة الترحيب الرئيسية الفخمة */
+        /* الشاشة الرئيسية البسيطة والفخمة جداً */
         #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
+            background: radial-gradient(circle at center, #131b2e 0%, #0b0f19 100%);
             display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px;
         }
-        .hero-logo { font-size: 20px; font-weight: 800; color: #10b981; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; background: rgba(16, 185, 129, 0.1); padding: 8px 24px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
-        .hero-title { font-size: 56px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 0 40px rgba(16, 185, 129, 0.4); }
-        .hero-subtitle { font-size: 18px; color: #94a3b8; margin-bottom: 40px; max-width: 600px; line-height: 1.6; }
-        .btn-group { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-        
-        .btn-store { padding: 16px 36px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); }
-        .btn-store:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(16, 185, 129, 0.6); }
-        
-        .btn-admin { padding: 16px 36px; background: linear-gradient(135deg, #0284c7, #1e40af); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(2, 132, 199, 0.4); }
-        .btn-admin:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(2, 132, 199, 0.6); }
+        .hero-main-title { font-size: 64px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 30px; text-shadow: 0 0 40px rgba(16, 185, 129, 0.4); }
+        .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-continue:hover { transform: translateY(-4px); box-shadow: 0 15px 45px rgba(16, 185, 129, 0.6); }
 
-        /* النوافذ المنبثقة (Modals) */
+        /* شاشة الاختيار الرئيسية (المتجر يمين والموظفين يسار) */
+        #mainPortal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0f19; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 999; padding: 20px;
+        }
+        .portal-title { font-size: 36px; font-weight: 900; color: #38bdf8; margin-bottom: 50px; text-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
+        .portal-options { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 800px; }
+        
+        .portal-card {
+            flex: 1; min-width: 300px; background: #131b2e; border: 1px solid #1f2937; border-radius: 20px; padding: 40px 30px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .portal-card:hover { border-color: #10b981; transform: translateY(-6px); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2); }
+        .portal-card h3 { font-size: 24px; color: #fff; margin-bottom: 15px; font-weight: 800; }
+        .portal-card p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        .portal-card.store-card { background: linear-gradient(135deg, #131b2e, #064e3b); border-color: #059669; }
+        .portal-card.admin-card { background: linear-gradient(135deg, #131b2e, #1e3a8a); border-color: #2563eb; }
+
+        /* النوافذ المنبثقة */
         #loginModal, #checkoutModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.9); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px);
+            background: rgba(11, 15, 25, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px);
         }
         .login-box {
-            background: #111827; border: 1px solid #1f2937; padding: 40px; border-radius: 20px;
-            width: 100%; max-width: 440px; text-align: center; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            background: #131b2e; border: 1px solid #1f2937; padding: 40px; border-radius: 20px;
+            width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
         }
-        .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 24px; font-weight: 800; }
+        .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 22px; font-weight: 800; }
         .login-box input, .login-box select {
-            width: 100%; padding: 13px 18px; margin-bottom: 15px; border-radius: 10px;
-            border: 1px solid #374151; background: #030712; color: #fff; font-size: 15px; outline: none; text-align: right;
-            transition: 0.3s;
+            width: 100%; padding: 13px 16px; margin-bottom: 15px; border-radius: 10px;
+            border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none; text-align: right;
         }
-        .login-box input:focus, .login-box select:focus { border-color: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
-        .login-box button { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        .login-box button:hover { background: #059669; }
-        .login-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
+        .login-box button { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
 
-        /* متجر العملاء الفخم */
-        #storeWrapper { display: none; padding: 40px; max-width: 1300px; margin: 0 auto; width: 100%; }
-        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid #1f2937; padding-bottom: 20px; }
-        .store-header h1 { font-size: 32px; color: #10b981; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-        .btn-back { background: #1f2937; color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-back:hover { background: #374151; }
-        
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        .game-card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        .game-card:hover { border-color: #10b981; transform: translateY(-5px); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15); }
-        .game-title { font-size: 22px; font-weight: bold; color: #ffffff; margin-bottom: 10px; }
-        .game-badge { background: #030712; color: #38bdf8; padding: 6px 12px; border-radius: 8px; font-size: 13px; display: inline-block; width: fit-content; margin-bottom: 20px; border: 1px solid #1f2937; }
-        .game-price { font-size: 24px; font-weight: 900; color: #10b981; margin-bottom: 20px; }
-        .btn-buy { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 13px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
-        .btn-buy:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        /* متجر العملاء بالتصنيفات الكثيرة والواسعة */
+        #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 20px; }
+        .store-logo-area h1 { font-size: 26px; color: #10b981; font-weight: 900; }
+        .btn-back { background: #334155; color: white; border: none; padding: 10px 22px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-back:hover { background: #475569; }
 
-        /* لوحة تحكم الإدارة الفخمة */
+        .store-layout { display: flex; gap: 30px; }
+        .store-sidebar { width: 280px; background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 25px; height: fit-content; }
+        .store-sidebar h3 { color: #38bdf8; font-size: 16px; margin-bottom: 15px; font-weight: 800; border-bottom: 1px solid #1f2937; padding-bottom: 10px; }
+        .filter-btn { display: block; width: 100%; background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
+        .filter-btn:hover, .filter-btn.active { background: #1f2937; color: #10b981; border-right: 3px solid #10b981; }
+
+        .store-content { flex: 1; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .game-card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .game-card:hover { border-color: #10b981; transform: translateY(-4px); }
+        .game-title { font-size: 20px; font-weight: bold; color: #ffffff; margin-bottom: 8px; }
+        .game-badge { background: #0b0f19; color: #38bdf8; padding: 5px 10px; border-radius: 6px; font-size: 12px; display: inline-block; width: fit-content; margin-bottom: 15px; border: 1px solid #1f2937; }
+        .game-price { font-size: 22px; font-weight: 900; color: #10b981; margin-bottom: 15px; }
+        .btn-buy { background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-buy:hover { background: #059669; }
+
+        /* لوحة تحكم الإدارة */
         #appWrapper { display: none; flex: 1; width: 100%; }
-        .sidebar { width: 280px; background: #111827; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 12px; }
-        .sidebar h2 { color: #38bdf8; font-size: 18px; text-align: center; font-weight: 900; letter-spacing: 1px; }
-        .admin-badge { text-align: center; color: #10b981; font-size: 13px; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #1f2937; background: rgba(16, 185, 129, 0.05); border-radius: 8px; padding-top: 5px; }
-        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 14px 18px; border-radius: 10px; text-align: right; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .nav-btn:hover, .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 4px solid #38bdf8; }
-        .btn-logout { margin-top: auto; background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.2); }
+        .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 900; letter-spacing: 1px; }
+        .admin-badge { text-align: center; color: #10b981; font-size: 12px; font-weight: 700; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 1px solid #1f2937; background: rgba(16, 185, 129, 0.05); border-radius: 6px; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
+        .btn-logout { margin-top: auto; background: rgba(239, 68, 68, 0.1); color: #fca5a5; }
 
-        .main-content { flex: 1; padding: 40px; background: #030712; }
-        .card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
-        .main-content input, .main-content select { padding: 13px 16px; border-radius: 10px; border: 1px solid #374151; background: #030712; color: #fff; font-size: 15px; width: 100%; outline: none; }
-        .main-content input:focus, .main-content select:focus { border-color: #38bdf8; }
-        .btn-add { background: #059669; color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-add:hover { background: #047857; }
-        .btn-cancel { background: #475569; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; display: none; margin-right: 10px; }
+        .main-content { flex: 1; padding: 35px; background: #0b0f19; }
+        .card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; margin-bottom: 22px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 15px; }
+        input, select { padding: 11px 14px; border-radius: 8px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; width: 100%; outline: none; }
+        .btn-add { background: #059669; color: white; border: none; padding: 11px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-cancel { background: #475569; color: white; border: none; padding: 11px 18px; border-radius: 8px; cursor: pointer; display: none; margin-right: 10px; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 16px; text-align: right; border-bottom: 1px solid #1f2937; font-size: 15px; }
-        th { background: #030712; color: #38bdf8; font-weight: 700; }
-        tr:hover { background: rgba(31, 41, 55, 0.5); }
-        .btn-promote { background: #d97706; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; margin-left: 6px; transition: 0.2s; }
-        .btn-promote:hover { filter: brightness(1.1); }
-        .btn-del { background: #dc2626; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .btn-del:hover { background: #b91c1c; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid #1f2937; font-size: 14px; }
+        th { background: #0b0f19; color: #38bdf8; font-weight: 700; }
+        tr:hover { background: #1a2234; }
+        .btn-promote { background: #d97706; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 5px; }
+        .btn-del { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
 
-        .status { padding: 14px 20px; border-radius: 10px; margin-bottom: 25px; font-size: 15px; display: none; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .status { padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; font-weight: 600; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .header h1 { font-size: 26px; color: #ffffff; font-weight: 800; margin-bottom: 20px; }
+        .header h1 { font-size: 24px; color: #fff; font-weight: 800; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- الواجهة الرئيسية الفخمة -->
+    <!-- الشاشة الأولى البسيطة (راكان جيمنج استديو + زر متابعة) -->
     <div id="heroScreen">
-        <div class="hero-logo">⚡ Rakan Gaming Studio</div>
-        <h1 class="hero-title">منصة الألعاب والترفيه المتطورة</h1>
-        <p class="hero-subtitle">استكشف أقوى الألعاب الحديثة، أدر فريقك وعملاءك، وتابع طلباتك بكل سهولة واحترافية من مكان واحد.</p>
-        <div class="btn-group">
-            <button class="btn-store" onclick="openCustomerStore()">🛒 تصفح المتجر والطلب</button>
-            <button class="btn-admin" onclick="openLoginModal()">🔐 لوحة التحكم الإدارية</button>
+        <h1 class="hero-main-title">راكان جيمنج استديو</h1>
+        <button class="btn-continue" onclick="showPortal()">متابعة ⬅</button>
+    </div>
+
+    <!-- شاشة الاختيار (متجر يمين وموظفين يسار) -->
+    <div id="mainPortal">
+        <h2 class="portal-title">اختر الوجهة المطلوبة</h2>
+        <div class="portal-options">
+            <div class="portal-card store-card" onclick="openCustomerStore()">
+                <h3>🛒 تصفح المتجر</h3>
+                <p>تصفح أحدث الألعاب الرقمية عبر مختلف المنصات واستمتع بتجربة تسوق سريعة ومباشرة.</p>
+                <span style="color:#10b981; font-weight:bold;">دخول المتجر 🚀</span>
+            </div>
+            <div class="portal-card admin-card" onclick="openLoginModal()">
+                <h3>👥 الموظفين وإدارة اللوحة</h3>
+                <p>لوحة التحكم الشاملة لإدارة الألعاب، الموظفين، سجل العملاء، ومتابعة الطلبات والمبيعات.</p>
+                <span style="color:#38bdf8; font-weight:bold;">دخول الإدارة 🔐</span>
+            </div>
         </div>
+        <button onclick="backToHero()" class="btn-back" style="margin-top:40px;">الرجوع للرئيسية</button>
     </div>
 
     <!-- نافذة تسجيل دخول الإدارة -->
@@ -114,16 +135,16 @@
             <h2>تسجيل دخول الإدارة</h2>
             <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
             <button onclick="checkLogin()" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
-            <button onclick="closeLoginModal()" style="background:#374151;">إلغاء</button>
-            <div id="loginError" class="login-error">الرجاء إدخال اسم المستخدم!</div>
+            <button onclick="closeLoginModal()" style="background:#334155;">إلغاء</button>
+            <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">الرجاء إدخال اسم المستخدم!</div>
         </div>
     </div>
 
-    <!-- نافذة إتمام الشراء للعميل (اختيار المدينة والمنطقة ورقم الهاتف) -->
+    <!-- نافذة إتمام الشراء للعميل -->
     <div id="checkoutModal">
         <div class="login-box">
-            <h2>🛒 إتمام شراء اللعبة</h2>
-            <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:20px; font-size:16px;"></p>
+            <h2>🛒 إتمام طلب الشراء</h2>
+            <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
             <input type="text" id="chk_name" placeholder="الاسم الكامل">
             <input type="text" id="chk_phone" placeholder="رقم الهاتف (مثال: 05xxxxxxxx)">
             <select id="chk_region">
@@ -165,32 +186,51 @@
                 <option value="عرعر">عرعر</option>
                 <option value="ينبع">ينبع</option>
             </select>
-            <button onclick="submitOrder()">تأكيد الشراء 🚀</button>
-            <button onclick="closeCheckoutModal()" style="background:#374151; margin-top:10px;">إلغاء</button>
+            <button onclick="submitOrder()">تأكيد وإرسال الطلب 🚀</button>
+            <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
         </div>
     </div>
 
-    <!-- متجر العملاء -->
+    <!-- متجر العملاء مع الأقسام المتعددة -->
     <div id="storeWrapper">
         <div class="store-header">
-            <h1>⚡ متجر Rakan Gaming</h1>
-            <button class="btn-back" onclick="logout()">الرئيسية ⬅</button>
+            <div class="store-logo-area">
+                <h1>⚡ متجر RAKAN STUDIOS</h1>
+            </div>
+            <button class="btn-back" onclick="backToPortal()">الرئيسية ⬅</button>
         </div>
-        <div class="games-grid" id="store_games_grid">
-            <p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>
+        <div class="store-layout">
+            <div class="store-sidebar">
+                <h3>🎮 أقسام المنصات</h3>
+                <button class="filter-btn active" onclick="filterPlatform('All', event)">🔥 جميع الألعاب</button>
+                <button class="filter-btn" onclick="filterPlatform('PlayStation 5', event)">🎮 PlayStation 5</button>
+                <button class="filter-btn" onclick="filterPlatform('PC Gaming', event)">💻 PC Gaming</button>
+                <button class="filter-btn" onclick="filterPlatform('Xbox Series X', event)">🕹️ Xbox Series X</button>
+                <button class="filter-btn" onclick="filterPlatform('Multi-Platform', event)">🌐 Multi-Platform (متعدد)</button>
+                <h3 style="margin-top:20px;">🏷️ التصنيفات</h3>
+                <button class="filter-btn" onclick="filterGenre('Action', event)">💥 Action</button>
+                <button class="filter-btn" onclick="filterGenre('Sports / Racing', event)">🏎️ Sports & Racing</button>
+                <button class="filter-btn" onclick="filterGenre('RPG', event)">🛡️ RPG</button>
+                <button class="filter-btn" onclick="filterGenre('Strategy', event)">♟️ Strategy</button>
+            </div>
+            <div class="store-content">
+                <div class="games-grid" id="store_games_grid">
+                    <p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- لوحة تحكم الإدارة -->
     <div id="appWrapper">
         <div class="sidebar">
-            <h2>⚡ RAKAN STUDIO</h2>
+            <h2>⚡ RAKAN STUDIOS</h2>
             <div class="admin-badge">👑 مسؤول النظام (Admin)</div>
             <button class="nav-btn active" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
             <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين والترقيات</button>
             <button class="nav-btn" onclick="switchTab('customers', event)">🏢 سجل العملاء</button>
             <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات والمبيعات</button>
-            <button class="nav-btn btn-logout" onclick="logout()">تسجيل الخروج</button>
+            <button class="nav-btn btn-logout" onclick="backToPortal()">الرجوع للرئيسية</button>
         </div>
 
         <div class="main-content">
@@ -346,7 +386,18 @@
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let currentTab = 'games';
     let loadedData = {};
+    let allStoreGames = [];
     let selectedGameForCheckout = null;
+
+    function showPortal() {
+        document.getElementById('heroScreen').style.display = 'none';
+        document.getElementById('mainPortal').style.display = 'flex';
+    }
+
+    function backToHero() {
+        document.getElementById('mainPortal').style.display = 'none';
+        document.getElementById('heroScreen').style.display = 'flex';
+    }
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
     function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
@@ -356,7 +407,7 @@
         const err = document.getElementById('loginError');
 
         if (user !== "") {
-            document.getElementById('heroScreen').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
@@ -366,9 +417,15 @@
     }
 
     function openCustomerStore() {
-        document.getElementById('heroScreen').style.display = 'none';
+        document.getElementById('mainPortal').style.display = 'none';
         document.getElementById('storeWrapper').style.display = 'block';
         loadStoreGames();
+    }
+
+    function backToPortal() {
+        document.getElementById('storeWrapper').style.display = 'none';
+        document.getElementById('appWrapper').style.display = 'none';
+        document.getElementById('mainPortal').style.display = 'flex';
     }
 
     async function loadStoreGames() {
@@ -376,31 +433,56 @@
         grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب...</p>';
         try {
             const res = await fetch(`${API_URL}?type=games`, { cache: "no-store" });
-            const games = await res.json();
-            grid.innerHTML = '';
-            
-            if (!games || games.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">لا توجد ألعاب متاحة حالياً.</p>';
-                return;
-            }
-
-            games.forEach(game => {
-                grid.innerHTML += `
-                    <div class="game-card">
-                        <div>
-                            <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
-                            <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
-                        </div>
-                        <div>
-                            <div class="game-price">$${game.price || '0'}</div>
-                            <button class="btn-buy" onclick="openCheckout('${game.title}', '${game.price}')">شراء الآن 🚀</button>
-                        </div>
-                    </div>
-                `;
-            });
+            allStoreGames = await res.json();
+            renderStoreGames(allStoreGames);
         } catch (err) {
             grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#ef4444;">حدث خطأ في تحميل الألعاب</p>';
         }
+    }
+
+    function filterPlatform(platform, evt) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        if (evt) evt.target.classList.add('active');
+
+        if (platform === 'All') {
+            renderStoreGames(allStoreGames);
+        } else {
+            const filtered = allStoreGames.filter(g => (g.platform || '').toLowerCase() === platform.toLowerCase());
+            renderStoreGames(filtered);
+        }
+    }
+
+    function filterGenre(genre, evt) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        if (evt) evt.target.classList.add('active');
+
+        const filtered = allStoreGames.filter(g => (g.genre || '').toLowerCase() === genre.toLowerCase());
+        renderStoreGames(filtered);
+    }
+
+    function renderStoreGames(games) {
+        const grid = document.getElementById('store_games_grid');
+        grid.innerHTML = '';
+
+        if (!games || games.length === 0) {
+            grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#94a3b8;">لا توجد ألعاب متاحة في هذا القسم حالياً.</p>';
+            return;
+        }
+
+        games.forEach(game => {
+            grid.innerHTML += `
+                <div class="game-card">
+                    <div>
+                        <div class="game-title">${game.title || 'لعبة بدون عنوان'}</div>
+                        <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
+                    </div>
+                    <div>
+                        <div class="game-price">$${game.price || '0'}</div>
+                        <button class="btn-buy" onclick="openCheckout('${game.title}', '${game.price}')">شراء الآن 🚀</button>
+                    </div>
+                </div>
+            `;
+        });
     }
 
     function openCheckout(title, price) {
@@ -456,13 +538,11 @@
                 body: JSON.stringify(customerBody)
             });
 
-            alert(`تم إتمام طلبك بنجاح يا ${name}!\nتم إرسال الطلب وحفظ بياناتك في سجل العملاء.`);
+            alert(`تم إتمام طلبك بنجاح يا ${name}!\nتم تسجيل الطلب وحفظ بياناتك في سجل العملاء.`);
         } catch (err) {
             alert("حدث خطأ أثناء إتمام الشراء.");
         }
     }
-
-    function logout() { location.reload(); }
 
     function showStatus(msg, isErr = false) {
         const el = document.getElementById('statusMsg');
