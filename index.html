@@ -80,7 +80,6 @@
         .btn-add { background: #059669; color: white; border: none; padding: 11px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-cancel { background: #475569; color: white; border: none; padding: 11px 18px; border-radius: 8px; cursor: pointer; display: none; margin-right: 10px; }
 
-        /* ستايل لوحة الإحصائيات الرئيسية */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 15px; }
         .dash-card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 25px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: 0.3s; }
         .dash-card:hover { border-color: #38bdf8; transform: translateY(-3px); }
@@ -202,7 +201,6 @@
         <div class="sidebar">
             <h2>⚡ RAKAN STUDIOS</h2>
             <div class="admin-badge">👑 مسؤول النظام (Admin)</div>
-            <!-- زر لوحة التحليلات والإحصائيات الرئيسية كواجهة افتتاحية -->
             <button class="nav-btn active" onclick="switchTab('dashboard', event)">📊 لوحة الإحصائيات الشاملة</button>
             <button class="nav-btn" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
             <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين والترقيات</button>
@@ -214,7 +212,6 @@
         <div class="main-content">
             <div id="statusMsg" class="status"></div>
 
-            <!-- 1. واجهة لوحة الإحصائيات الشاملة (تظهر في الوجه مباشرة أول ما يدخل الإدارة) -->
             <div id="dashboard" class="tab-content active">
                 <div class="header">
                     <h1>📊 لوحة تحليلات وإحصائيات النظام</h1>
@@ -244,7 +241,6 @@
                 </div>
             </div>
 
-            <!-- 2. قسم إدارة الألعاب -->
             <div id="games" class="tab-content">
                 <div class="header"><h1>🎮 إدارة الألعاب</h1></div>
                 <div class="card">
@@ -278,7 +274,6 @@
                 </div>
             </div>
 
-            <!-- 3. قسم الموظفين -->
             <div id="employees" class="tab-content">
                 <div class="header"><h1>👥 الموظفين والترقيات الوظيفية</h1></div>
                 <div class="card">
@@ -307,7 +302,6 @@
                 </div>
             </div>
 
-            <!-- 4. قسم العملاء -->
             <div id="customers" class="tab-content">
                 <div class="header"><h1>🏢 سجل العملاء</h1></div>
                 <div class="card">
@@ -366,7 +360,6 @@
                 </div>
             </div>
 
-            <!-- 5. قسم الطلبات -->
             <div id="orders" class="tab-content">
                 <div class="header"><h1>📦 إدارة الطلبات والمبيعات</h1></div>
                 <div class="card">
@@ -401,6 +394,7 @@
     let allStoreGames = [];
     let selectedGameForCheckout = null;
     let currentLang = 'ar';
+    const SECURITY_PIN = "1234"; // رمز التحقق المطلوب لتعديل أو حذف البيانات
 
     const translations = {
         ar: {
@@ -522,15 +516,12 @@
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('topNavBtns').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
-            
-            // فتح لوحة الإحصائيات الشاملة في الوجه مباشرة
             switchTab('dashboard');
         } else {
             err.style.display = 'block';
         }
     }
 
-    // جلب جميع إحصائيات الموقع الكلية من السحابة وتحديثها في لوحة التحكم الرئيسية
     async function fetchAllGlobalStats() {
         try {
             const [gRes, eRes, cRes, oRes] = await Promise.all([
@@ -687,7 +678,6 @@
         if (evt) {
             evt.target.classList.add('active');
         } else {
-            // تفعيل الزر المرتبط برمجياً لو تم استدعاؤها بدون حدث
             const btnIndex = tab === 'dashboard' ? 0 : tab === 'games' ? 1 : tab === 'employees' ? 2 : tab === 'customers' ? 3 : 4;
             const buttons = document.querySelectorAll('.sidebar .nav-btn');
             if (buttons[btnIndex]) buttons[btnIndex].classList.add('active');
@@ -726,30 +716,51 @@
             if (type === 'games') {
                 row = `<td>${item.title || '-'}</td><td>${item.platform || '-'}</td><td>$${item.price || '0'}</td><td>${item.genre || 'General'}</td>
                        <td>
-                           <button class="btn-promote" onclick="editData('games', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('games', '${item.id}', '${item.id}')">حذف</button>
+                           <button class="btn-promote" onclick="editDataWithPin('games', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteDataWithPin('games', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'employees') {
                 row = `<td>${item.name || '-'}</td><td><strong style="color:#38bdf8">${item.role || 'Senior Developer'}</strong></td><td>$${item.salary || '0'}</td>
                        <td>
-                           <button class="btn-promote" onclick="editData('employees', '${item.id}')">ترقية / تعديل</button>
-                           <button class="btn-del" onclick="deleteData('employees', '${item.id}', '${item.id}')">حذف</button>
+                           <button class="btn-promote" onclick="editDataWithPin('employees', '${item.id}')">ترقية / تعديل</button>
+                           <button class="btn-del" onclick="deleteDataWithPin('employees', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'customers') {
                 row = `<td>${item.name || '-'}</td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'جدة'}</td><td>${item.phone || '-'}</td>
                        <td>
-                           <button class="btn-promote" onclick="editData('customers', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('customers', '${item.id}', '${item.id}')">حذف</button>
+                           <button class="btn-promote" onclick="editDataWithPin('customers', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteDataWithPin('customers', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
                 row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
                        <td>
-                           <button class="btn-promote" onclick="editData('orders', '${item.id}')">تعديل</button>
-                           <button class="btn-del" onclick="deleteData('orders', '${item.id}', '${item.id}')">حذف</button>
+                           <button class="btn-promote" onclick="editDataWithPin('orders', '${item.id}')">تعديل</button>
+                           <button class="btn-del" onclick="deleteDataWithPin('orders', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             }
             tbody.innerHTML += `<tr>${row}</tr>`;
         });
+    }
+
+    // دوظائف رمز التحقق (PIN) للتعديل والحذف
+    function editDataWithPin(type, id) {
+        const pin = prompt("🔐 يرجى إدخال رمز التحقق لتعديل البيانات (رمز افتراضي: 1234):");
+        if (pin === null) return;
+        if (pin !== SECURITY_PIN) {
+            alert("❌ رمز التحقق غير صحيح!");
+            return;
+        }
+        editData(type, id);
+    }
+
+    function deleteDataWithPin(type, id, pkValue) {
+        const pin = prompt("🔐 يرجى إدخال رمز التحقق لحذف البيانات (رمز افتراضي: 1234):");
+        if (pin === null) return;
+        if (pin !== SECURITY_PIN) {
+            alert("❌ رمز التحقق غير صحيح!");
+            return;
+        }
+        deleteData(type, id, pkValue);
     }
 
     function editData(type, id) {
