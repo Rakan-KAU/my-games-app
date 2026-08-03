@@ -394,7 +394,7 @@
     let allStoreGames = [];
     let selectedGameForCheckout = null;
     let currentLang = 'ar';
-    const SECURITY_PIN = "1234"; // رمز التحقق المطلوب لتعديل أو حذف البيانات
+    const SECURITY_PIN = "1234";
 
     const translations = {
         ar: {
@@ -742,9 +742,8 @@
         });
     }
 
-    // دوظائف رمز التحقق (PIN) للتعديل والحذف
     function editDataWithPin(type, id) {
-        const pin = prompt("🔐 يرجى إدخال رمز التحقق لتعديل البيانات (رمز افتراضي: 1234):");
+        const pin = prompt("🔐 يرجى إدخال رمز التحقق لتعديل البيانات:");
         if (pin === null) return;
         if (pin !== SECURITY_PIN) {
             alert("❌ رمز التحقق غير صحيح!");
@@ -754,7 +753,7 @@
     }
 
     function deleteDataWithPin(type, id, pkValue) {
-        const pin = prompt("🔐 يرجى إدخال رمز التحقق لحذف البيانات (رمز افتراضي: 1234):");
+        const pin = prompt("🔐 يرجى إدخال رمز التحقق لحذف البيانات:");
         if (pin === null) return;
         if (pin !== SECURITY_PIN) {
             alert("❌ رمز التحقق غير صحيح!");
