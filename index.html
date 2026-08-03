@@ -105,12 +105,12 @@
         <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">متابعة إلى المتجر ⬅</button>
     </div>
 
-    <!-- نافذة تسجيل دخول الإدارة (اسم المستخدم وكلمة المرور مخفية بنقاط) -->
+    <!-- نافذة تسجيل دخول الإدارة (النصوص التوضيحية خالية تماماً من البيانات الحساسة) -->
     <div id="loginModal">
         <div class="login-box">
             <h2 id="t_loginTitle">تسجيل دخول الإدارة</h2>
-            <input type="password" id="username" placeholder="اسم المستخدم (Rakan)">
-            <input type="password" id="password" placeholder="كلمة المرور (Rakan12345)">
+            <input type="text" id="username" placeholder="اسم المستخدم">
+            <input type="password" id="password" placeholder="كلمة المرور">
             <button onclick="checkLogin()" id="t_loginBtn" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
             <button onclick="closeLoginModal()" id="t_cancelBtn" style="background:#334155;">إلغاء</button>
             <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">اسم المستخدم أو كلمة المرور غير صحيحة!</div>
@@ -584,7 +584,6 @@
                 body: JSON.stringify(customerBody)
             });
 
-            // الرسالة الجديدة بعد الطلب كما طلبت
             alert(`تم استلام طلبك بنجاح! شكراً لك على الطلب من Rakan Gaming Studios`);
         } catch (err) {
             alert("حدث خطأ أثناء إتمام الشراء.");
