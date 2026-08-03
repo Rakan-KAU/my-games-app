@@ -8,7 +8,6 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* الأزرار العلوية */
         .top-nav-buttons {
             position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 10px;
         }
@@ -20,7 +19,6 @@
         .admin-login-btn { background: #0284c7; color: white; border: none; }
         .admin-login-btn:hover { background: #0369a1; color: white; }
 
-        /* الشاشة الرئيسية الأولى */
         #heroScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #131b2e 0%, #0b0f19 100%);
@@ -30,7 +28,6 @@
         .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-continue:hover { transform: translateY(-4px); box-shadow: 0 15px 45px rgba(16, 185, 129, 0.6); }
 
-        /* النوافذ المنبثقة */
         #loginModal, #checkoutModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(11, 15, 25, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px);
@@ -46,7 +43,6 @@
         }
         .login-box button { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
 
-        /* متجر العملاء */
         #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 20px; }
         .store-logo-area h1 { font-size: 26px; color: #10b981; font-weight: 900; }
@@ -69,14 +65,13 @@
         .btn-buy { background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
         .btn-buy:hover { background: #059669; }
 
-        /* لوحة تحكم الإدارة */
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
         .sidebar h2 { color: #38bdf8; font-size: 17px; text-align: center; font-weight: 900; letter-spacing: 1px; }
         .admin-badge { text-align: center; color: #10b981; font-size: 12px; font-weight: 700; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 1px solid #1f2937; background: rgba(16, 185, 129, 0.05); border-radius: 6px; }
         .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .nav-btn:hover, .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
-        .btn-logout { margin-top: auto; background: rgba(239, 68, 68, 0.1); color: #fca5a5; }
+        .btn-logout { margin-top: auto; background: rgba(239, 68, 68, 0.1); color: #fca5a5; cursor: pointer; }
 
         .main-content { flex: 1; padding: 35px; background: #0b0f19; }
         .card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; margin-bottom: 22px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
@@ -100,19 +95,16 @@
 </head>
 <body>
 
-    <!-- الأزرار العلوية -->
-    <div class="top-nav-buttons">
+    <div class="top-nav-buttons" id="topNavBtns">
         <button class="top-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
         <button class="top-btn admin-login-btn" id="t_adminLoginNav" onclick="openLoginModal()">تسجيل دخول الإدارة 🔐</button>
     </div>
 
-    <!-- الشاشة الأولى -->
     <div id="heroScreen">
         <h1 class="hero-main-title" id="t_heroTitle">راكان جيمنج استديو</h1>
         <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">متابعة إلى المتجر ⬅</button>
     </div>
 
-    <!-- نافذة تسجيل دخول الإدارة (اسم المستخدم وكلمة المرور) -->
     <div id="loginModal">
         <div class="login-box">
             <h2 id="t_loginTitle">تسجيل دخول الإدارة</h2>
@@ -124,7 +116,6 @@
         </div>
     </div>
 
-    <!-- نافذة إتمام الشراء للعميل -->
     <div id="checkoutModal">
         <div class="login-box">
             <h2 id="t_checkoutTitle">🛒 إتمام طلب الشراء</h2>
@@ -175,7 +166,6 @@
         </div>
     </div>
 
-    <!-- متجر العملاء -->
     <div id="storeWrapper">
         <div class="store-header">
             <div class="store-logo-area">
@@ -200,7 +190,6 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الإدارة -->
     <div id="appWrapper">
         <div class="sidebar">
             <h2>⚡ RAKAN STUDIOS</h2>
@@ -209,7 +198,7 @@
             <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين والترقيات</button>
             <button class="nav-btn" onclick="switchTab('customers', event)">🏢 سجل العملاء</button>
             <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات والمبيعات</button>
-            <button class="nav-btn btn-logout" onclick="backToHero()">الرجوع للرئيسية</button>
+            <button class="nav-btn btn-logout" onclick="logoutAdmin()">تسجيل الخروج</button>
         </div>
 
         <div class="main-content">
@@ -402,6 +391,27 @@
         }
     };
 
+    // فحص الجلسة عند فتح الصفحة (منع الخروج عند الريفرش)
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedView = sessionStorage.getItem('activeView');
+        const savedTab = sessionStorage.getItem('activeTab');
+
+        if (savedView === 'store') {
+            openCustomerStore(true);
+        } else if (savedView === 'admin') {
+            document.getElementById('heroScreen').style.display = 'none';
+            document.getElementById('topNavBtns').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'flex';
+            if (savedTab) {
+                currentTab = savedTab;
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+                document.getElementById(savedTab).classList.add('active');
+            }
+            loadData(currentTab);
+        }
+    });
+
     function toggleLanguage() {
         currentLang = (currentLang === 'ar') ? 'en' : 'ar';
         const t = translations[currentLang];
@@ -426,20 +436,29 @@
         document.getElementById('langBtn').innerText = t.langBtnText;
     }
 
-    function openCustomerStore() {
+    function openCustomerStore(isReload = false) {
+        if(!isReload) sessionStorage.setItem('activeView', 'store');
         document.getElementById('heroScreen').style.display = 'none';
         document.getElementById('storeWrapper').style.display = 'block';
+        document.getElementById('topNavBtns').style.display = 'flex';
         document.getElementById('langBtn').style.display = 'block';
         document.getElementById('t_adminLoginNav').style.display = 'block';
         loadStoreGames();
     }
 
     function backToHero() {
+        sessionStorage.clear();
         document.getElementById('storeWrapper').style.display = 'none';
         document.getElementById('appWrapper').style.display = 'none';
         document.getElementById('heroScreen').style.display = 'flex';
+        document.getElementById('topNavBtns').style.display = 'flex';
         document.getElementById('langBtn').style.display = 'block';
         document.getElementById('t_adminLoginNav').style.display = 'block';
+    }
+
+    function logoutAdmin() {
+        sessionStorage.clear();
+        backToHero();
     }
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -450,12 +469,12 @@
         const pass = document.getElementById('password').value.trim();
         const err = document.getElementById('loginError');
 
-        // التحقق من اسم المستخدم (Rakan) وكلمة المرور (Rakan12345)
         if (user === "Rakan" && pass === "Rakan12345") {
+            sessionStorage.setItem('activeView', 'admin');
+            sessionStorage.setItem('activeTab', 'games');
             document.getElementById('heroScreen').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('langBtn').style.display = 'none';
-            document.getElementById('t_adminLoginNav').style.display = 'none';
+            document.getElementById('topNavBtns').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
         } else {
@@ -581,6 +600,7 @@
 
     function switchTab(tab, evt) {
         currentTab = tab;
+        sessionStorage.setItem('activeTab', tab);
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
@@ -746,7 +766,7 @@
             body.phone = document.getElementById('c_phone').value || '-';
         } else if (type === 'orders') {
             const item = document.getElementById('o_item').value;
-            if (!item) return alert('أدخل اسم المنتج');
+            if (!item) return alert('အမည် أدخل اسم المنتج');
             body.type = 'orders';
             body.item = item;
             body.customerId = document.getElementById('o_customerId').value || 'CUST-01';
