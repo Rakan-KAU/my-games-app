@@ -8,7 +8,7 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* الأزرار العلوية (زر اللغة وزر تسجيل دخول الإدارة) */
+        /* الأزرار العلوية */
         .top-nav-buttons {
             position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 10px;
         }
@@ -100,26 +100,27 @@
 </head>
 <body>
 
-    <!-- الأزرار العلوية (اللغة وتسجيل دخول الإدارة) -->
+    <!-- الأزرار العلوية -->
     <div class="top-nav-buttons">
         <button class="top-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
         <button class="top-btn admin-login-btn" id="t_adminLoginNav" onclick="openLoginModal()">تسجيل دخول الإدارة 🔐</button>
     </div>
 
-    <!-- الشاشة الأولى (الرئيسية تودي للمتجر مباشرة) -->
+    <!-- الشاشة الأولى -->
     <div id="heroScreen">
         <h1 class="hero-main-title" id="t_heroTitle">راكان جيمنج استديو</h1>
         <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">متابعة إلى المتجر ⬅</button>
     </div>
 
-    <!-- نافذة تسجيل دخول الإدارة -->
+    <!-- نافذة تسجيل دخول الإدارة (اسم المستخدم وكلمة المرور) -->
     <div id="loginModal">
         <div class="login-box">
             <h2 id="t_loginTitle">تسجيل دخول الإدارة</h2>
-            <input type="text" id="username" placeholder="اسم المستخدم (مثال: راكان)">
+            <input type="text" id="username" placeholder="اسم المستخدم (Rakan)">
+            <input type="password" id="password" placeholder="كلمة المرور (Rakan12345)">
             <button onclick="checkLogin()" id="t_loginBtn" style="background:#0284c7; margin-bottom:10px;">دخول لوحة التحكّم</button>
             <button onclick="closeLoginModal()" id="t_cancelBtn" style="background:#334155;">إلغاء</button>
-            <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">الرجاء إدخال اسم المستخدم!</div>
+            <div id="loginError" style="color:#ef4444; font-size:13px; margin-top:10px; display:none;">اسم المستخدم أو كلمة المرور غير صحيحة!</div>
         </div>
     </div>
 
@@ -446,13 +447,15 @@
 
     function checkLogin() {
         const user = document.getElementById('username').value.trim();
+        const pass = document.getElementById('password').value.trim();
         const err = document.getElementById('loginError');
 
-        if (user !== "") {
+        // التحقق من اسم المستخدم (Rakan) وكلمة المرور (Rakan12345)
+        if (user === "Rakan" && pass === "Rakan12345") {
             document.getElementById('heroScreen').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('langBtn').style.display = 'none'; // يختفي في لوحة الإدارة
-            document.getElementById('t_adminLoginNav').style.display = 'none'; // يختفي في لوحة الإدارة
+            document.getElementById('langBtn').style.display = 'none';
+            document.getElementById('t_adminLoginNav').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
             loadData('games');
         } else {
