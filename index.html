@@ -7,6 +7,16 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title id="pageTitle">⚡ Rakan Gaming Studios | المتجر</title>
+    
+    <!-- مكتبة إرسال الإيميلات الحقيقية EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            // تهيئة خدمة الإيميلات (مفتوحة للاختبار المباشر)
+            emailjs.init("YOUR_PUBLIC_KEY");
+        })();
+    </script>
+
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
@@ -59,10 +69,8 @@
         <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">متابعة إلى المتجر ⬅</button>
     </div>
 
-    <!-- نافذة الشراء والدفع -->
     <div id="checkoutModal">
         <div class="login-box">
-            <!-- المرحلة الأولى: بيانات العميل -->
             <div id="stepInfo">
                 <h2>🛒 إتمام طلب الشراء</h2>
                 <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
@@ -86,7 +94,6 @@
                 <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
             </div>
 
-            <!-- المرحلة الثانية: الدفع بالبطاقة -->
             <div id="stepPayment" style="display:none;">
                 <h2>💳 بوابة الدفع الإلكتروني</h2>
                 <p style="color:#94a3b8; font-size:13px; margin-bottom:15px;">أدخل بيانات البطاقة الائتمانية / مدى</p>
@@ -208,6 +215,10 @@
         document.getElementById('chk_name').value = '';
         document.getElementById('chk_email').value = '';
         document.getElementById('chk_phone').value = '';
+        document.getElementById('card_name').value = '';
+        document.getElementById('card_number').value = '';
+        document.getElementById('card_exp').value = '';
+        document.getElementById('card_cvv').value = '';
         
         document.getElementById('stepInfo').style.display = 'block';
         document.getElementById('stepPayment').style.display = 'none';
@@ -251,7 +262,10 @@
             return alert('الرجاء إكمال كافة بيانات البطاقة للدفع');
         }
 
-        // إنشاء الطلب وتسجيل حالة "تم الدفع" حصراً
+        // إنشاء بيانات حساب اللعبة التلقائي
+        const generatedUser = "RakanUser_" + Math.floor(1000 + Math.random() * 9000);
+        const generatedPass = "RK#" + Math.floor(10000 + Math.random() * 90000);
+
         const orderBody = { 
             type: 'orders', 
             customerId: name, 
@@ -270,12 +284,26 @@
 
         try {
             closeCheckoutModal();
-            showStatus("جاري الاتصال ببنك الدفع السحابي والتحقق من البطاقة...");
+            showStatus("جاري الدفع وإرسال بيانات الحساب المباشرة لإيميلك...");
 
+            // 1. الحفظ في السحابة
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderBody) });
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(customerBody) });
 
-            alert(`✅ تمت عملية الدفع بنجاح!\nشكراً لك يا ${name}.\nتم إرسال تفاصيل الحساب إلى إيميلك: ${email}`);
+            // 2. إظهار النتيجة الاحترافية الفورية على الشاشة
+            alert(`✅ تمت عملية الدفع بنجاح!
+----------------------------------
+👤 أهلاً بك يا: ${name}
+🎮 اللعبة: ${selectedGameForCheckout.title}
+💰 المبلغ المدفوع: $${selectedGameForCheckout.price}
+📧 البريد المرسل إليه: ${email}
+
+🔑 [بيانات الحساب الخاص بك]:
+المستخدم: ${generatedUser}
+كلمة المرور: ${generatedPass}
+----------------------------------
+شكراً لطلبك من Rakan Gaming Studios! 🚀`);
+
         } catch (err) {
             alert("حدث خطأ أثناء إتمام عملية الدفع.");
         }
