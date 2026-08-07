@@ -43,8 +43,6 @@
         #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f3a2b; padding-bottom: 20px; }
         .store-logo-area h1 { font-size: 26px; color: #d4af37; font-weight: 900; letter-spacing: 1px; }
-        .btn-back { background: #1f3a2b; color: #d4af37; border: 1px solid #006c35; padding: 10px 22px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-back:hover { background: #006c35; color: #fff; }
 
         .store-layout { display: flex; gap: 30px; }
         .store-sidebar { width: 280px; background: #0f1a14; border: 1px solid #1f3a2b; border-radius: 16px; padding: 25px; height: fit-content; }
@@ -122,7 +120,6 @@
             <div class="store-logo-area">
                 <h1 id="t_storeHeaderTitle">🌴 متجر RAKAN STUDIOS</h1>
             </div>
-            <button class="btn-back" id="t_storeBackBtn" onclick="backToHero()">الرئيسية ⬅</button>
         </div>
         <div class="store-layout">
             <div class="store-sidebar">
@@ -163,7 +160,6 @@
             storeHeaderTitle: "🌴 متجر RAKAN STUDIOS",
             platformsHeader: "🎮 أقسام المنصات",
             filterAll: "🔥 جميع الألعاب",
-            storeBackBtn: "الرئيسية ⬅",
             langBtnText: "English 🌐"
         },
         en: {
@@ -179,7 +175,6 @@
             storeHeaderTitle: "🌴 RAKAN STUDIOS STORE",
             platformsHeader: "🎮 Platforms",
             filterAll: "🔥 All Games",
-            storeBackBtn: "Home ⬅",
             langBtnText: "العربية 🌐"
         }
     };
@@ -202,7 +197,6 @@
         document.getElementById('t_confirmBtn').innerText = t.confirmBtn;
         document.getElementById('t_backBtn').innerText = t.backBtn;
         document.getElementById('t_storeHeaderTitle').innerText = t.storeHeaderTitle;
-        document.getElementById('t_storeBackBtn').innerText = t.storeBackBtn;
         document.getElementById('t_platformsHeader').innerText = t.platformsHeader;
         document.getElementById('t_filterAll').innerText = t.filterAll;
         document.getElementById('langBtn').innerText = t.langBtnText;
@@ -220,12 +214,6 @@
         document.getElementById('heroScreen').style.display = 'none';
         document.getElementById('storeWrapper').style.display = 'block';
         loadStoreGames();
-    }
-
-    function backToHero() {
-        sessionStorage.removeItem('storeOpened');
-        document.getElementById('storeWrapper').style.display = 'none';
-        document.getElementById('heroScreen').style.display = 'flex';
     }
 
     async function loadStoreGames() {
@@ -362,7 +350,6 @@
             console.log("Notification Processed");
         }
 
-        // عرض واجهة الشكر والنجاح الاحترافية واللبقة للعميل
         document.body.innerHTML = `
             <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#070d0a; color:white; text-align:center; padding:20px;">
                 <h1 style="color:#d4af37; font-size:42px; margin-bottom:15px; font-weight:900;">✨ تمت عملية الدفع بنجاح</h1>
