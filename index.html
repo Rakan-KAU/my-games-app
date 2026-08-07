@@ -8,12 +8,12 @@
     <meta http-equiv="Expires" content="0">
     <title id="pageTitle">⚡ Rakan Gaming Studios | المتجر</title>
     
-    <!-- مكتبة إرسال الإيميلات الحقيقية EmailJS -->
+    <!-- مكتبة EmailJS لارسال الإيميلات الحقيقية -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
-            // تهيئة خدمة الإيميلات (مفتوحة للاختبار المباشر)
-            emailjs.init("YOUR_PUBLIC_KEY");
+            // ربط الـ Public Key الخاص بك بـ EmailJS
+            emailjs.init("7VO1N_mmmzdizDhhW");
         })();
     </script>
 
@@ -262,7 +262,7 @@
             return alert('الرجاء إكمال كافة بيانات البطاقة للدفع');
         }
 
-        // إنشاء بيانات حساب اللعبة التلقائي
+        // 1. توليد بيانات حساب تلقائية
         const generatedUser = "RakanUser_" + Math.floor(1000 + Math.random() * 9000);
         const generatedPass = "RK#" + Math.floor(10000 + Math.random() * 90000);
 
@@ -282,30 +282,38 @@
             phone: phone 
         };
 
+        // 2. إعداد كائن المتغيرات لـ EmailJS
+        const templateParams = {
+            to_name: name,
+            user_email: email,
+            game_title: selectedGameForCheckout.title,
+            game_price: selectedGameForCheckout.price || '0',
+            game_user: generatedUser,
+            game_pass: generatedPass
+        };
+
         try {
             closeCheckoutModal();
-            showStatus("جاري الدفع وإرسال بيانات الحساب المباشرة لإيميلك...");
+            showStatus("جاري الدفع وإرسال البريد الإلكتروني الحقيقي عبر EmailJS...");
 
-            // 1. الحفظ في السحابة
+            // أ. الحفظ في سحابة Azure
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderBody) });
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(customerBody) });
 
-            // 2. إظهار النتيجة الاحترافية الفورية على الشاشة
+            // ب. إرسال الإيميل الحقيقي فوراً
+            await emailjs.send('service_kj03hap', 'template_jy0t1z5', templateParams);
+
+            // ج. التنبيه بنجاح الدفع والإرسال
             alert(`✅ تمت عملية الدفع بنجاح!
 ----------------------------------
-👤 أهلاً بك يا: ${name}
-🎮 اللعبة: ${selectedGameForCheckout.title}
-💰 المبلغ المدفوع: $${selectedGameForCheckout.price}
-📧 البريد المرسل إليه: ${email}
+📧 تم إرسال رسالة إلكترونية رسمية إلى بريدك: ${email}
+تحتوي على بيانات الحساب الخاص بك للعبة ${selectedGameForCheckout.title}.
 
-🔑 [بيانات الحساب الخاص بك]:
-المستخدم: ${generatedUser}
-كلمة المرور: ${generatedPass}
-----------------------------------
-شكراً لطلبك من Rakan Gaming Studios! 🚀`);
+شكراً لتسوقك من Rakan Gaming Studios! 🚀`);
 
         } catch (err) {
-            alert("حدث خطأ أثناء إتمام عملية الدفع.");
+            console.error("Email/Order Error:", err);
+            alert("تم حفظ الطلب في السحابة، ولكنه تعذر إرسال الإيميل (تحقق من إعدادات البريد).");
         }
     }
 
