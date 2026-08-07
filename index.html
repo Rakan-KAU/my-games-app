@@ -6,9 +6,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title id="pageTitle">⚡ Rakan Gaming Studios | المتجر</title>
+    <title id="pageTitle">⚡ Rakan Gaming Studios | Store</title>
     
-    <!-- مكتبة EmailJS لإرسال الإيميلات الحقيقية -->
+    <!-- EmailJS Library -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
@@ -21,40 +21,47 @@
         body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
         .top-nav-buttons { position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 10px; }
-        .top-btn { background: #131b2e; color: #38bdf8; border: 1px solid #1f2937; padding: 9px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .top-btn:hover { background: #1f2937; color: #10b981; }
+        .top-btn { background: #131b2e; color: #38bdf8; border: 1px solid #1f2937; padding: 9px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .top-btn:hover { background: #1f2937; color: #10b981; border-color: #10b981; }
 
         #heroScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #131b2e 0%, #0b0f19 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px; }
-        .hero-main-title { font-size: 64px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin-bottom: 30px; text-shadow: 0 0 40px rgba(16, 185, 129, 0.4); }
-        .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .hero-main-title { font-size: 58px; font-weight: 900; color: #ffffff; letter-spacing: 1px; margin-bottom: 25px; text-shadow: 0 0 35px rgba(16, 185, 129, 0.4); }
+        .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 19px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; }
+        .btn-continue:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(16, 185, 129, 0.6); }
 
-        #checkoutModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px); }
-        .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 35px; border-radius: 20px; width: 100%; max-width: 440px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7); }
+        #checkoutModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(12px); }
+        .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 35px; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8); }
         .login-box h2 { color: #38bdf8; margin-bottom: 15px; font-size: 22px; font-weight: 800; }
-        .login-box input, .login-box select { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none; text-align: right; }
-        .login-box button { width: 100%; padding: 13px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .login-box input, .login-box select { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none; }
+        .login-box input:focus, .login-box select:focus { border-color: #38bdf8; }
+        .login-box button { width: 100%; padding: 13px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .login-box button:hover { opacity: 0.9; }
 
         .card-row { display: flex; gap: 10px; }
 
         #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 20px; }
-        .store-logo-area h1 { font-size: 26px; color: #10b981; font-weight: 900; }
-        .btn-back { background: #334155; color: white; border: none; padding: 10px 22px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .store-logo-area h1 { font-size: 26px; color: #10b981; font-weight: 900; letter-spacing: 1px; }
+        .btn-back { background: #334155; color: white; border: none; padding: 10px 22px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-back:hover { background: #475569; }
 
         .store-layout { display: flex; gap: 30px; }
         .store-sidebar { width: 280px; background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 25px; height: fit-content; }
-        .filter-btn { display: block; width: 100%; background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; }
-        .filter-btn.active { background: #1f2937; color: #10b981; border-right: 3px solid #10b981; }
+        .store-sidebar h3 { color: #38bdf8; font-size: 16px; margin-bottom: 15px; font-weight: 800; border-bottom: 1px solid #1f2937; padding-bottom: 10px; }
+        .filter-btn { display: block; width: 100%; background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: 0.2s; }
+        .filter-btn:hover, .filter-btn.active { background: #1f2937; color: #10b981; }
 
         .store-content { flex: 1; }
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        .game-card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
+        .game-card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .game-card:hover { border-color: #10b981; transform: translateY(-4px); }
         .game-title { font-size: 20px; font-weight: bold; color: #ffffff; margin-bottom: 8px; }
         .game-badge { background: #0b0f19; color: #38bdf8; padding: 5px 10px; border-radius: 6px; font-size: 12px; display: inline-block; margin-bottom: 15px; border: 1px solid #1f2937; }
         .game-price { font-size: 22px; font-weight: 900; color: #10b981; margin-bottom: 15px; }
-        .btn-buy { background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-buy { background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-buy:hover { background: #059669; }
 
-        .status { padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; font-weight: 600; position: fixed; bottom: 20px; right: 20px; z-index: 2000; }
+        .status { padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; font-weight: 600; position: fixed; bottom: 20px; right: 20px; z-index: 2000; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -71,7 +78,7 @@
     <div id="checkoutModal">
         <div class="login-box">
             <div id="stepInfo">
-                <h2>🛒 إتمام طلب الشراء</h2>
+                <h2 id="t_checkoutTitle">🛒 إتمام طلب الشراء</h2>
                 <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
                 <input type="text" id="chk_name" placeholder="الاسم الكامل">
                 <input type="email" id="chk_email" placeholder="البريد الإلكتروني (لاستلام الحساب)">
@@ -89,21 +96,21 @@
                     <option value="مكة المكرمة">مكة المكرمة</option>
                     <option value="الدمام">الدمام</option>
                 </select>
-                <button onclick="goToPaymentStep()" style="background:#0284c7; margin-top:5px;">متابعة إلى الدفع 💳</button>
-                <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
+                <button onclick="goToPaymentStep()" id="t_nextPayBtn" style="background:#0284c7; margin-top:5px;">متابعة إلى الدفع 💳</button>
+                <button onclick="closeCheckoutModal()" id="t_cancelBtn1" style="background:#334155; margin-top:8px;">إلغاء</button>
             </div>
 
             <div id="stepPayment" style="display:none;">
-                <h2>💳 بوابة الدفع الإلكتروني</h2>
-                <p style="color:#94a3b8; font-size:13px; margin-bottom:15px;">أدخل بيانات البطاقة الائتمانية / مدى</p>
+                <h2 id="t_paymentTitle">💳 بوابة الدفع الإلكتروني</h2>
+                <p id="t_paymentSub" style="color:#94a3b8; font-size:13px; margin-bottom:15px;">أدخل بيانات البطاقة الائتمانية / مدى</p>
                 <input type="text" id="card_name" placeholder="اسم حامل البطاقة">
                 <input type="text" id="card_number" placeholder="رقم البطاقة (16 رقم)" maxlength="19">
                 <div class="card-row">
                     <input type="text" id="card_exp" placeholder="MM/YY" maxlength="5">
                     <input type="password" id="card_cvv" placeholder="CVV" maxlength="4">
                 </div>
-                <button onclick="submitOrder()" style="background:#10b981; margin-top:10px;">تأكيد الدفع 🔒</button>
-                <button onclick="backToInfoStep()" style="background:#334155; margin-top:8px;">رجوع للبيانات</button>
+                <button onclick="submitOrder()" id="t_confirmBtn" style="background:#10b981; margin-top:10px;">تأكيد الدفع 🔒</button>
+                <button onclick="backToInfoStep()" id="t_backBtn" style="background:#334155; margin-top:8px;">رجوع للبيانات</button>
             </div>
         </div>
     </div>
@@ -138,6 +145,66 @@
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let allStoreGames = [];
     let selectedGameForCheckout = null;
+    let currentLang = 'ar';
+
+    const translations = {
+        ar: {
+            heroTitle: "راكان جيمنج استديو",
+            continueBtn: "متابعة إلى المتجر ⬅",
+            checkoutTitle: "🛒 إتمام طلب الشراء",
+            nextPayBtn: "متابعة إلى الدفع 💳",
+            cancelBtn: "إلغاء",
+            paymentTitle: "💳 بوابة الدفع الإلكتروني",
+            paymentSub: "أدخل بيانات البطاقة الائتمانية / مدى",
+            confirmBtn: "تأكيد الدفع 🔒",
+            backBtn: "رجوع للبيانات",
+            storeHeaderTitle: "⚡ متجر RAKAN STUDIOS",
+            platformsHeader: "🎮 أقسام المنصات",
+            filterAll: "🔥 جميع الألعاب",
+            storeBackBtn: "الرئيسية ⬅",
+            langBtnText: "English 🌐"
+        },
+        en: {
+            heroTitle: "Rakan Gaming Studio",
+            continueBtn: "Continue to Store ⬅",
+            checkoutTitle: "🛒 Checkout Order",
+            nextPayBtn: "Proceed to Payment 💳",
+            cancelBtn: "Cancel",
+            paymentTitle: "💳 Payment Gateway",
+            paymentSub: "Enter Credit Card / Mada Details",
+            confirmBtn: "Confirm Payment 🔒",
+            backBtn: "Back to Details",
+            storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
+            platformsHeader: "🎮 Platforms",
+            filterAll: "🔥 All Games",
+            storeBackBtn: "Home ⬅",
+            langBtnText: "العربية 🌐"
+        }
+    };
+
+    function toggleLanguage() {
+        currentLang = (currentLang === 'ar') ? 'en' : 'ar';
+        const t = translations[currentLang];
+        const root = document.getElementById('htmlRoot');
+
+        root.setAttribute('lang', currentLang);
+        root.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+        document.getElementById('t_heroTitle').innerText = t.heroTitle;
+        document.getElementById('t_continueBtn').innerText = t.continueBtn;
+        document.getElementById('t_checkoutTitle').innerText = t.checkoutTitle;
+        document.getElementById('t_nextPayBtn').innerText = t.nextPayBtn;
+        document.getElementById('t_cancelBtn1').innerText = t.cancelBtn;
+        document.getElementById('t_paymentTitle').innerText = t.paymentTitle;
+        document.getElementById('t_paymentSub').innerText = t.paymentSub;
+        document.getElementById('t_confirmBtn').innerText = t.confirmBtn;
+        document.getElementById('t_backBtn').innerText = t.backBtn;
+        document.getElementById('t_storeHeaderTitle').innerText = t.storeHeaderTitle;
+        document.getElementById('t_storeBackBtn').innerText = t.storeBackBtn;
+        document.getElementById('t_platformsHeader').innerText = t.platformsHeader;
+        document.getElementById('t_filterAll').innerText = t.filterAll;
+        document.getElementById('langBtn').innerText = t.langBtnText;
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
         const storeView = sessionStorage.getItem('storeOpened');
@@ -264,21 +331,8 @@
         const generatedUser = "RakanUser_" + Math.floor(1000 + Math.random() * 9000);
         const generatedPass = "RK#" + Math.floor(10000 + Math.random() * 90000);
 
-        const orderBody = { 
-            type: 'orders', 
-            customerId: name, 
-            item: selectedGameForCheckout.title, 
-            total: selectedGameForCheckout.price || '0', 
-            status: 'تم الدفع' 
-        };
-        
-        const customerBody = { 
-            type: 'customers', 
-            name: name, 
-            region: region, 
-            city: city, 
-            phone: phone 
-        };
+        const orderBody = { type: 'orders', customerId: name, item: selectedGameForCheckout.title, total: selectedGameForCheckout.price || '0', status: 'تم الدفع' };
+        const customerBody = { type: 'customers', name: name, region: region, city: city, phone: phone };
 
         const templateParams = {
             to_name: name,
@@ -291,29 +345,26 @@
 
         try {
             closeCheckoutModal();
-            showStatus("جاري معالجة الدفع وإرسال البريد الإلكتروني...");
+            showStatus("جاري معالجة الدفع السحابي وإرسال الحساب إلى بريدك الإلكتروني...");
 
-            // 1. الحفظ في سحابة Azure
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderBody) });
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(customerBody) });
 
-            // 2. إرسال الإيميل الحقيقي لصندوق البريد
             await emailjs.send('service_kj03hap', 'template_jy0t1z5', templateParams);
 
-            // 3. عرض واجهة الشكر الاحترافية (بدون إظهار كلمة السر)
             document.body.innerHTML = `
                 <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#0b0f19; color:white; text-align:center; padding:20px;">
-                    <h1 style="color:#10b981; font-size:40px; margin-bottom:15px;">✅ شكراً لطلبك!</h1>
-                    <p style="font-size:18px; color:#94a3b8; max-width:500px; line-height:1.6;">تمت عملية الدفع بنجاح. أرسلنا تفاصيل وبيانات حساب اللعبة رسمياً إلى بريدك الإلكتروني:</p>
-                    <p style="font-size:22px; color:#38bdf8; font-weight:bold; margin-top:10px;">${email}</p>
-                    <p style="font-size:14px; color:#64748b; margin-top:10px;">يرجى مراجعة تطبيق Gmail وتفقد صندوق الوارد أو الرسائل غير المرغوب فيها.</p>
-                    <button onclick="location.reload()" style="margin-top:30px; padding:15px 40px; background:#10b981; border:none; border-radius:10px; color:white; font-weight:bold; font-size:16px; cursor:pointer;">العودة للمتجر 🚀</button>
+                    <h1 style="color:#10b981; font-size:42px; margin-bottom:15px; font-weight:900;">✅ شكراً لطلبك!</h1>
+                    <p style="font-size:18px; color:#94a3b8; max-width:550px; line-height:1.6;">تمت عملية الدفع بنجاح. أرسلنا تفاصيل وبيانات حساب اللعبة رسمياً إلى بريدك الإلكتروني:</p>
+                    <p style="font-size:24px; color:#38bdf8; font-weight:bold; margin-top:15px; text-decoration:underline;">${email}</p>
+                    <p style="font-size:14px; color:#64748b; margin-top:12px;">يرجى مراجعة تطبيق Gmail وتفقد صندوق الوارد أو الرسائل غير المرغوب فيها (Spam).</p>
+                    <button onclick="location.reload()" style="margin-top:35px; padding:16px 45px; background:#10b981; border:none; border-radius:12px; color:white; font-weight:bold; font-size:16px; cursor:pointer; box-shadow:0 10px 25px rgba(16,185,129,0.3);">العودة للمتجر 🚀</button>
                 </div>
             `;
 
         } catch (err) {
-            console.error("Email Error:", err);
-            alert("حدث خطأ أثناء معالجة الطلب، يرجى المحاولة لاحقاً.");
+            console.error("Error:", err);
+            alert("حدث خطأ أثناء إتمام عملية الشراء، يرجى إعادة المحاولة.");
         }
     }
 
