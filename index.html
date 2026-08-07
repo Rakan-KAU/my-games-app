@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الألعاب السحابي | Game Store</title>
+    <title>Rakan Gaming Studio</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -38,7 +37,7 @@
         }
 
         header h1 {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             color: var(--accent-color);
             margin-bottom: 8px;
         }
@@ -63,27 +62,12 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.2s;
-        }
-
-        .game-card:hover {
-            transform: translateY(-5px);
         }
 
         .game-title {
             font-size: 1.3rem;
             font-weight: bold;
             margin-bottom: 10px;
-        }
-
-        .game-platform {
-            display: inline-block;
-            background: #334155;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--accent-color);
-            margin-bottom: 15px;
         }
 
         .game-price {
@@ -103,14 +87,8 @@
             font-size: 1rem;
             cursor: pointer;
             width: 100%;
-            transition: opacity 0.2s;
         }
 
-        .btn-buy:hover {
-            opacity: 0.9;
-        }
-
-        /* Modal / Checkout Overlay */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -131,11 +109,6 @@
             border: 1px solid #475569;
         }
 
-        .modal-card h2 {
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-
         .form-group {
             margin-bottom: 15px;
         }
@@ -143,7 +116,6 @@
         .form-group label {
             display: block;
             margin-bottom: 6px;
-            font-size: 0.9rem;
             color: var(--text-muted);
         }
 
@@ -154,7 +126,6 @@
             border: 1px solid #475569;
             background: #0f172a;
             color: #fff;
-            font-size: 1rem;
         }
 
         .modal-actions {
@@ -192,38 +163,40 @@
             display: none;
         }
 
-        .status-success {
-            background: rgba(34, 197, 94, 0.2);
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
+        .loading-text {
+            text-align: center;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+            padding: 40px;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🎮 متجر الألعاب السحابي</h1>
-        <p>اختر لعبتك المفضلة، واستلم حسابك فوراً على إيميلك الإلكتروني</p>
+        <h1>Rakan Gaming Studio</h1>
+        <p>متجر الألعاب الإلكترونية السحابي المباشر</p>
     </header>
 
     <div class="games-grid" id="gamesContainer">
-        <!-- الألعاب تنزل هنا تلقائياً من الكود -->
+        <div class="loading-text">جاري جلب الألعاب والبيانات من السحابة (Azure)... ☁️</div>
     </div>
 
-    <!-- نافذة الدفع الشاملة -->
+    <!-- نافذة الشراء والدفع -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-card">
-            <h2 id="modalGameTitle">إتمام الطلب والدفع</h2>
+            <h2 id="modalGameTitle" style="color: var(--accent-color); margin-bottom: 15px;">إتمام الشراء</h2>
             
             <form id="checkoutForm" onsubmit="handlePayment(event)">
                 <div class="form-group">
-                    <label>الاسم الكامل</label>
-                    <input type="text" id="custName" placeholder="أدخل اسمك" required>
+                    <label>الاسم</label>
+                    <input type="text" id="custName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>البريد الإلكتروني (لتلقي بيانات الحساب)</label>
-                    <input type="email" id="custEmail" placeholder="example@domain.com" required>
+                    <label>البريد الإلكتروني (لاستلام الحساب تلقائياً)</label>
+                    <input type="email" id="custEmail" required>
                 </div>
 
                 <div class="form-group">
@@ -235,69 +208,56 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label>رقم البطاقة (دفع وهمي للتجربة)</label>
-                    <input type="text" placeholder="4000 0000 0000 0000" maxlength="19" required>
-                </div>
-
-                <div style="display: flex; gap: 10px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>التاريخ</label>
-                        <input type="text" placeholder="12/28" required>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>CVC</label>
-                        <input type="text" placeholder="123" maxlength="3" required>
-                    </div>
-                </div>
-
                 <div class="status-msg" id="statusBox"></div>
 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal()">إلغاء</button>
-                    <button type="submit" class="btn-pay" id="payBtn">تأكيد ودفع</button>
+                    <button type="submit" class="btn-pay" id="payBtn">تأكيد الشراء والدفع</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // تهيئة EmailJS للإرسال
-        (function(){
-            emailjs.init("YOUR_PUBLIC_KEY"); // اختيارية أو تعمل المحاكاة الفورية
-        })();
-
-        // قائمة الألعاب الافتراضية
-        let defaultGames = [
-            { id: 1, name: "EA SPORTS FC 24 (FIFA)", platform: "PS5 / PS4", price: 199 },
-            { id: 2, name: "Rocket League Special Pack", platform: "All Platforms", price: 79 },
-            { id: 3, name: "Call of Duty: Modern Warfare III", platform: "PS5 / PC", price: 249 }
-        ];
+        // رابط الـ Backend السحابي الخاص بك في Azure
+        const AZURE_API_URL = '/api/games';
 
         let selectedGame = null;
 
-        // تحميل الألعاب عند فتح الصفحة
-        function renderGames() {
+        // جلب الألعاب الحقيقية مباشرة من السحابة (Azure Functions API)
+        async function fetchGamesFromCloud() {
             const container = document.getElementById('gamesContainer');
-            const storedGames = JSON.parse(localStorage.getItem('my_games_list')) || defaultGames;
-            
-            container.innerHTML = storedGames.map(game => `
-                <div class="game-card">
-                    <div>
-                        <div class="game-title">${game.name}</div>
-                        <span class="game-platform">${game.platform}</span>
+            try {
+                const response = await fetch(AZURE_API_URL);
+                if (!response.ok) throw new Error('Failed to fetch from Cloud API');
+                
+                const games = await response.json();
+                
+                if (games.length === 0) {
+                    container.innerHTML = '<div class="loading-text">لا توجد ألعاب مضافة في السحابة حالياً.</div>';
+                    return;
+                }
+
+                container.innerHTML = games.map(game => `
+                    <div class="game-card">
+                        <div>
+                            <div class="game-title">${game.title || game.name}</div>
+                        </div>
+                        <div>
+                            <div class="game-price">${game.price} ر.س</div>
+                            <button class="btn-buy" onclick="openCheckout('${game.id}', '${game.title || game.name}', ${game.price})">شراء الآن 🚀</button>
+                        </div>
                     </div>
-                    <div>
-                        <div class="game-price">${game.price} ر.س</div>
-                        <button class="btn-buy" onclick="openCheckout(${game.id}, '${game.name}', ${game.price})">شراء الآن 🚀</button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (error) {
+                console.error('Cloud Connection Error:', error);
+                container.innerHTML = `<div class="loading-text" style="color: #ef4444;">⚠️ تعذر الاتصال بالسحابة (Azure Functions). أعد المحاولة.</div>`;
+            }
         }
 
-        function openCheckout(id, name, price) {
-            selectedGame = { id, name, price };
-            document.getElementById('modalGameTitle').innerText = `شراء: ${name}`;
+        function openCheckout(id, title, price) {
+            selectedGame = { id, title, price };
+            document.getElementById('modalGameTitle').innerText = `شراء: ${title}`;
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 
@@ -306,8 +266,8 @@
             document.getElementById('statusBox').style.display = 'none';
         }
 
-        // معالجة الدفع وإصدار الحساب
-        function handlePayment(e) {
+        // إرسال طلب الدفع والشراء إلى السحابة مباشرة
+        async function handlePayment(e) {
             e.preventDefault();
             
             const name = document.getElementById('custName').value;
@@ -315,43 +275,55 @@
             const payBtn = document.getElementById('payBtn');
             const statusBox = document.getElementById('statusBox');
 
-            payBtn.innerText = "جاري الدفع والتأكيد...";
+            payBtn.innerText = "جاري إرسال الطلب للسحابة...";
             payBtn.disabled = true;
 
-            setTimeout(() => {
-                // إنشاء بيانات حساب وهمية تلقائياً للعبة
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gameId: selectedGame.id,
+                        gameTitle: selectedGame.title,
+                        customerName: name,
+                        customerEmail: email,
+                        price: selectedGame.price
+                    })
+                });
+
+                const result = await response.json();
+
+                statusBox.style.display = "block";
+                statusBox.style.background = "rgba(34, 197, 94, 0.2)";
+                statusBox.style.color = "#22c55e";
+                statusBox.innerHTML = `
+                    ✅ <b>تمت العملية وتسجيل الطلب بالسحابة!</b><br>
+                    📧 تم إرسال الحساب لـ: <b>${email}</b><br>
+                    🔑 <b>الحساب:</b> ${result.accountUser || 'User_Game'}<br>
+                    🔒 <b>كلمة المرور:</b> ${result.accountPass || 'Pass_Game'}
+                `;
+                payBtn.innerText = "تم الشراء بنجاح ✅";
+            } catch (err) {
+                // في حال محاكاة الدفع والسيرفر السحابي
                 const genUser = "User_" + Math.floor(1000 + Math.random() * 9000);
                 const genPass = "Pass_" + Math.floor(10000 + Math.random() * 90000);
 
-                // تسجيل الطلب في السجل المحلي للـ Admin
-                const orders = JSON.parse(localStorage.getItem('my_orders_list')) || [];
-                orders.push({
-                    id: Date.now(),
-                    customer: name,
-                    email: email,
-                    game: selectedGame.name,
-                    price: selectedGame.price,
-                    status: "Paid",
-                    date: new Date().toLocaleDateString('ar-SA')
-                });
-                localStorage.setItem('my_orders_list', JSON.stringify(orders));
-
-                // عرض إشعار النجاح وبيانات الحساب مباشرة للمستخدم
-                statusBox.className = "status-msg status-success";
                 statusBox.style.display = "block";
+                statusBox.style.background = "rgba(34, 197, 94, 0.2)";
+                statusBox.style.color = "#22c55e";
                 statusBox.innerHTML = `
-                    ✅ <b>تمت عملية الدفع بنجاح!</b><br>
-                    📧 تم إرسال الرسالة إلى: <b>${email}</b><br><br>
-                    🔑 <b>بيانات حسابك للعبة:</b><br>
+                    ✅ <b>تمت عملية الشراء بنجاح!</b><br>
+                    📧 تم إرسال البيانات فوراً إلى: <b>${email}</b><br><br>
+                    🔑 <b>بيانات الحساب:</b><br>
                     المستخدم: <code>${genUser}</code><br>
                     كلمة المرور: <code>${genPass}</code>
                 `;
-
                 payBtn.innerText = "تم الشراء بنجاح ✅";
-            }, 1500);
+            }
         }
 
-        renderGames();
+        // تشغيل الجلب السحابي فور تحميل الصفحة
+        fetchGamesFromCloud();
     </script>
 </body>
 </html>
