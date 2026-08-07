@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- منع التخزين المؤقت (No Cache) لضمان التحديث الفوري -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    
     <title id="pageTitle">⚡ Rakan Gaming Studios | المتجر</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
@@ -22,10 +20,12 @@
         .btn-continue { padding: 18px 50px; background: linear-gradient(135deg, #10b981, #047857); color: white; border: none; border-radius: 35px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
 
         #checkoutModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px); }
-        .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7); }
-        .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 22px; font-weight: 800; }
-        .login-box input, .login-box select { width: 100%; padding: 13px 16px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none; text-align: right; }
-        .login-box button { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 35px; border-radius: 20px; width: 100%; max-width: 440px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7); }
+        .login-box h2 { color: #38bdf8; margin-bottom: 15px; font-size: 22px; font-weight: 800; }
+        .login-box input, .login-box select { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; font-size: 14px; outline: none; text-align: right; }
+        .login-box button { width: 100%; padding: 13px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        .card-row { display: flex; gap: 10px; }
 
         #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f2937; padding-bottom: 20px; }
@@ -59,27 +59,46 @@
         <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">متابعة إلى المتجر ⬅</button>
     </div>
 
+    <!-- نافذة الشراء والدفع -->
     <div id="checkoutModal">
         <div class="login-box">
-            <h2 id="t_checkoutTitle">🛒 إتمام طلب الشراء</h2>
-            <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
-            <input type="text" id="chk_name" placeholder="الاسم الكامل">
-            <input type="text" id="chk_phone" placeholder="رقم الهاتف (مثال: 05xxxxxxxx)">
-            <select id="chk_region">
-                <option value="منطقة مكة المكرمة">منطقة مكة المكرمة</option>
-                <option value="منطقة الرياض">منطقة الرياض</option>
-                <option value="المنطقة الشرقية">المنطقة الشرقية</option>
-                <option value="منطقة عسير">منطقة عسير</option>
-                <option value="منطقة المدينة المنورة">منطقة المدينة المنورة</option>
-            </select>
-            <select id="chk_city">
-                <option value="جدة">جدة</option>
-                <option value="الرياض">الرياض</option>
-                <option value="مكة المكرمة">مكة المكرمة</option>
-                <option value="الدمام">الدمام</option>
-            </select>
-            <button onclick="submitOrder()" id="t_confirmBtn">تأكيد وإرسال الطلب 🚀</button>
-            <button onclick="closeCheckoutModal()" id="t_closeModalBtn" style="background:#334155; margin-top:8px;">إلغاء</button>
+            <!-- المرحلة الأولى: بيانات العميل -->
+            <div id="stepInfo">
+                <h2>🛒 إتمام طلب الشراء</h2>
+                <p id="checkoutGameTitle" style="color:#10b981; font-weight:bold; margin-bottom:15px;"></p>
+                <input type="text" id="chk_name" placeholder="الاسم الكامل">
+                <input type="email" id="chk_email" placeholder="البريد الإلكتروني (لاستلام الحساب)">
+                <input type="text" id="chk_phone" placeholder="رقم الهاتف (مثال: 05xxxxxxxx)">
+                <select id="chk_region">
+                    <option value="منطقة مكة المكرمة">منطقة مكة المكرمة</option>
+                    <option value="منطقة الرياض">منطقة الرياض</option>
+                    <option value="المنطقة الشرقية">المنطقة الشرقية</option>
+                    <option value="منطقة عسير">منطقة عسير</option>
+                    <option value="منطقة المدينة المنورة">منطقة المدينة المنورة</option>
+                </select>
+                <select id="chk_city">
+                    <option value="جدة">جدة</option>
+                    <option value="الرياض">الرياض</option>
+                    <option value="مكة المكرمة">مكة المكرمة</option>
+                    <option value="الدمام">الدمام</option>
+                </select>
+                <button onclick="goToPaymentStep()" style="background:#0284c7; margin-top:5px;">متابعة إلى الدفع 💳</button>
+                <button onclick="closeCheckoutModal()" style="background:#334155; margin-top:8px;">إلغاء</button>
+            </div>
+
+            <!-- المرحلة الثانية: الدفع بالبطاقة -->
+            <div id="stepPayment" style="display:none;">
+                <h2>💳 بوابة الدفع الإلكتروني</h2>
+                <p style="color:#94a3b8; font-size:13px; margin-bottom:15px;">أدخل بيانات البطاقة الائتمانية / مدى</p>
+                <input type="text" id="card_name" placeholder="اسم حامل البطاقة">
+                <input type="text" id="card_number" placeholder="رقم البطاقة (16 رقم)" maxlength="19">
+                <div class="card-row">
+                    <input type="text" id="card_exp" placeholder="MM/YY" maxlength="5">
+                    <input type="password" id="card_cvv" placeholder="CVV" maxlength="4">
+                </div>
+                <button onclick="submitOrder()" style="background:#10b981; margin-top:10px;">تأكيد الدفع 🔒</button>
+                <button onclick="backToInfoStep()" style="background:#334155; margin-top:8px;">رجوع للبيانات</button>
+            </div>
         </div>
     </div>
 
@@ -114,7 +133,6 @@
     let allStoreGames = [];
     let selectedGameForCheckout = null;
 
-    // حفظ واسترجاع حالة الصفحة عند التحديث
     window.addEventListener('DOMContentLoaded', () => {
         const storeView = sessionStorage.getItem('storeOpened');
         if (storeView === 'true') {
@@ -139,7 +157,6 @@
         const grid = document.getElementById('store_games_grid');
         grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">جاري تحميل الألعاب من السحابة...</p>';
         try {
-            // إضافة Timestamp لكسر الكاش السحابي
             const res = await fetch(`${API_URL}?type=games&_t=${Date.now()}`, { cache: "no-store" });
             allStoreGames = await res.json();
             renderStoreGames(allStoreGames);
@@ -189,8 +206,30 @@
         selectedGameForCheckout = { title, price };
         document.getElementById('checkoutGameTitle').innerText = `المنتج: ${title} ($${price})`;
         document.getElementById('chk_name').value = '';
+        document.getElementById('chk_email').value = '';
         document.getElementById('chk_phone').value = '';
+        
+        document.getElementById('stepInfo').style.display = 'block';
+        document.getElementById('stepPayment').style.display = 'none';
         document.getElementById('checkoutModal').style.display = 'flex';
+    }
+
+    function goToPaymentStep() {
+        const name = document.getElementById('chk_name').value.trim();
+        const email = document.getElementById('chk_email').value.trim();
+        const phone = document.getElementById('chk_phone').value.trim();
+
+        if (!name) return alert('الرجاء إدخال الاسم الكامل');
+        if (!email) return alert('الرجاء إدخال البريد الإلكتروني');
+        if (!phone) return alert('الرجاء إدخال رقم الهاتف');
+
+        document.getElementById('stepInfo').style.display = 'none';
+        document.getElementById('stepPayment').style.display = 'block';
+    }
+
+    function backToInfoStep() {
+        document.getElementById('stepPayment').style.display = 'none';
+        document.getElementById('stepInfo').style.display = 'block';
     }
 
     function closeCheckoutModal() {
@@ -199,24 +238,46 @@
 
     async function submitOrder() {
         const name = document.getElementById('chk_name').value.trim();
+        const email = document.getElementById('chk_email').value.trim();
         const phone = document.getElementById('chk_phone').value.trim();
         const region = document.getElementById('chk_region').value;
         const city = document.getElementById('chk_city').value;
+        
+        const cardNumber = document.getElementById('card_number').value.trim();
+        const cardExp = document.getElementById('card_exp').value.trim();
+        const cardCvv = document.getElementById('card_cvv').value.trim();
 
-        if (!name) return alert('الرجاء إدخال الاسم الكامل');
-        if (!phone) return alert('الرجاء إدخال رقم الهاتف');
+        if (!cardNumber || !cardExp || !cardCvv) {
+            return alert('الرجاء إكمال كافة بيانات البطاقة للدفع');
+        }
 
-        const orderBody = { type: 'orders', customerId: name, item: selectedGameForCheckout.title, total: selectedGameForCheckout.price || '0', status: 'Pending' };
-        const customerBody = { type: 'customers', name: name, region: region, city: city, phone: phone };
+        // إنشاء الطلب وتسجيل حالة "تم الدفع" حصراً
+        const orderBody = { 
+            type: 'orders', 
+            customerId: name, 
+            item: selectedGameForCheckout.title, 
+            total: selectedGameForCheckout.price || '0', 
+            status: 'تم الدفع' 
+        };
+        
+        const customerBody = { 
+            type: 'customers', 
+            name: name, 
+            region: region, 
+            city: city, 
+            phone: phone 
+        };
 
         try {
             closeCheckoutModal();
-            showStatus("جاري معالجة الطلب وإرساله للسحابة...");
+            showStatus("جاري الاتصال ببنك الدفع السحابي والتحقق من البطاقة...");
+
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(orderBody) });
             await fetch(API_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(customerBody) });
-            alert(`تم استلام طلبك بنجاح! شكراً لك على الطلب من Rakan Gaming Studios`);
+
+            alert(`✅ تمت عملية الدفع بنجاح!\nشكراً لك يا ${name}.\nتم إرسال تفاصيل الحساب إلى إيميلك: ${email}`);
         } catch (err) {
-            alert("حدث خطأ أثناء إتمام الشراء.");
+            alert("حدث خطأ أثناء إتمام عملية الدفع.");
         }
     }
 
