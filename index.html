@@ -56,8 +56,14 @@
 
         /* واجهة المتجر الرئيسية */
         #storeWrapper { display: none; padding: 40px 30px; max-width: 1440px; margin: 0 auto; width: 100%; }
-        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 1px solid #332216; padding-bottom: 25px; }
+        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #332216; padding-bottom: 20px; }
         .store-logo-area h1 { font-size: 30px; color: #ffffff; font-weight: 900; letter-spacing: 1px; }
+
+        /* بنر العروض والمؤقت التنازلي الفاخر */
+        .promo-banner { background: linear-gradient(135deg, #1c140e 0%, #2b1d14 100%); border: 1px solid #a67c52; border-radius: 20px; padding: 20px 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .promo-title { font-size: 18px; font-weight: 800; color: #ffffff; }
+        .promo-sub { font-size: 13px; color: #d4c5b9; margin-top: 4px; }
+        .countdown-box { background: #0d0a07; border: 1px solid #006c35; padding: 8px 18px; border-radius: 12px; color: #10b981; font-weight: 900; font-size: 16px; letter-spacing: 1px; }
 
         .store-layout { display: flex; gap: 35px; }
         .store-sidebar { width: 290px; background: #1c140e; border: 1px solid #332216; border-radius: 20px; padding: 25px; height: fit-content; }
@@ -79,13 +85,14 @@
         html[dir="ltr"] .card-top-tag { right: auto; left: 12px; }
 
         .game-card:hover { border-color: #a67c52; transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0, 108, 53, 0.2); }
-        .game-title { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 10px; margin-top: 10px; }
-        .game-badge { background: #0d0a07; color: #a67c52; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 20px; border: 1px solid #332216; }
+        .game-title { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 6px; margin-top: 10px; }
+        .game-rating { color: #f59e0b; font-size: 12px; font-weight: 800; margin-bottom: 10px; }
+        .game-badge { background: #0d0a07; color: #a67c52; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 18px; border: 1px solid #332216; }
         .game-price { font-size: 24px; font-weight: 900; color: #10b981; margin-bottom: 18px; }
         .btn-buy { background: linear-gradient(135deg, #006c35, #044b25); color: #ffffff; border: 1px solid #a67c52; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.3s; }
         .btn-buy:hover { background: #a67c52; color: #0d0a07; }
 
-        /* قسم المزايا أسفل الموقع */
+        /* قسم المزايا والدعم أسفل الموقع */
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 50px; border-top: 1px solid #332216; padding-top: 35px; }
         .feature-box { background: #1c140e; border: 1px solid #332216; border-radius: 16px; padding: 20px; text-align: center; }
         .feature-icon { font-size: 32px; margin-bottom: 10px; }
@@ -179,6 +186,16 @@
                 <h1 id="t_storeHeaderTitle">🌴 RAKAN STUDIOS STORE</h1>
             </div>
         </div>
+
+        <!-- بنر ديكوري احترافي مع مؤقت عروض خاص -->
+        <div class="promo-banner">
+            <div>
+                <div class="promo-title">🔥 عروض نهاية الأسبوع المباشرة</div>
+                <div class="promo-sub">احصل على تسليم فوري وتخفيض تلقائي عند الشراء عبر المتجر الرقمي</div>
+            </div>
+            <div class="countdown-box" id="timerBox">⏱️ 05:42:18</div>
+        </div>
+
         <div class="store-layout">
             <div class="store-sidebar">
                 <h3 id="t_platformsHeader">🎮 أقسام المنصات</h3>
@@ -223,6 +240,17 @@
     let selectedGameForCheckout = null;
     let currentLang = 'ar';
     let currentCurrency = 'USD';
+
+    // تشغيل العداد التنازلي التفاعلي
+    let timerSeconds = 20538;
+    setInterval(() => {
+        if (timerSeconds > 0) timerSeconds--;
+        const h = String(Math.floor(timerSeconds / 3600)).padStart(2, '0');
+        const m = String(Math.floor((timerSeconds % 3600) / 60)).padStart(2, '0');
+        const s = String(timerSeconds % 60).padStart(2, '0');
+        const timerEl = document.getElementById('timerBox');
+        if (timerEl) timerEl.innerText = `⏱️ ${h}:${m}:${s}`;
+    }, 1000);
 
     const currencyRates = {
         USD: { rate: 1, symbol: '$', prefix: true },
@@ -357,6 +385,7 @@
                     <div class="card-top-tag">🔥 الأكثر مبيعاً</div>
                     <div>
                         <div class="game-title">${game.title || 'Game'}</div>
+                        <div class="game-rating">⭐ 4.9/5 (128 تقييم)</div>
                         <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
                     </div>
                     <div>
