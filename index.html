@@ -336,7 +336,10 @@
         const orderBody = { type: 'orders', customerId: name, item: selectedGameForCheckout.title, total: selectedGameForCheckout.price || '0', status: 'تم الدفع' };
         const customerBody = { type: 'customers', name: name, region: region, city: city, phone: phone };
 
+        // تعديل هيدر الإرسال ليتم إجبار التوجيه لإيميل العميل المكتوب فوراً
         const templateParams = {
+            to_email: email,
+            reply_to: email,
             to_name: name,
             user_email: email,
             game_title: selectedGameForCheckout.title,
