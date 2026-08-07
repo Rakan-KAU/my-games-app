@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الإدارة | Admin Portal</title>
+    <title>Rakan Gaming Studio | Admin Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -26,7 +26,6 @@
             margin: 0 auto;
         }
 
-        /* شاشة الـ PIN */
         .pin-screen {
             background: var(--card-bg);
             padding: 30px;
@@ -60,30 +59,8 @@
             width: 100%;
         }
 
-        /* لوحة التحكم */
         .dashboard {
             display: none;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-        }
-
-        .stat-val {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--success);
-            margin-top: 5px;
         }
 
         table {
@@ -110,43 +87,31 @@
 <body>
 
     <div class="container">
-        <!-- شاشة تسجيل الدخول بـ PIN -->
+        <!-- تسجيل الدخول بالرمز السرّي PIN -->
         <div class="pin-screen" id="pinScreen">
-            <h2>🔒 لوحة إدارة المتجر</h2>
-            <p style="color: #94a3b8; font-size: 0.9rem;">أدخل رمز PIN للدخول (الرمز: 1234)</p>
+            <h2>👑 Rakan Gaming Studio - Admin</h2>
+            <p style="color: #94a3b8; margin-top: 8px;">أدخل رمز PIN لوحة التحكم السحابية</p>
             <input type="password" id="pinInput" maxlength="4" placeholder="****">
-            <button class="btn" onclick="checkPin()">دخول اللوحة</button>
+            <button class="btn" onclick="checkPin()">دخول اللوحة السحابية</button>
         </div>
 
-        <!-- لوحة التحكم الرئيسية -->
+        <!-- لوحة التحكم الإدارية -->
         <div class="dashboard" id="dashBoard">
-            <h1>👑 مرحباً بك يا مدير المتجر</h1>
-            <p style="color: #94a3b8; margin-bottom: 20px;">متابعة المبيعات والطلبات الحية عبر السحابة</p>
+            <h1>إدارة متجر Rakan Gaming Studio</h1>
+            <p style="color: #94a3b8; margin-bottom: 25px;">متابعة البيانات والطلبات المباشرة من السحابة (Azure APIs)</p>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div>إجمالي الطلبات</div>
-                    <div class="stat-val" id="totalOrders">0</div>
-                </div>
-                <div class="stat-card">
-                    <div>إجمالي الأرباح</div>
-                    <div class="stat-val" id="totalRevenue">0 ر.س</div>
-                </div>
-            </div>
-
-            <h3>📦 قائمة الطلبات الأخيرة</h3>
+            <h3>📦 الطلبات الحية من السحابة</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>العميل</th>
-                        <th>الإيميل</th>
+                        <th>اسم العميل</th>
+                        <th>البريد الإلكتروني</th>
                         <th>اللعبة</th>
                         <th>السعر</th>
-                        <th>الحالة</th>
                     </tr>
                 </thead>
                 <tbody id="ordersTable">
-                    <!-- الطلبات تظهر هنا -->
+                    <tr><td colspan="4" style="text-align:center;">جاري الاتصال بالسحابة لاستدعاء البيانات...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -158,33 +123,33 @@
             if (pin === "1234") {
                 document.getElementById('pinScreen').style.display = "none";
                 document.getElementById('dashBoard').style.display = "block";
-                loadDashboardData();
+                loadCloudOrders();
             } else {
                 alert("رمز PIN غير صحيح!");
             }
         }
 
-        function loadDashboardData() {
-            const orders = JSON.parse(localStorage.getItem('my_orders_list')) || [];
-            
-            document.getElementById('totalOrders').innerText = orders.length;
-            
-            const revenue = orders.reduce((sum, order) => sum + order.price, 0);
-            document.getElementById('totalRevenue').innerText = revenue + " ر.س";
-
+        async function loadCloudOrders() {
             const table = document.getElementById('ordersTable');
-            if(orders.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا توجد طلبات بعد</td></tr>`;
-            } else {
+            try {
+                const response = await fetch('/api/orders');
+                const orders = await response.json();
+                
+                if(!orders || orders.length === 0) {
+                    table.innerHTML = `<tr><td colspan="4" style="text-align:center;">لا توجد طلبات سحابية مسجلة بعد</td></tr>`;
+                    return;
+                }
+
                 table.innerHTML = orders.map(o => `
                     <tr>
-                        <td>${o.customer}</td>
-                        <td>${o.email}</td>
-                        <td>${o.game}</td>
+                        <td>${o.customerName || 'عميل'}</td>
+                        <td>${o.customerEmail || '-'}</td>
+                        <td>${o.gameTitle || 'لعبة'}</td>
                         <td>${o.price} ر.س</td>
-                        <td><span style="color: #22c55e;">${o.status}</span></td>
                     </tr>
                 `).join('');
+            } catch (err) {
+                table.innerHTML = `<tr><td colspan="4" style="text-align:center; color: #ef4444;">تعذر استدعاء الطلبات من Azure Functions.</td></tr>`;
             }
         }
     </script>
