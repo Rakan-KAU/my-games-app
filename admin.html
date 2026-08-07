@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- منع التخزين المؤقت (No Cache) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -207,10 +206,10 @@
                         <input type="text" id="o_customerId" placeholder="اسم العميل (CustomerId)">
                         <input type="text" id="o_item" placeholder="اسم المنتج/اللعبة">
                         <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
+                        <!-- الحالات محصورة بين تم الدفع ولم يتم الدفع فقط -->
                         <select id="o_status">
-                            <option value="Completed">مكتمل (Completed)</option>
-                            <option value="Pending">قيد المعالجة (Pending)</option>
-                            <option value="Cancelled">ملغي (Cancelled)</option>
+                            <option value="تم الدفع">تم الدفع</option>
+                            <option value="لم يتم الدفع">لم يتم الدفع</option>
                         </select>
                     </div>
                     <button class="btn-add" id="o_btn" onclick="addData('orders')">إضافة طلب جديد</button>
@@ -218,7 +217,7 @@
                 </div>
                 <div class="card">
                     <table>
-                        <thead><tr><th>اسم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+                        <thead><tr><th>اسم العميل</th><th>المنتج</th><th>المبلغ</th><th>حالة الدفع</th><th>الإجراءات</th></tr></thead>
                         <tbody id="orders_table"><tr><td colspan="5" style="text-align:center;">جاري جلب البيانات...</td></tr></tbody>
                     </table>
                 </div>
@@ -232,7 +231,6 @@
     let loadedData = {};
     const SECURITY_PIN = "1234";
 
-    // استرجاع الجلسة الحالية لو سويت Refresh للera
     window.addEventListener('DOMContentLoaded', () => {
         const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
         const savedTab = sessionStorage.getItem('adminActiveTab');
@@ -361,7 +359,8 @@
                            <button class="btn-del" onclick="deleteDataWithPin('customers', '${item.id}', '${item.id}')">حذف</button>
                        </td>`;
             } else if (type === 'orders') {
-                row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:#10b981">${item.status || 'Pending'}</strong></td>
+                const statusColor = (item.status === 'تم الدفع') ? '#10b981' : '#ef4444';
+                row = `<td>${item.customerId || '-'}</td><td>${item.item || '-'}</td><td>$${item.total || '0'}</td><td><strong style="color:${statusColor}">${item.status || 'تم الدفع'}</strong></td>
                        <td>
                            <button class="btn-promote" onclick="editDataWithPin('orders', '${item.id}')">تعديل</button>
                            <button class="btn-del" onclick="deleteDataWithPin('orders', '${item.id}', '${item.id}')">حذف</button>
@@ -423,7 +422,7 @@
             document.getElementById('o_customerId').value = item.customerId || '';
             document.getElementById('o_item').value = item.item || '';
             document.getElementById('o_total').value = item.total || '';
-            document.getElementById('o_status').value = item.status || 'Pending';
+            document.getElementById('o_status').value = item.status || 'تم الدفع';
             document.getElementById('o_btn').innerText = 'حفظ التعديلات';
             document.getElementById('o_cancel').style.display = 'inline-block';
         }
@@ -488,7 +487,7 @@
             if (!name) return alert('أدخل اسم الموظف');
             body.name = name;
             body.role = document.getElementById('e_role').value;
-            body.salary = document.getElementById('e_salary').value || '0'; // إرسال الراتب بشكل صحيح للسحابة
+            body.salary = document.getElementById('e_salary').value || '0';
         } else if (type === 'customers') {
             const name = document.getElementById('c_name').value;
             if (!name) return alert('أدخل اسم العميل');
