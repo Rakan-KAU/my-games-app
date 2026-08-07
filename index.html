@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title id="pageTitle">🇸🇦 Rakan Gaming Studios | المتجر السعودي</title>
+    <title id="pageTitle">⚡ RAKAN STUDIOS | المتجر الرقمي</title>
     
     <!-- EmailJS Library -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -18,49 +18,53 @@
 
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #070d0a; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: #060911; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
+        /* شريط اللغة العلوي */
         .top-nav-buttons { position: fixed; top: 20px; left: 20px; z-index: 1002; display: flex; gap: 10px; }
-        .top-btn { background: #111e17; color: #d4af37; border: 1px solid #006c35; padding: 9px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .top-btn:hover { background: #006c35; color: #ffffff; border-color: #d4af37; }
+        .top-btn { background: rgba(15, 23, 42, 0.8); color: #00ff87; border: 1px solid #00ff87; padding: 10px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px); box-shadow: 0 0 15px rgba(0, 255, 135, 0.2); }
+        .top-btn:hover { background: #00ff87; color: #060911; box-shadow: 0 0 25px rgba(0, 255, 135, 0.6); }
 
-        #heroScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #0f2318 0%, #050a07 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px; }
-        .hero-badge { background: rgba(212, 175, 55, 0.15); border: 1px solid #d4af37; color: #d4af37; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; margin-bottom: 20px; letter-spacing: 1px; }
-        .hero-main-title { font-size: 56px; font-weight: 900; color: #ffffff; letter-spacing: 1px; margin-bottom: 30px; text-shadow: 0 0 35px rgba(0, 108, 53, 0.6); }
-        .btn-continue { padding: 18px 55px; background: linear-gradient(135deg, #006c35, #044b25); color: #ffffff; border: 1px solid #d4af37; border-radius: 35px; font-size: 19px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0, 108, 53, 0.5); }
-        .btn-continue:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); background: linear-gradient(135deg, #044b25, #006c35); }
+        /* الشاشة الافتتاحية Hero Screen */
+        #heroScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #0f172a 0%, #060911 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center; padding: 20px; }
+        .hero-badge { background: rgba(0, 255, 135, 0.1); border: 1px solid #00ff87; color: #00ff87; padding: 8px 24px; border-radius: 30px; font-size: 14px; font-weight: 800; margin-bottom: 25px; letter-spacing: 1.5px; box-shadow: 0 0 20px rgba(0, 255, 135, 0.2); }
+        .hero-main-title { font-size: 64px; font-weight: 900; color: #ffffff; letter-spacing: 1px; margin-bottom: 30px; text-shadow: 0 0 40px rgba(0, 255, 135, 0.5); }
+        .btn-continue { padding: 20px 60px; background: linear-gradient(135deg, #00ff87, #00b894); color: #060911; border: none; border-radius: 40px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 0 30px rgba(0, 255, 135, 0.4); text-transform: uppercase; }
+        .btn-continue:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 0 50px rgba(0, 255, 135, 0.8); }
 
-        #checkoutModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 10, 7, 0.96); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(12px); }
-        .login-box { background: #0f1a14; border: 1px solid #006c35; padding: 35px; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9); }
-        .login-box h2 { color: #d4af37; margin-bottom: 15px; font-size: 22px; font-weight: 800; }
-        .login-box input, .login-box select { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #1f3a2b; background: #070d0a; color: #fff; font-size: 14px; outline: none; }
-        .login-box input:focus, .login-box select:focus { border-color: #d4af37; }
-        .login-box button { width: 100%; padding: 13px; background: #006c35; color: white; border: 1px solid #d4af37; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s; }
-        .login-box button:hover { background: #044b25; }
+        /* نافذة الشراء والدفع Modal */
+        #checkoutModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 9, 17, 0.95); display: none; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(16px); }
+        .login-box { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(0, 255, 135, 0.3); padding: 40px; border-radius: 24px; width: 100%; max-width: 460px; text-align: center; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 255, 135, 0.1); }
+        .login-box h2 { color: #00ff87; margin-bottom: 18px; font-size: 24px; font-weight: 900; text-shadow: 0 0 15px rgba(0, 255, 135, 0.3); }
+        .login-box input, .login-box select { width: 100%; padding: 14px 18px; margin-bottom: 14px; border-radius: 12px; border: 1px solid #1e293b; background: #0b0f19; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        .login-box input:focus, .login-box select:focus { border-color: #00ff87; box-shadow: 0 0 15px rgba(0, 255, 135, 0.3); }
+        .login-box button { width: 100%; padding: 14px; background: #00ff87; color: #060911; border: none; border-radius: 12px; font-weight: 900; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 20px rgba(0, 255, 135, 0.3); }
+        .login-box button:hover { background: #00f0ff; box-shadow: 0 0 30px rgba(0, 240, 255, 0.6); }
 
         .card-row { display: flex; gap: 10px; }
 
-        #storeWrapper { display: none; padding: 30px; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #1f3a2b; padding-bottom: 20px; }
-        .store-logo-area h1 { font-size: 26px; color: #d4af37; font-weight: 900; letter-spacing: 1px; }
+        /* هيكل المتجر */
+        #storeWrapper { display: none; padding: 40px 30px; max-width: 1440px; margin: 0 auto; width: 100%; }
+        .store-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 1px solid #1e293b; padding-bottom: 25px; }
+        .store-logo-area h1 { font-size: 30px; color: #00ff87; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 20px rgba(0, 255, 135, 0.4); }
 
-        .store-layout { display: flex; gap: 30px; }
-        .store-sidebar { width: 280px; background: #0f1a14; border: 1px solid #1f3a2b; border-radius: 16px; padding: 25px; height: fit-content; }
-        .store-sidebar h3 { color: #d4af37; font-size: 16px; margin-bottom: 15px; font-weight: 800; border-bottom: 1px solid #1f3a2b; padding-bottom: 10px; }
-        .filter-btn { display: block; width: 100%; background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: 0.2s; text-align: right; }
-        .filter-btn:hover, .filter-btn.active { background: #1f3a2b; color: #d4af37; border-right: 4px solid #006c35; }
+        .store-layout { display: flex; gap: 35px; }
+        .store-sidebar { width: 290px; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; border-radius: 20px; padding: 25px; height: fit-content; backdrop-filter: blur(10px); }
+        .store-sidebar h3 { color: #00f0ff; font-size: 16px; margin-bottom: 18px; font-weight: 800; border-bottom: 1px solid #1e293b; padding-bottom: 12px; }
+        .filter-btn { display: block; width: 100%; background: transparent; color: #94a3b8; border: none; padding: 14px 18px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: 0.3s; text-align: right; }
+        .filter-btn:hover, .filter-btn.active { background: rgba(0, 255, 135, 0.1); color: #00ff87; border-right: 4px solid #00ff87; }
 
         .store-content { flex: 1; }
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        .game-card { background: #0f1a14; border: 1px solid #1f3a2b; border-radius: 16px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-        .game-card:hover { border-color: #d4af37; transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0,108,53,0.3); }
-        .game-title { font-size: 20px; font-weight: bold; color: #ffffff; margin-bottom: 8px; }
-        .game-badge { background: #070d0a; color: #d4af37; padding: 5px 10px; border-radius: 6px; font-size: 12px; display: inline-block; margin-bottom: 15px; border: 1px solid #1f3a2b; }
-        .game-price { font-size: 22px; font-weight: 900; color: #10b981; margin-bottom: 15px; }
-        .btn-buy { background: linear-gradient(135deg, #006c35, #044b25); color: white; border: 1px solid #d4af37; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
-        .btn-buy:hover { background: #d4af37; color: #070d0a; font-weight: 900; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 25px; }
+        .game-card { background: rgba(15, 23, 42, 0.8); border: 1px solid #1e293b; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+        .game-card:hover { border-color: #00ff87; transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0, 255, 135, 0.25); }
+        .game-title { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 10px; }
+        .game-badge { background: #060911; color: #00f0ff; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 20px; border: 1px solid #1e293b; }
+        .game-price { font-size: 24px; font-weight: 900; color: #00ff87; margin-bottom: 18px; text-shadow: 0 0 10px rgba(0, 255, 135, 0.3); }
+        .btn-buy { background: linear-gradient(135deg, #00ff87, #00b894); color: #060911; border: none; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 0 15px rgba(0, 255, 135, 0.2); }
+        .btn-buy:hover { background: #00f0ff; box-shadow: 0 0 25px rgba(0, 240, 255, 0.5); }
 
-        .status { padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; font-weight: 600; position: fixed; bottom: 20px; right: 20px; z-index: 2000; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .status { padding: 14px 22px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; display: none; font-weight: 700; position: fixed; bottom: 25px; right: 25px; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     </style>
 </head>
 <body>
@@ -70,16 +74,16 @@
     </div>
 
     <div id="heroScreen">
-        <div class="hero-badge">🇸🇦 المتجر الرقمي السعودي المعتمد</div>
+        <div class="hero-badge">🇸🇦 GAMING HUB</div>
         <h1 class="hero-main-title" id="t_heroTitle">استديو راكان للألعاب</h1>
-        <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">دخول المتجر الرئيسي ⬅</button>
+        <button class="btn-continue" id="t_continueBtn" onclick="openCustomerStore()">دخول المتجر ⬅</button>
     </div>
 
     <div id="checkoutModal">
         <div class="login-box">
             <div id="stepInfo">
                 <h2 id="t_checkoutTitle">🛒 إتمام طلب الشراء</h2>
-                <p id="checkoutGameTitle" style="color:#d4af37; font-weight:bold; margin-bottom:15px;"></p>
+                <p id="checkoutGameTitle" style="color:#00ff87; font-weight:bold; margin-bottom:18px;"></p>
                 <input type="text" id="chk_name" placeholder="الاسم الكامل">
                 <input type="email" id="chk_email" placeholder="البريد الإلكتروني (لاستلام الحساب)">
                 <input type="text" id="chk_phone" placeholder="رقم الهاتف (مثال: 05xxxxxxxx)">
@@ -96,21 +100,21 @@
                     <option value="مكة المكرمة">مكة المكرمة</option>
                     <option value="الدمام">الدمام</option>
                 </select>
-                <button onclick="goToPaymentStep()" id="t_nextPayBtn" style="background:#006c35; margin-top:5px;">متابعة إلى الدفع 💳</button>
-                <button onclick="closeCheckoutModal()" id="t_cancelBtn1" style="background:#1f3a2b; margin-top:8px;">إلغاء</button>
+                <button onclick="goToPaymentStep()" id="t_nextPayBtn" style="margin-top:6px;">متابعة إلى الدفع 💳</button>
+                <button onclick="closeCheckoutModal()" id="t_cancelBtn1" style="background:#1e293b; color:#fff; margin-top:10px;">إلغاء</button>
             </div>
 
             <div id="stepPayment" style="display:none;">
-                <h2 id="t_paymentTitle">💳 بوابة الدفع الآمنة (مدى / الفيزا)</h2>
-                <p id="t_paymentSub" style="color:#94a3b8; font-size:13px; margin-bottom:15px;">أدخل بيانات البطاقة المصرفية</p>
+                <h2 id="t_paymentTitle">💳 بوابة الدفع الآمنة</h2>
+                <p id="t_paymentSub" style="color:#94a3b8; font-size:13px; margin-bottom:18px;">أدخل بيانات البطاقة المصرفية</p>
                 <input type="text" id="card_name" placeholder="اسم حامل البطاقة">
                 <input type="text" id="card_number" placeholder="رقم البطاقة (16 رقم)" maxlength="19">
                 <div class="card-row">
                     <input type="text" id="card_exp" placeholder="MM/YY" maxlength="5">
                     <input type="password" id="card_cvv" placeholder="CVV" maxlength="4">
                 </div>
-                <button onclick="submitOrder()" id="t_confirmBtn" style="background:#006c35; border:1px solid #d4af37; margin-top:10px;">تأكيد الدفع 🔒</button>
-                <button onclick="backToInfoStep()" id="t_backBtn" style="background:#1f3a2b; margin-top:8px;">رجوع للبيانات</button>
+                <button onclick="submitOrder()" id="t_confirmBtn" style="margin-top:12px;">تأكيد الدفع 🔒</button>
+                <button onclick="backToInfoStep()" id="t_backBtn" style="background:#1e293b; color:#fff; margin-top:10px;">رجوع للبيانات</button>
             </div>
         </div>
     </div>
@@ -118,7 +122,7 @@
     <div id="storeWrapper">
         <div class="store-header">
             <div class="store-logo-area">
-                <h1 id="t_storeHeaderTitle">🌴 متجر RAKAN STUDIOS</h1>
+                <h1 id="t_storeHeaderTitle">⚡ RAKAN STUDIOS STORE</h1>
             </div>
         </div>
         <div class="store-layout">
@@ -149,30 +153,30 @@
     const translations = {
         ar: {
             heroTitle: "استديو راكان للألعاب",
-            continueBtn: "دخول المتجر الرئيسي ⬅",
+            continueBtn: "دخول المتجر ⬅",
             checkoutTitle: "🛒 إتمام طلب الشراء",
             nextPayBtn: "متابعة إلى الدفع 💳",
             cancelBtn: "إلغاء",
-            paymentTitle: "💳 بوابة الدفع الآمنة (مدى / الفيزا)",
+            paymentTitle: "💳 بوابة الدفع الآمنة",
             paymentSub: "أدخل بيانات البطاقة المصرفية",
             confirmBtn: "تأكيد الدفع 🔒",
             backBtn: "رجوع للبيانات",
-            storeHeaderTitle: "🌴 متجر RAKAN STUDIOS",
+            storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
             platformsHeader: "🎮 أقسام المنصات",
             filterAll: "🔥 جميع الألعاب",
             langBtnText: "English 🌐"
         },
         en: {
             heroTitle: "Rakan Gaming Studio",
-            continueBtn: "Enter Official Store ⬅",
+            continueBtn: "Enter Store ⬅",
             checkoutTitle: "🛒 Checkout Order",
             nextPayBtn: "Proceed to Payment 💳",
             cancelBtn: "Cancel",
-            paymentTitle: "💳 Payment Gateway (Mada / Visa)",
+            paymentTitle: "💳 Secure Payment Gateway",
             paymentSub: "Enter Credit Card Details",
             confirmBtn: "Confirm Payment 🔒",
             backBtn: "Back to Details",
-            storeHeaderTitle: "🌴 RAKAN STUDIOS STORE",
+            storeHeaderTitle: "⚡ RAKAN STUDIOS STORE",
             platformsHeader: "🎮 Platforms",
             filterAll: "🔥 All Games",
             langBtnText: "العربية 🌐"
@@ -351,12 +355,12 @@
         }
 
         document.body.innerHTML = `
-            <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#070d0a; color:white; text-align:center; padding:20px;">
-                <h1 style="color:#d4af37; font-size:42px; margin-bottom:15px; font-weight:900;">✨ تمت عملية الدفع بنجاح</h1>
+            <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#060911; color:white; text-align:center; padding:20px;">
+                <h1 style="color:#00ff87; font-size:48px; margin-bottom:15px; font-weight:900; text-shadow:0 0 30px rgba(0,255,135,0.4);">✨ تمت عملية الدفع بنجاح</h1>
                 <p style="font-size:18px; color:#94a3b8; max-width:550px; line-height:1.6;">شكراً لثقتك وتسوقك معنا. تم إرسال بيانات وتفاصيل الحساب فوراً إلى بريدك الإلكتروني:</p>
-                <p style="font-size:24px; color:#10b981; font-weight:bold; margin-top:15px; text-decoration:underline;">${email}</p>
-                <p style="font-size:15px; color:#d4af37; margin-top:15px; font-weight:600;">يرجى تفقد إيميلك لاستلام البيانات 📥</p>
-                <button onclick="location.reload()" style="margin-top:35px; padding:16px 45px; background:#006c35; border:1px solid #d4af37; border-radius:12px; color:white; font-weight:bold; font-size:16px; cursor:pointer; box-shadow:0 8px 20px rgba(0,108,53,0.4);">العودة للمتجر 🚀</button>
+                <p style="font-size:26px; color:#00f0ff; font-weight:bold; margin-top:15px; text-decoration:underline;">${email}</p>
+                <p style="font-size:16px; color:#00ff87; margin-top:18px; font-weight:700;">يرجى تفقد إيميلك لاستلام البيانات 📥</p>
+                <button onclick="location.reload()" style="margin-top:35px; padding:16px 50px; background:linear-gradient(135deg, #00ff87, #00b894); border:none; border-radius:30px; color:#060911; font-weight:900; font-size:16px; cursor:pointer; box-shadow:0 0 25px rgba(0,255,135,0.4);">العودة للمتجر 🚀</button>
             </div>
         `;
     }
@@ -365,7 +369,9 @@
         const el = document.getElementById('statusMsg');
         el.innerText = msg;
         el.style.display = 'block';
-        el.style.backgroundColor = isErr ? '#7f1d1d' : '#006c35';
+        el.style.backgroundColor = isErr ? '#7f1d1d' : '#0f172a';
+        el.style.border = '1px solid #00ff87';
+        el.style.color = '#00ff87';
         setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 </script>
