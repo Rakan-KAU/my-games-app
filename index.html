@@ -106,7 +106,7 @@
 
     <!-- شريط العروض العلوي المتحرك -->
     <div class="announcement-bar">
-        <div class="ticker-text">
+        <div class="ticker-text" id="t_tickerText">
             <span>✨ أهلاً بكم في متجر راكان استديوز | 🚚 تسليم فوري لبيانات الحساب عبر البريد الإلكتروني | 🛡️ جميع الحسابات مضمونة ومحمية | 🎧 فريق دعم فني محترف في خدمتكم 24/7</span>
         </div>
     </div>
@@ -190,8 +190,8 @@
         <!-- بنر ديكوري احترافي مع مؤقت عروض خاص -->
         <div class="promo-banner">
             <div>
-                <div class="promo-title">🔥 عروض نهاية الأسبوع المباشرة</div>
-                <div class="promo-sub">احصل على تسليم فوري وتخفيض تلقائي عند الشراء عبر المتجر الرقمي</div>
+                <div class="promo-title" id="t_promoTitle">🔥 عروض نهاية الأسبوع المباشرة</div>
+                <div class="promo-sub" id="t_promoSub">احصل على تسليم فوري وتخفيض تلقائي عند الشراء عبر المتجر الرقمي</div>
             </div>
             <div class="countdown-box" id="timerBox">⏱️ 05:42:18</div>
         </div>
@@ -216,18 +216,18 @@
         <div class="features-grid">
             <div class="feature-box">
                 <div class="feature-icon">⚡</div>
-                <h4>تسليم فورّي</h4>
-                <p>تصلك بيانات الحساب بلمح البصر على بريدك الإلكتروني</p>
+                <h4 id="t_feat1Title">تسليم فورّي</h4>
+                <p id="t_feat1Sub">تصلك بيانات الحساب بلمح البصر على بريدك الإلكتروني</p>
             </div>
             <div class="feature-box">
                 <div class="feature-icon">🔒</div>
-                <h4>دفع آمن 100%</h4>
-                <p>تشفير تام ومعتمد لجميع العمليات المصرفية</p>
+                <h4 id="t_feat2Title">دفع آمن 100%</h4>
+                <p id="t_feat2Sub">تشفير تام ومعتمد لجميع العمليات المصرفية</p>
             </div>
             <div class="feature-box">
                 <div class="feature-icon">🎧</div>
-                <h4>دعم فني محترف</h4>
-                <p>فريقنا متواجد دائماً لخدمتك ومساعدتك على مدار الساعة</p>
+                <h4 id="t_feat3Title">دعم فني محترف</h4>
+                <p id="t_feat3Sub">فريقنا متواجد دائماً لخدمتك ومساعدتك على مدار الساعة</p>
             </div>
         </div>
     </div>
@@ -264,25 +264,67 @@
 
     const translations = {
         ar: {
-            heroTitle: "استديو راكان للألعاب", continueBtn: "دخول المتجر ⬅", checkoutTitle: "🛒 إتمام طلب الشراء", nextPayBtn: "متابعة إلى الدفع 💳", cancelBtn: "إلغاء", paymentTitle: "💳 بوابة الدفع الآمنة", paymentSub: "أدخل بيانات البطاقة المصرفية", confirmBtn: "تأكيد الدفع 🔒", backBtn: "رجوع للبيانات", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 أقسام المنصات", filterAll: "🔥 جميع الألعاب", buyBtnText: "شراء الآن 🚀", loadingText: "جاري جلب الألعاب...", noGamesText: "لا توجد ألعاب متاحة في هذا القسم حالياً.", inputName: "الاسم الكامل", inputEmail: "البريد الإلكتروني (لاستلام الحساب)", inputPhone: "رقم الهاتف (مثال: 05xxxxxxxx)", inputCardName: "اسم حامل البطاقة", inputCardNum: "رقم البطاقة (16 رقم)", successTitle: "✨ تمت عملية الدفع بنجاح", successSub: "شكراً لثقتك وتسوقك معنا. تم إرسال بيانات وتفاصيل الحساب فوراً إلى بريدك الإلكتروني:", successNotice: "يرجى تفقد إيميلك لاستلام البيانات 📥", backToStoreBtn: "العودة للمتجر 🚀"
+            heroTitle: "استديو راكان للألعاب", continueBtn: "دخول المتجر ⬅", checkoutTitle: "🛒 إتمام طلب الشراء", nextPayBtn: "متابعة إلى الدفع 💳", cancelBtn: "إلغاء", paymentTitle: "💳 بوابة الدفع الآمنة", paymentSub: "أدخل بيانات البطاقة المصرفية", confirmBtn: "تأكيد الدفع 🔒", backBtn: "رجوع للبيانات", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 أقسام المنصات", filterAll: "🔥 جميع الألعاب", buyBtnText: "شراء الآن 🚀", loadingText: "جاري جلب الألعاب...", noGamesText: "لا توجد ألعاب متاحة في هذا القسم حالياً.", inputName: "الاسم الكامل", inputEmail: "البريد الإلكتروني (لاستلام الحساب)", inputPhone: "رقم الهاتف (مثال: 05xxxxxxxx)", inputCardName: "اسم حامل البطاقة", inputCardNum: "رقم البطاقة (16 رقم)", successTitle: "✨ تمت عملية الدفع بنجاح", successSub: "شكراً لثقتك وتسوقك معنا. تم إرسال بيانات وتفاصيل الحساب فوراً إلى بريدك الإلكتروني:", successNotice: "يرجى تفقد إيميلك لاستلام البيانات 📥", backToStoreBtn: "العودة للمتجر 🚀",
+            tickerText: "✨ أهلاً بكم في متجر راكان استديوز | 🚚 تسليم فوري لبيانات الحساب عبر البريد الإلكتروني | 🛡️ جميع الحسابات مضمونة ومحمية | 🎧 فريق دعم فني محترف في خدمتكم 24/7",
+            promoTitle: "🔥 عروض نهاية الأسبوع المباشرة", promoSub: "احصل على تسليم فوري وتخفيض تلقائي عند الشراء عبر المتجر الرقمي",
+            bestSellerTag: "🔥 الأكثر مبيعاً", ratingText: "⭐ 4.9/5 (128 تقييم)",
+            feat1Title: "تسليم فورّي", feat1Sub: "تصلك بيانات الحساب بلمح البصر على بريدك الإلكتروني",
+            feat2Title: "دفع آمن 100%", feat2Sub: "تشفير تام ومعتمد لجميع العمليات المصرفية",
+            feat3Title: "دعم فني محترف", feat3Sub: "فريقنا متواجد دائماً لخدمتك ومساعدتك على مدار الساعة"
         },
         en: {
-            heroTitle: "Rakan Gaming Studio", continueBtn: "Enter Store ⬅", checkoutTitle: "🛒 Checkout Order", nextPayBtn: "Proceed to Payment 💳", cancelBtn: "Cancel", paymentTitle: "💳 Secure Payment Gateway", paymentSub: "Enter Credit Card Details", confirmBtn: "Confirm Payment 🔒", backBtn: "Back to Details", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 Platforms", filterAll: "🔥 All Games", buyBtnText: "Buy Now 🚀", loadingText: "Fetching Games...", noGamesText: "No games available.", inputName: "Full Name", inputEmail: "Email Address", inputPhone: "Phone Number", inputCardName: "Cardholder Name", inputCardNum: "Card Number", successTitle: "✨ Payment Successful", successSub: "Thank you for shopping! Details sent to your email:", successNotice: "Please check your inbox 📥", backToStoreBtn: "Back to Store 🚀"
+            heroTitle: "Rakan Gaming Studio", continueBtn: "Enter Store ⬅", checkoutTitle: "🛒 Checkout Order", nextPayBtn: "Proceed to Payment 💳", cancelBtn: "Cancel", paymentTitle: "💳 Secure Payment Gateway", paymentSub: "Enter Credit Card Details", confirmBtn: "Confirm Payment 🔒", backBtn: "Back to Details", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 Platforms", filterAll: "🔥 All Games", buyBtnText: "Buy Now 🚀", loadingText: "Fetching Games...", noGamesText: "No games available.", inputName: "Full Name", inputEmail: "Email Address", inputPhone: "Phone Number", inputCardName: "Cardholder Name", inputCardNum: "Card Number", successTitle: "✨ Payment Successful", successSub: "Thank you for shopping! Details sent to your email:", successNotice: "Please check your inbox 📥", backToStoreBtn: "Back to Store 🚀",
+            tickerText: "✨ Welcome to Rakan Studios | 🚚 Instant Email Credentials Delivery | 🛡️ All Accounts Guaranteed & Secure | 🎧 24/7 Professional Support",
+            promoTitle: "🔥 Weekend Special Offers", promoSub: "Get instant delivery and automatic discounts on all digital purchases",
+            bestSellerTag: "🔥 Best Seller", ratingText: "⭐ 4.9/5 (128 Reviews)",
+            feat1Title: "Instant Delivery", feat1Sub: "Account credentials delivered instantly to your inbox",
+            feat2Title: "100% Secure Payment", feat2Sub: "Fully encrypted and certified banking transactions",
+            feat3Title: "Professional Support", feat3Sub: "Our team is available 24/7 to assist you"
         },
         zh: {
-            heroTitle: "Rakan 游戏工作室", continueBtn: "进入商店 ⬅", checkoutTitle: "🛒 结账订单", nextPayBtn: "继续付款 💳", cancelBtn: "取消", paymentTitle: "💳 安全支付网关", paymentSub: "输入信用卡信息", confirmBtn: "确认付款 🔒", backBtn: "返回详情", storeHeaderTitle: "🌴 RAKAN 游戏商店", platformsHeader: "🎮 平台分类", filterAll: "🔥 所有游戏", buyBtnText: "立即购买 🚀", loadingText: "加载游戏中...", noGamesText: "暂无游戏。", inputName: "全名", inputEmail: "电子邮件", inputPhone: "电话号码", inputCardName: "持卡人姓名", inputCardNum: "卡号", successTitle: "✨ 支付成功", successSub: "感谢您的购买！账号信息已发送至您的邮箱：", successNotice: "请检查您的收件箱 📥", backToStoreBtn: "返回商店 🚀"
+            heroTitle: "Rakan 游戏工作室", continueBtn: "进入商店 ⬅", checkoutTitle: "🛒 结账订单", nextPayBtn: "继续付款 💳", cancelBtn: "取消", paymentTitle: "💳 安全支付网关", paymentSub: "输入信用卡信息", confirmBtn: "确认付款 🔒", backBtn: "返回详情", storeHeaderTitle: "🌴 RAKAN 游戏商店", platformsHeader: "🎮 平台分类", filterAll: "🔥 所有游戏", buyBtnText: "立即购买 🚀", loadingText: "加载游戏中...", noGamesText: "暂无游戏。", inputName: "全名", inputEmail: "电子邮件", inputPhone: "电话号码", inputCardName: "持卡人姓名", inputCardNum: "卡号", successTitle: "✨ 支付成功", successSub: "感谢您的购买！账号信息已发送至您的邮箱：", successNotice: "请检查您的收件箱 📥", backToStoreBtn: "返回商店 🚀",
+            tickerText: "✨ 欢迎来到 Rakan 工作室 | 🚚 账号即时发送至邮箱 | 🛡️ 所有账号均有安全保障 | 🎧 24/7 专业客服支持",
+            promoTitle: "🔥 周末限时特惠", promoSub: "数字购买即可享受即时发货和自动折扣",
+            bestSellerTag: "🔥 热销推荐", ratingText: "⭐ 4.9/5 (128 条评价)",
+            feat1Title: "即时发货", feat1Sub: "账号信息将即时发送至您的邮箱",
+            feat2Title: "100% 安全支付", feat2Sub: "经过完全加密认证的银行交易",
+            feat3Title: "专业客服", feat3Sub: "我们的团队 24/7 全天候为您服务"
         },
         ja: {
-            heroTitle: "ラカン・ゲーミング・スタジオ", continueBtn: "ストアに入る ⬅", checkoutTitle: "🛒 注文の確認", nextPayBtn: "お支払いに進む 💳", cancelBtn: "キャンセル", paymentTitle: "💳 安全な決済ゲートウェイ", paymentSub: "カード情報を入力してください", confirmBtn: "支払いを確定する 🔒", backBtn: "戻る", storeHeaderTitle: "🌴 RAKAN ストア", platformsHeader: "🎮 プラットフォーム", filterAll: "🔥 すべてのゲーム", buyBtnText: "今すぐ購入 🚀", loadingText: "ゲームを読み込み中...", noGamesText: "ゲームがありません。", inputName: "フルネーム", inputEmail: "メールアドレス", inputPhone: "電話番号", inputCardName: "カード名義人", inputCardNum: "カード番号", successTitle: "✨ 支払い完了", successSub: "お買い上げありがとうございます！詳細はメールに送信されました：", successNotice: "受信トレイをご確認ください 📥", backToStoreBtn: "ストアに戻る 🚀"
+            heroTitle: "ラカン・ゲーミング・スタジオ", continueBtn: "ストアに入る ⬅", checkoutTitle: "🛒 注文の確認", nextPayBtn: "お支払いに進む 💳", cancelBtn: "キャンセル", paymentTitle: "💳 安全な決済ゲートウェイ", paymentSub: "カード情報を入力してください", confirmBtn: "支払いを確定する 🔒", backBtn: "戻る", storeHeaderTitle: "🌴 RAKAN ストア", platformsHeader: "🎮 プラットフォーム", filterAll: "🔥 すべてのゲーム", buyBtnText: "今すぐ購入 🚀", loadingText: "ゲームを読み込み中...", noGamesText: "ゲームがありません。", inputName: "フルネーム", inputEmail: "メールアドレス", inputPhone: "電話番号", inputCardName: "カード名義人", inputCardNum: "カード番号", successTitle: "✨ 支払い完了", successSub: "お買い上げありがとうございます！詳細はメールに送信されました：", successNotice: "受信トレイをご確認ください 📥", backToStoreBtn: "ストアに戻る 🚀",
+            tickerText: "✨ ラカン・スタジオへようこそ | 🚚 メールでの即时アカウント納品 | 🛡️ 全アカウント保証＆安全 | 🎧 24/7 プロフェッショナルサポート",
+            promoTitle: "🔥 週末特別セール", promoSub: "デジタル購入で即時納品と自動割引をゲット",
+            bestSellerTag: "🔥 ベストセラー", ratingText: "⭐ 4.9/5 (128 件のレビュー)",
+            feat1Title: "即時納品", feat1Sub: "アカウント情報が即座にメールに届きます",
+            feat2Title: "100% 安全な決済", feat2Sub: "完全に暗号化された銀行取引",
+            feat3Title: "プロサポート", feat3Sub: "チームが 24 時間年中無休でサポートします"
         },
         es: {
-            heroTitle: "Estudio de Juegos Rakan", continueBtn: "Entrar a la Tienda ⬅", checkoutTitle: "🛒 Confirmar Compra", nextPayBtn: "Proceder al Pago 💳", cancelBtn: "Cancelar", paymentTitle: "💳 Pasarela de Pago Segura", paymentSub: "Ingrese detalles de tarjeta", confirmBtn: "Confirmar Pago 🔒", backBtn: "Volver", storeHeaderTitle: "🌴 TIENDA RAKAN STUDIOS", platformsHeader: "🎮 Plataformas", filterAll: "🔥 Todos los Juegos", buyBtnText: "Comprar Ahora 🚀", loadingText: "Cargando juegos...", noGamesText: "No hay juegos disponibles.", inputName: "Nombre Completo", inputEmail: "Correo Electrónico", inputPhone: "Teléfono", inputCardName: "Titular de la Tarjeta", inputCardNum: "Número de Tarjeta", successTitle: "✨ Pago Exitoso", successSub: "¡Gracias por su compra! Credenciales enviadas a:", successNotice: "Por favor revise su correo 📥", backToStoreBtn: "Volver a la Tienda 🚀"
+            heroTitle: "Estudio de Juegos Rakan", continueBtn: "Entrar a la Tienda ⬅", checkoutTitle: "🛒 Confirmar Compra", nextPayBtn: "Proceder al Pago 💳", cancelBtn: "Cancelar", paymentTitle: "💳 Pasarela de Pago Segura", paymentSub: "Ingrese detalles de tarjeta", confirmBtn: "Confirmar Pago 🔒", backBtn: "Volver", storeHeaderTitle: "🌴 TIENDA RAKAN STUDIOS", platformsHeader: "🎮 Plataformas", filterAll: "🔥 Todos los Juegos", buyBtnText: "Comprar Ahora 🚀", loadingText: "Cargando juegos...", noGamesText: "No hay juegos disponibles.", inputName: "Nombre Completo", inputEmail: "Correo Electrónico", inputPhone: "Teléfono", inputCardName: "Titular de la Tarjeta", inputCardNum: "Número de Tarjeta", successTitle: "✨ Pago Exitoso", successSub: "¡Gracias por su compra! Credenciales enviadas a:", successNotice: "Por favor revise su correo 📥", backToStoreBtn: "Volver a la Tienda 🚀",
+            tickerText: "✨ Bienvenido a Rakan Studios | 🚚 Entrega inmediata de credenciales | 🛡️ Cuentas garantizadas y seguras | 🎧 Soporte profesional 24/7",
+            promoTitle: "🔥 Ofertas Especiales de Fin de Semana", promoSub: "Obtenga entrega inmediata y descuentos automáticos",
+            bestSellerTag: "🔥 Más Vendido", ratingText: "⭐ 4.9/5 (128 Reseñas)",
+            feat1Title: "Entrega Inmediata", feat1Sub: "Credenciales enviadas al instante a su correo",
+            feat2Title: "Pago 100% Seguro", feat2Sub: "Transacciones bancarias totalmente encriptadas",
+            feat3Title: "Soporte Profesional", feat3Sub: "Nuestro equipo está disponible 24/7 para ayudarle"
         },
         fr: {
-            heroTitle: "Studio de Jeux Rakan", continueBtn: "Entrer dans la Boutique ⬅", checkoutTitle: "🛒 Valider la Commande", nextPayBtn: "Procéder au Paiement 💳", cancelBtn: "Annuler", paymentTitle: "💳 Paiement Sécurisé", paymentSub: "Entrez les coordonnées bancaires", confirmBtn: "Confirmer le Paiement 🔒", backBtn: "Retour", storeHeaderTitle: "🌴 BOUTIQUE RAKAN STUDIOS", platformsHeader: "🎮 Plateformes", filterAll: "🔥 Tous les Jeux", buyBtnText: "Acheter 🚀", loadingText: "Chargement...", noGamesText: "Aucun jeu disponible.", inputName: "Nom Complet", inputEmail: "Adresse Email", inputPhone: "Numéro de Téléphone", inputCardName: "Titulaire de la Carte", inputCardNum: "Numéro de Carte", successTitle: "✨ Paiement Réussi", successSub: "Merci pour votre achat ! Détails envoyés à :", successNotice: "Veuillez vérifier votre boîte mail 📥", backToStoreBtn: "Retour à la Boutique 🚀"
+            heroTitle: "Studio de Jeux Rakan", continueBtn: "Entrer dans la Boutique ⬅", checkoutTitle: "🛒 Valider la Commande", nextPayBtn: "Procéder au Paiement 💳", cancelBtn: "Annuler", paymentTitle: "💳 Paiement Sécurisé", paymentSub: "Entrez les coordonnées bancaires", confirmBtn: "Confirmer le Paiement 🔒", backBtn: "Retour", storeHeaderTitle: "🌴 BOUTIQUE RAKAN STUDIOS", platformsHeader: "🎮 Plateformes", filterAll: "🔥 Tous les Jeux", buyBtnText: "Acheter 🚀", loadingText: "Chargement...", noGamesText: "Aucun jeu disponible.", inputName: "Nom Complet", inputEmail: "Adresse Email", inputPhone: "Numéro de Téléphone", inputCardName: "Titulaire de la Carte", inputCardNum: "Numéro de Carte", successTitle: "✨ Paiement Réussi", successSub: "Merci pour votre achat ! Détails envoyés à :", successNotice: "Veuillez vérifier votre boîte mail 📥", backToStoreBtn: "Retour à la Boutique 🚀",
+            tickerText: "✨ Bienvenue chez Rakan Studios | 🚚 Livraison immédiate des identifiants | 🛡️ Comptes garantis et sécurisés | 🎧 Support 24/7",
+            promoTitle: "🔥 Offres Spéciales du Week-end", promoSub: "Livraison immédiate et réductions automatiques",
+            bestSellerTag: "🔥 Meilleure Vente", ratingText: "⭐ 4.9/5 (128 Avis)",
+            feat1Title: "Livraison Immédiate", feat1Sub: "Identifiants envoyés immédiatement par email",
+            feat2Title: "Paiement 100% Sécurisé", feat2Sub: "Transactions bancaires entièrement cryptées",
+            feat3Title: "Support Professionnel", feat3Sub: "Notre équipe est disponible 24/7 pour vous aider"
         },
         de: {
-            heroTitle: "Rakan Gaming Studio", continueBtn: "Store Betreten ⬅", checkoutTitle: "🛒 Kasse", nextPayBtn: "Weiter zur Zahlung 💳", cancelBtn: "Abbrechen", paymentTitle: "💳 Sicheres Zahlungs-Gateway", paymentSub: "Karteninformationen eingeben", confirmBtn: "Zahlung Bestätigen 🔒", backBtn: "Zurück", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 Plattformen", filterAll: "🔥 Alle Spiele", buyBtnText: "Jetzt Kaufen 🚀", loadingText: "Spiele werden geladen...", noGamesText: "Keine Spiele verfügbar.", inputName: "Vollständiger Name", inputEmail: "E-Mail-Adresse", inputPhone: "Telefonnummer", inputCardName: "Karteninhaber", inputCardNum: "Kartennummer", successTitle: "✨ Zahlung Erfolgreich", successSub: "Vielen Dank! Ihre Daten wurden gesendet an:", successNotice: "Bitte überprüfen Sie Ihren Posteingang 📥", backToStoreBtn: "Zurück zum Store 🚀"
+            heroTitle: "Rakan Gaming Studio", continueBtn: "Store Betreten ⬅", checkoutTitle: "🛒 Kasse", nextPayBtn: "Weiter zur Zahlung 💳", cancelBtn: "Abbrechen", paymentTitle: "💳 Sicheres Zahlungs-Gateway", paymentSub: "Karteninformationen eingeben", confirmBtn: "Zahlung Bestätigen 🔒", backBtn: "Zurück", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 Plattformen", filterAll: "🔥 Alle Spiele", buyBtnText: "Jetzt Kaufen 🚀", loadingText: "Spiele werden geladen...", noGamesText: "Keine Spiele verfügbar.", inputName: "Vollständiger Name", inputEmail: "E-Mail-Adresse", inputPhone: "Telefonnummer", inputCardName: "Karteninhaber", inputCardNum: "Kartennummer", successTitle: "✨ Zahlung Erfolgreich", successSub: "Vielen Dank! Ihre Daten wurden gesendet an:", successNotice: "Bitte überprüfen Sie Ihren Posteingang 📥", backToStoreBtn: "Zurück zum Store 🚀",
+            tickerText: "✨ Willkommen bei Rakan Studios | 🚚 Sofortige Lieferung der Zugangsdaten | 🛡️ Alle Konten garantiert & sicher | 🎧 24/7 Support",
+            promoTitle: "🔥 Wochenende Spezialangebote", promoSub: "Sofortige Lieferung und automatische Rabatte",
+            bestSellerTag: "🔥 Bestseller", ratingText: "⭐ 4.9/5 (128 Bewertungen)",
+            feat1Title: "Sofortige Lieferung", feat1Sub: "Zugangsdaten sofort per E-Mail erhalten",
+            feat2Title: "100% Sichere Zahlung", feat2Sub: "Vollständig verschlüsselte Banktransaktionen",
+            feat3Title: "Professioneller Support", feat3Sub: "Unser Team steht Ihnen rund um die Uhr zur Verfügung"
         }
     };
 
@@ -319,6 +361,17 @@
         document.getElementById('t_storeHeaderTitle').innerText = t.storeHeaderTitle;
         document.getElementById('t_platformsHeader').innerText = t.platformsHeader;
         document.getElementById('t_filterAll').innerText = t.filterAll;
+
+        document.getElementById('t_tickerText').innerText = t.tickerText;
+        document.getElementById('t_promoTitle').innerText = t.promoTitle;
+        document.getElementById('t_promoSub').innerText = t.promoSub;
+
+        document.getElementById('t_feat1Title').innerText = t.feat1Title;
+        document.getElementById('t_feat1Sub').innerText = t.feat1Sub;
+        document.getElementById('t_feat2Title').innerText = t.feat2Title;
+        document.getElementById('t_feat2Sub').innerText = t.feat2Sub;
+        document.getElementById('t_feat3Title').innerText = t.feat3Title;
+        document.getElementById('t_feat3Sub').innerText = t.feat3Sub;
 
         document.getElementById('chk_name').placeholder = t.inputName;
         document.getElementById('chk_email').placeholder = t.inputEmail;
@@ -382,10 +435,10 @@
             const convertedPriceText = formatPrice(game.price || '0');
             grid.innerHTML += `
                 <div class="game-card">
-                    <div class="card-top-tag">🔥 الأكثر مبيعاً</div>
+                    <div class="card-top-tag">${t.bestSellerTag}</div>
                     <div>
                         <div class="game-title">${game.title || 'Game'}</div>
-                        <div class="game-rating">⭐ 4.9/5 (128 تقييم)</div>
+                        <div class="game-rating">${t.ratingText}</div>
                         <div class="game-badge">${game.platform || 'Multi-Platform'}</div>
                     </div>
                     <div>
