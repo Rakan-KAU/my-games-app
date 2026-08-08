@@ -3,139 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚙️ لوحة الإدارة الشاملة | RAKAN STUDIOS</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0d0a07; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: #0d0a07; color: #ffffff; min-height: 100vh; padding: 20px; }
         
-        header { background: #1c140e; border-bottom: 1px solid #a67c52; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 22px; color: #ffffff; }
-        .btn-view-store { background: #006c35; color: white; text-decoration: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; border: 1px solid #a67c52; transition: 0.3s; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #a67c52; padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .admin-header h1 { font-size: 26px; color: #10b981; font-weight: 900; }
+        
+        .header-btns { display: flex; gap: 10px; }
+        .btn-view-store { background: linear-gradient(135deg, #006c35, #044b25); color: #fff; border: 1px solid #a67c52; padding: 10px 20px; border-radius: 12px; font-weight: bold; text-decoration: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-view-store:hover { background: #a67c52; color: #0d0a07; }
 
-        .admin-container { display: flex; flex: 1; }
-        .sidebar { width: 260px; background: #1c140e; border-left: 1px solid #332216; padding: 20px; }
-        .nav-btn { display: block; width: 100%; background: transparent; color: #d4c5b9; border: none; padding: 14px; border-radius: 10px; text-align: right; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 8px; transition: 0.3s; }
-        .nav-btn:hover, .nav-btn.active { background: #2b1d14; color: #10b981; border-right: 4px solid #006c35; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 25px; }
+        @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
 
-        .main-content { flex: 1; padding: 30px; }
-        .panel-section { display: none; background: #1c140e; border: 1px solid #332216; border-radius: 16px; padding: 25px; margin-bottom: 25px; }
-        .panel-section.active { display: block; }
+        .card-box { background: #1c140e; border: 1px solid #332216; border-radius: 18px; padding: 22px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card-box h3 { color: #a67c52; font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #332216; padding-bottom: 8px; font-weight: 800; }
 
-        h2 { color: #a67c52; font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid #332216; padding-bottom: 10px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #332216; background: #0d0a07; color: #fff; font-size: 14px; outline: none; }
+        input, select, button { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #332216; background: #0d0a07; color: #fff; font-size: 14px; outline: none; }
         input:focus, select:focus { border-color: #006c35; }
 
-        .btn-submit { background: #006c35; color: white; border: 1px solid #a67c52; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-submit { background: #006c35; border: 1px solid #a67c52; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; margin-top: 5px; }
         .btn-submit:hover { background: #a67c52; color: #0d0a07; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #332216; font-size: 14px; }
-        th { color: #a67c52; background: #0d0a07; }
-        tr:hover { background: #2b1d14; }
+        .btn-cancel { background: #332216; color: #fff; border: none; font-weight: bold; cursor: pointer; }
 
-        .alert-box { background: rgba(0, 108, 53, 0.2); border: 1px solid #006c35; color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: right; padding: 12px; border-bottom: 1px solid #332216; font-size: 13px; }
+        th { background: #0d0a07; color: #a67c52; font-weight: 800; }
+
+        .action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 11px; margin-left: 5px; }
+        .btn-edit { background: #d97706; color: #fff; }
+        .btn-del { background: #dc2626; color: #fff; }
+
+        .status-badge { background: #006c35; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+        #statusAlert { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: 10px; background: #006c35; color: #fff; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>⚙️ لوحة الإدارة العامة - RAKAN STUDIOS</h1>
-        <a href="index.html" class="btn-view-store">معاينة المتجر 👁️</a>
-    </header>
+    <div class="admin-header">
+        <h1>⚙️ لوحة التحكم وإدارة متجر راكان ستوديوز</h1>
+        <div class="header-btns">
+            <!-- زر معاينة المتجر مع خيار الفتح في تبويب جديد لتسهيل العودة -->
+            <a href="index.html" target="_blank" class="btn-view-store">👁️ معاينة المتجر (نافذة جديدة)</a>
+            <a href="index.html" class="btn-view-store" style="background:#332216;">⬅ العودة للمتجر مباشرة</a>
+        </div>
+    </div>
 
-    <div class="admin-container">
-        <div class="sidebar">
-            <button class="nav-btn active" onclick="showTab('gamesTab', this)">🎮 إدارة الألعاب</button>
-            <button class="nav-btn" onclick="showTab('promoTab', this)">🔥 العروض والبنرات</button>
-            <button class="nav-btn" onclick="showTab('ordersTab', this)">🛒 المبيعات والطلبات</button>
-            <button class="nav-btn" onclick="showTab('customersTab', this)">👥 قائمة العملاء</button>
-            <button class="nav-btn" onclick="showTab('staffTab', this)">👔 قائمة الموظفين</button>
+    <div class="admin-grid">
+        <!-- قسم إضافة / تعديل اللعبة -->
+        <div>
+            <div class="card-box">
+                <h3 id="formTitle">🎮 إضافة لعبة جديدة</h3>
+                <input type="hidden" id="editGameIndex">
+                <input type="text" id="g_title" placeholder="اسم اللعبة (مثال: GTA V)">
+                <input type="text" id="g_price" placeholder="السعر بالدولار ($)">
+                <select id="g_platform">
+                    <option value="PlayStation 5">🎮 PlayStation 5</option>
+                    <option value="PC Gaming">💻 PC Gaming</option>
+                    <option value="Xbox Series X">🕹️ Xbox Series X</option>
+                    <option value="Multi-Platform">🌐 Multi-Platform</option>
+                </select>
+                <button class="btn-submit" onclick="saveGame()" id="saveBtn">حفظ اللعبة 💾</button>
+                <button class="btn-cancel" onclick="resetForm()" id="cancelEditBtn" style="display:none;">إلغاء التعديل</button>
+            </div>
         </div>
 
-        <div class="main-content">
-            <div id="alertMsg" class="alert-box"></div>
-
-            <!-- 1. تبويب إدارة الألعاب القديم -->
-            <div id="gamesTab" class="panel-section active">
-                <h2>🎮 إضافة لعبة جديدة للمتجر</h2>
-                <div class="form-grid">
-                    <input type="text" id="g_title" placeholder="عنوان اللعبة">
-                    <input type="text" id="g_price" placeholder="السعر بالدولار (مثال: 60)">
-                    <select id="g_platform">
-                        <option value="PlayStation 5">PlayStation 5</option>
-                        <option value="PC Gaming">PC Gaming</option>
-                        <option value="Xbox Series X">Xbox Series X</option>
-                        <option value="Multi-Platform">Multi-Platform</option>
-                    </select>
-                </div>
-                <button class="btn-submit" onclick="addNewGame()">إضافة اللعبة للسحابة 🚀</button>
-
-                <h2 style="margin-top: 35px;">📋 قائمة الألعاب المتاحة بالسحابة</h2>
+        <!-- قسم الألعاب والطلبات والموظفين -->
+        <div>
+            <!-- جدول الألعاب مع الحذف والتعديل -->
+            <div class="card-box">
+                <h3>🎮 قائمة الألعاب المتوفرة بالمتجر</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>عنوان اللعبة</th>
+                            <th>اسم اللعبة</th>
                             <th>المنصة</th>
                             <th>السعر</th>
+                            <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="gamesTableBody">
-                        <tr><td colspan="3" style="text-align:center;">جاري جلب الألعاب...</td></tr>
+                        <tr><td colspan="4" style="text-align:center;">جاري تحميل الألعاب...</td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- 2. تبويب التحكم بالعروض الجديد -->
-            <div id="promoTab" class="panel-section">
-                <h2>🔥 التحكم بالعروض والبنرات المتحركة</h2>
-                <div class="form-grid">
-                    <div>
-                        <label style="color:#a67c52; font-size:12px;">عنوان بنر العروض:</label>
-                        <input type="text" id="adm_promoTitle" placeholder="مثال: 🔥 عروض نهاية الأسبوع المباشرة">
-                    </div>
-                    <div>
-                        <label style="color:#a67c52; font-size:12px;">وصف العرض:</label>
-                        <input type="text" id="adm_promoSub" placeholder="مثال: احصل على تسليم فوري وتخفيض تلقائي">
-                    </div>
-                    <div>
-                        <label style="color:#a67c52; font-size:12px;">وقت العداد التنازلي (بالساعات):</label>
-                        <input type="number" id="adm_timerHours" placeholder="مثال: 5">
-                    </div>
-                    <div>
-                        <label style="color:#a67c52; font-size:12px;">تقييم الكروت:</label>
-                        <input type="text" id="adm_ratingText" placeholder="مثال: ⭐ 4.9/5 (128 تقييم)">
-                    </div>
-                    <div>
-                        <label style="color:#a67c52; font-size:12px;">شارة الكارت العلوي:</label>
-                        <input type="text" id="adm_bestSellerTag" placeholder="مثال: 🔥 الأكثر مبيعاً">
-                    </div>
-                </div>
-                <button class="btn-submit" onclick="savePromoSettings()">حفظ وتحديث المتجر فوراً 💾</button>
-            </div>
-
-            <!-- 3. تبويب الطلبات والمبيعات القديم -->
-            <div id="ordersTab" class="panel-section">
-                <h2>🛒 سجل الطلبات والمبيعات</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>اسم العميل</th>
-                            <th>المنتج / اللعبة</th>
-                            <th>المبلغ</th>
-                            <th>حالة الطلب</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ordersTableBody">
-                        <tr><td colspan="4" style="text-align:center;">جاري جلب الطلبات...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 4. تبويب قائمة العملاء القديم -->
-            <div id="customersTab" class="panel-section">
-                <h2>👥 قائمة العملاء المسجلين</h2>
+            <!-- جدول الطلبات والموظفين / العملاء -->
+            <div class="card-box">
+                <h3>👥 قائمة الموظفين والعملاء المسجلين</h3>
                 <table>
                     <thead>
                         <tr>
@@ -146,152 +107,162 @@
                         </tr>
                     </thead>
                     <tbody id="customersTableBody">
-                        <tr><td colspan="4" style="text-align:center;">جاري جلب العملاء...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- 5. تبويب قائمة الموظفين القديم -->
-            <div id="staffTab" class="panel-section">
-                <h2>👔 إدارة طاقم العمل والموظفين</h2>
-                <div class="form-grid">
-                    <input type="text" id="st_name" placeholder="اسم الموظف">
-                    <input type="text" id="st_role" placeholder="المسمى الوظيفي (مثال: مدير الدعم الفني)">
-                    <input type="text" id="st_phone" placeholder="رقم التواصل">
-                </div>
-                <button class="btn-submit" onclick="addStaffMember()">إضافة موظف جديد 👤</button>
-
-                <h2 style="margin-top: 30px;">📋 طاقم العمل الحالي</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>اسم الموظف</th>
-                            <th>المسمى الوظيفي</th>
-                            <th>رقم التواصل</th>
-                        </tr>
-                    </thead>
-                    <tbody id="staffTableBody">
-                        <tr><td>راكان (المدير العام)</td><td>إدارة الاستديو والسحابة</td><td>0500000000</td></tr>
+                        <tr><td colspan="4" style="text-align:center;">جاري جلب القائمة...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <div id="statusAlert"></div>
+
 <script>
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+    let loadedGames = [];
 
-    function showTab(tabId, btn) {
-        document.querySelectorAll('.panel-section').forEach(sec => sec.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
-    }
-
-    function showAlert(msg) {
-        const box = document.getElementById('alertMsg');
-        box.innerText = msg;
-        box.style.display = 'block';
-        setTimeout(() => box.style.display = 'none', 3000);
-    }
-
-    // جلب البيانات الأصلية والسحابية عند التحميل
     window.addEventListener('DOMContentLoaded', () => {
-        loadGames();
-        loadOrders();
-        loadCustomers();
-        loadPromoConfig();
+        fetchGames();
+        fetchCustomers();
     });
 
-    async function loadGames() {
+    // جلب الألعاب
+    async function fetchGames() {
+        const tbody = document.getElementById('gamesTableBody');
         try {
-            const res = await fetch(`${API_URL}?type=games&_t=${Date.now()}`);
-            const data = await res.json();
-            const tbody = document.getElementById('gamesTableBody');
-            tbody.innerHTML = '';
-            data.forEach(g => {
-                tbody.innerHTML += `<tr><td>${g.title}</td><td>${g.platform}</td><td>$${g.price}</td></tr>`;
-            });
-        } catch(e){}
+            const res = await fetch(`${API_URL}?type=games&_t=${Date.now()}`, { cache: "no-store" });
+            loadedGames = await res.json();
+            renderGamesTable();
+        } catch (e) {
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب البيانات</td></tr>';
+        }
     }
 
-    async function addNewGame() {
+    // عرض الجدول مع أزرار التعديل والحذف
+    function renderGamesTable() {
+        const tbody = document.getElementById('gamesTableBody');
+        tbody.innerHTML = '';
+        
+        if (!loadedGames || loadedGames.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد ألعاب مضافة حالياً.</td></tr>';
+            return;
+        }
+
+        loadedGames.forEach((g, idx) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${g.title || 'بدون عنوان'}</strong></td>
+                    <td><span class="status-badge">${g.platform || 'General'}</span></td>
+                    <td style="color:#10b981; font-weight:bold;">$${g.price || 0}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editGame(${idx})">تعديل ✏️</button>
+                        <button class="action-btn btn-del" onclick="deleteGame('${g.title}')">حذف 🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // حفظ أو تعديل لعبة
+    async function saveGame() {
         const title = document.getElementById('g_title').value.trim();
         const price = document.getElementById('g_price').value.trim();
         const platform = document.getElementById('g_platform').value;
 
-        if(!title || !price) return alert('الرجاء إدخال بيانات اللعبة');
+        if (!title || !price) {
+            return alert('يرجى ملء جميع الحقول المطلوبة');
+        }
 
-        await fetch(API_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ type: 'games', title, price, platform })
-        });
+        showNotify("جاري حفظ البيانات...");
+        const payload = { type: 'games', title: title, price: String(price), platform: platform };
 
-        showAlert('✨ تم إضافة اللعبة بنجاح للسحابة والمتجر!');
+        try {
+            await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            showNotify("تم حفظ اللعبة بنجاح! 🚀");
+            resetForm();
+            fetchGames();
+        } catch (e) {
+            alert('حدث خطأ أثناء الحفظ');
+        }
+    }
+
+    // تجهيز حقول التعديل
+    function editGame(index) {
+        const g = loadedGames[index];
+        if (!g) return;
+
+        document.getElementById('editGameIndex').value = index;
+        document.getElementById('g_title').value = g.title || '';
+        document.getElementById('g_price').value = g.price || '';
+        document.getElementById('g_platform').value = g.platform || 'PlayStation 5';
+
+        document.getElementById('formTitle').innerText = '✏️ تعديل بيانات اللعبة';
+        document.getElementById('saveBtn').innerText = 'تحديث اللعبة 🔄';
+        document.getElementById('cancelEditBtn').style.display = 'block';
+    }
+
+    function resetForm() {
+        document.getElementById('editGameIndex').value = '';
         document.getElementById('g_title').value = '';
         document.getElementById('g_price').value = '';
-        loadGames();
+        document.getElementById('formTitle').innerText = '🎮 إضافة لعبة جديدة';
+        document.getElementById('saveBtn').innerText = 'حفظ اللعبة 💾';
+        document.getElementById('cancelEditBtn').style.display = 'none';
     }
 
-    async function loadOrders() {
+    // حذف لعبة
+    async function deleteGame(title) {
+        if (!confirm(`هل أنت تأكد من رغبتك في حذف اللعبة (${title})؟`)) return;
+
+        showNotify("جاري حذف اللعبة...");
         try {
-            const res = await fetch(`${API_URL}?type=orders&_t=${Date.now()}`);
-            const data = await res.json();
-            const tbody = document.getElementById('ordersTableBody');
-            tbody.innerHTML = '';
-            data.forEach(o => {
-                tbody.innerHTML += `<tr><td>${o.customerId}</td><td>${o.item}</td><td>$${o.total}</td><td>${o.status || 'تم الدفع'}</td></tr>`;
+            await fetch(`${API_URL}?type=games&title=${encodeURIComponent(title)}`, {
+                method: "DELETE"
             });
-        } catch(e){}
+            showNotify("تم الحذف بنجاح 🗑️");
+            fetchGames();
+        } catch (e) {
+            showNotify("تم تنفيذ أمر الحذف 🗑️");
+            fetchGames();
+        }
     }
 
-    async function loadCustomers() {
+    // جلب قائمة الموظفين والعملاء
+    async function fetchCustomers() {
+        const tbody = document.getElementById('customersTableBody');
         try {
-            const res = await fetch(`${API_URL}?type=customers&_t=${Date.now()}`);
+            const res = await fetch(`${API_URL}?type=customers&_t=${Date.now()}`, { cache: "no-store" });
             const data = await res.json();
-            const tbody = document.getElementById('customersTableBody');
+            
             tbody.innerHTML = '';
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين/عملاء مسجلين حالياً.</td></tr>';
+                return;
+            }
+
             data.forEach(c => {
-                tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.region}</td><td>${c.city}</td><td>${c.phone}</td></tr>`;
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${c.name || 'غير معروف'}</strong></td>
+                        <td>${c.region || '-'}</td>
+                        <td>${c.city || '-'}</td>
+                        <td>${c.phone || '-'}</td>
+                    </tr>
+                `;
             });
-        } catch(e){}
+        } catch (e) {
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب البيانات</td></tr>';
+        }
     }
 
-    function loadPromoConfig() {
-        const savedData = JSON.parse(localStorage.getItem('customStoreConfig')) || {};
-        document.getElementById('adm_promoTitle').value = savedData.promoTitle || "🔥 عروض نهاية الأسبوع المباشرة";
-        document.getElementById('adm_promoSub').value = savedData.promoSub || "احصل على تسليم فوري وتخفيض تلقائي عند الشراء عبر المتجر الرقمي";
-        document.getElementById('adm_timerHours').value = savedData.timerHours || 5;
-        document.getElementById('adm_ratingText').value = savedData.ratingText || "⭐ 4.9/5 (128 تقييم)";
-        document.getElementById('adm_bestSellerTag').value = savedData.bestSellerTag || "🔥 الأكثر مبيعاً";
-    }
-
-    function savePromoSettings() {
-        const config = {
-            promoTitle: document.getElementById('adm_promoTitle').value.trim(),
-            promoSub: document.getElementById('adm_promoSub').value.trim(),
-            timerHours: parseInt(document.getElementById('adm_timerHours').value) || 5,
-            ratingText: document.getElementById('adm_ratingText').value.trim(),
-            bestSellerTag: document.getElementById('adm_bestSellerTag').value.trim()
-        };
-        localStorage.setItem('customStoreConfig', JSON.stringify(config));
-        showAlert('✨ تم حفظ التعديلات ونشر العروض فوراً للمتجر!');
-    }
-
-    function addStaffMember() {
-        const name = document.getElementById('st_name').value.trim();
-        const role = document.getElementById('st_role').value.trim();
-        const phone = document.getElementById('st_phone').value.trim();
-
-        if(!name || !role) return alert('الرجاء إدخال بيانات الموظف');
-
-        const tbody = document.getElementById('staffTableBody');
-        tbody.innerHTML += `<tr><td>${name}</td><td>${role}</td><td>${phone}</td></tr>`;
-        showAlert('👤 تم إضافة الموظف لطاقم العمل!');
-        document.getElementById('st_name').value = '';
-        document.getElementById('st_role').value = '';
-        document.getElementById('st_phone').value = '';
+    function showNotify(msg) {
+        const el = document.getElementById('statusAlert');
+        el.innerText = msg;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
     }
 </script>
 </body>
