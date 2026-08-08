@@ -68,7 +68,7 @@
         <a href="index.html" class="btn-view-store">👁️ معاينة المتجر</a>
     </div>
 
-    <!-- الإحصائيات الحقيقية من السحابة -->
+    <!-- الإحصائيات -->
     <div class="stats-grid">
         <div class="stat-card">
             <h4>إجمالي الأرباح والمبيعات</h4>
@@ -83,7 +83,7 @@
             <div class="number" id="stat_games_count">0</div>
         </div>
         <div class="stat-card">
-            <h4>طاقم الموظفين (من السحابة)</h4>
+            <h4>طاقم الموظفين</h4>
             <div class="number" id="stat_emp_count">0</div>
         </div>
     </div>
@@ -150,12 +150,12 @@
                 </table>
             </div>
 
-            <!-- 3. قسم الموظفين والرواتب المربوط بالسحابة 100% -->
+            <!-- 3. قسم الموظفين والرواتب -->
             <div id="tab-staff" class="tab-content">
-                <h3>👥 قسم الموظفين والرواتب (مربوط بالسحابة)</h3>
+                <h3>👥 قسم الموظفين والرواتب</h3>
                 
                 <div class="form-box">
-                    <h4 id="emp_formTitle" style="color:var(--accent); margin-bottom:10px;">إضافة / تعديل بيانات موظف</h4>
+                    <h4 id="emp_formTitle" style="color:var(--accent); margin-bottom:10px;">إضافة / تعديل موظف</h4>
                     <input type="hidden" id="editStaffKey">
                     <div class="form-grid">
                         <input type="text" id="emp_name" placeholder="اسم الموظف">
@@ -225,7 +225,9 @@
     async function fetchGames() {
         try {
             const res = await fetch(`${API_URL}?type=games&_t=${Date.now()}`);
-            gamesData = await res.json();
+            const raw = await res.json();
+            // تصفية جادة لمنع اختلاط الألعاب مع الموظفين
+            gamesData = raw.filter(item => item.price && item.platform && !item.role && !item.salary);
             renderGames();
         } catch(e){}
     }
@@ -314,37 +316,44 @@
         calcStats();
     }
 
-    /* 👥 قسم الموظفين - جلب تعديل وحذف مباشر بالسحابة 100% */
+    /* 👥 قسم الموظفين والرواتب - مفلتر بدقة وحصري للموظفين فقط */
     async function fetchStaff() {
         const tbody = document.getElementById('staffTableBody');
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جاري الجلب من السحابة...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جاري جلب الموظفين...</td></tr>';
         
         try {
             const res = await fetch(`${API_URL}?type=staff&_t=${Date.now()}`);
-            staffData = await res.json();
-            tbody.innerHTML = '';
+            const raw = await res.json();
             
+            // فلترة صارمة: فقط العناصر التي تحتوي على خصائص الموظفين
+            staffData = raw.filter(item => item.role || item.salary || item.type === 'staff');
+            
+            tbody.innerHTML = '';
             document.getElementById('stat_emp_count').innerText = staffData ? staffData.length : 0;
             
             if(!staffData || staffData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين مسجلين بالسحابة. أضف موظفاً جديداً الآن.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين حالياً بالسحابة. أضف أول موظف الآن.</td></tr>';
                 return;
             }
 
             staffData.forEach((s, idx) => {
+                const empName = s.name || s.title || 'موظف';
+                const empRole = s.role || 'غير محدد';
+                const empSalary = s.salary || '0';
+
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${s.name || s.title || 'موظف'}</strong></td>
-                        <td>${s.role || s.platform || 'عضو طاقم'}</td>
-                        <td style="color:#10b981; font-weight:bold;">$${s.salary || s.price || 0}</td>
+                        <td><strong>${empName}</strong></td>
+                        <td><span style="background:#332216; padding:3px 8px; border-radius:6px; color:#a67c52;">${empRole}</span></td>
+                        <td style="color:#10b981; font-weight:bold;">$${empSalary}</td>
                         <td>
                             <button class="action-btn btn-edit" onclick="editStaff(${idx})">تعديل ✏️</button>
-                            <button class="action-btn btn-del" onclick="deleteStaff('${s.name || s.title}')">حذف 🗑️</button>
+                            <button class="action-btn btn-del" onclick="deleteStaff('${empName}')">حذف 🗑️</button>
                         </td>
                     </tr>`;
             });
         } catch(e) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ef4444;">خطأ في جلب بيانات الموظفين من السحابة.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ef4444;">خطأ في جلب بيانات الموظفين.</td></tr>';
         }
     }
 
@@ -356,7 +365,7 @@
 
         if(!name) return alert('يرجى كتابة اسم الموظف');
 
-        showNotify("جاري حفظ بيانات الموظف بالسحابة...");
+        showNotify("جاري حفظ الموظف بالسحابة...");
 
         if(oldKey) {
             try { await fetch(`${API_URL}?type=staff&title=${encodeURIComponent(oldKey)}`, { method: "DELETE" }); } catch(e){}
@@ -364,16 +373,15 @@
 
         await fetch(API_URL, {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ type: 'staff', name: name, title: name, role: role, platform: role, salary: String(salary), price: String(salary) })
+            body: JSON.stringify({ type: 'staff', name: name, title: name, role: role, salary: String(salary) })
         });
 
         document.getElementById('editStaffKey').value = '';
         document.getElementById('emp_name').value = '';
         document.getElementById('emp_role').value = '';
         document.getElementById('emp_salary').value = '';
-        document.getElementById('emp_formTitle').innerText = 'إضافة / تعديل بيانات موظف';
         
-        showNotify("تم التحديث بالسحابة بنجاح! 🚀");
+        showNotify("تم حفظ الموظف بنجاح 🚀");
         fetchStaff();
     }
 
@@ -381,13 +389,12 @@
         const s = staffData[idx];
         document.getElementById('editStaffKey').value = s.name || s.title;
         document.getElementById('emp_name').value = s.name || s.title || '';
-        document.getElementById('emp_role').value = s.role || s.platform || '';
-        document.getElementById('emp_salary').value = s.salary || s.price || '';
-        document.getElementById('emp_formTitle').innerText = '✏️ تعديل بيانات الموظف بالسحابة';
+        document.getElementById('emp_role').value = s.role || '';
+        document.getElementById('emp_salary').value = s.salary || '';
     }
 
     async function deleteStaff(name) {
-        if(!confirm(`هل أنت تأكد من حذف الموظف (${name}) من السحابة؟`)) return;
+        if(!confirm(`هل أنت تأكد من حذف الموظف (${name})؟`)) return;
         showNotify("جاري الحذف من السحابة...");
         await fetch(`${API_URL}?type=staff&title=${encodeURIComponent(name)}`, { method: "DELETE" });
         showNotify("تم حذف الموظف 🗑️");
