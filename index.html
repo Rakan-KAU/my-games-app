@@ -268,7 +268,10 @@
 <script>
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let allStoreGames = [];
-    let shoppingCart = [];
+    
+    // استرجاع السلة المحفوظة من ذاكرة المتصفح عند بداية التشغيل
+    let shoppingCart = JSON.parse(localStorage.getItem('rakan_saved_cart')) || [];
+    
     let currentLang = 'ar';
     let currentCurrency = 'USD';
 
@@ -357,7 +360,11 @@
         updateCartUI();
     }
 
-    /* إدارة السلة الاحترافية Drawer Cart بدون فتح تلقائي */
+    /* حفظ واسترجاع السلة بذاكرة المتصفح */
+    function saveCartToStorage() {
+        localStorage.setItem('rakan_saved_cart', JSON.stringify(shoppingCart));
+    }
+
     function toggleCartDrawer(show) {
         const overlay = document.getElementById('cartOverlay');
         if (show) {
@@ -381,8 +388,8 @@
         } else {
             shoppingCart.push({ title, price: parseFloat(price) || 0, qty: 1 });
         }
+        saveCartToStorage();
         updateCartUI();
-        // إظهار إشعار سفلي هادئ بدلاً من فتح السلة تلقائياً
         showStatus(currentLang === 'ar' ? `تمت إضافة (${title}) إلى السلة 🛒` : `Added (${title}) to cart 🛒`);
     }
 
@@ -393,11 +400,13 @@
                 shoppingCart.splice(index, 1);
             }
         }
+        saveCartToStorage();
         updateCartUI();
     }
 
     function removeFromCart(index) {
         shoppingCart.splice(index, 1);
+        saveCartToStorage();
         updateCartUI();
     }
 
@@ -461,6 +470,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+        updateCartUI(); // تحديث عداد السلة من الذاكرة المحفوظة فور فتح الصفحة
         const storeView = sessionStorage.getItem('storeOpened');
         if (storeView === 'true') {
             openCustomerStore(true);
@@ -599,6 +609,7 @@
         }
 
         shoppingCart = [];
+        saveCartToStorage(); // تفريغ الذاكرة بعد تمام عملية الدفع بنجاح
         updateCartUI();
 
         const t = translations[currentLang] || translations.en;
