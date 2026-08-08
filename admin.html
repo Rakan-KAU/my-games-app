@@ -6,34 +6,47 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>🌴 RAKAN STUDIOS | مركز التحكم والإدارة الاحترافي</title>
+    <title>🌴 RAKAN STUDIOS | لوحة التحكم والأقسام</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #0d0a07; color: #ffffff; min-height: 100vh; padding: 25px; }
         
         /* الهيدر العلوي */
         .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #a67c52; padding-bottom: 18px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
-        .admin-header h1 { font-size: 26px; color: #10b981; font-weight: 900; letter-spacing: 0.5px; }
+        .admin-header h1 { font-size: 24px; color: #10b981; font-weight: 900; }
         
         /* زر المعاينة في نفس النافذة */
         .btn-view-store { background: linear-gradient(135deg, #006c35, #044b25); color: #fff; border: 1px solid #a67c52; padding: 10px 22px; border-radius: 12px; font-weight: 800; text-decoration: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,108,53,0.3); }
         .btn-view-store:hover { background: #a67c52; color: #0d0a07; }
 
-        /* كروت الإحصائيات العلوية */
+        /* كروت الإحصائيات الثابتة في الأعلى */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 30px; }
         .stat-card { background: #1c140e; border: 1px solid #332216; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #006c35; }
         .stat-card h4 { color: #a67c52; font-size: 13px; margin-bottom: 8px; font-weight: 700; }
         .stat-card .number { font-size: 28px; font-weight: 900; color: #10b981; }
 
-        /* تقسيم الصفحات */
-        .admin-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; }
-        @media (max-width: 980px) { .admin-grid { grid-template-columns: 1fr; } }
+        /* الهيكل الرئيسي: قائمة جانبية + محتوى الأقسام */
+        .dashboard-layout { display: flex; gap: 25px; }
+        @media (max-width: 900px) { .dashboard-layout { flex-direction: column; } }
 
-        .card-box { background: #1c140e; border: 1px solid #332216; border-radius: 18px; padding: 22px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card-box h3 { color: #a67c52; font-size: 17px; margin-bottom: 16px; border-bottom: 1px solid #332216; padding-bottom: 10px; font-weight: 800; display: flex; align-items: center; justify-content: space-between; }
+        /* القائمة الجانبية اختيار الأقسام */
+        .sidebar-menu { width: 260px; background: #1c140e; border: 1px solid #332216; border-radius: 18px; padding: 15px; height: fit-content; flex-shrink: 0; }
+        .sidebar-menu h3 { font-size: 14px; color: #a67c52; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #332216; font-weight: 800; }
+        
+        .tab-btn { display: flex; align-items: center; gap: 10px; width: 100%; background: transparent; color: #d4c5b9; border: none; padding: 14px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: right; margin-bottom: 8px; transition: 0.3s; }
+        .tab-btn:hover { background: #2b1d14; color: #fff; }
+        .tab-btn.active { background: linear-gradient(135deg, #006c35, #044b25); color: #fff; border: 1px solid #a67c52; font-weight: 800; }
 
-        input, select, button { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #332216; background: #0d0a07; color: #fff; font-size: 14px; outline: none; transition: 0.2s; }
+        /* مساحة عرض القسم المختار */
+        .content-area { flex: 1; }
+        .tab-content { display: none; background: #1c140e; border: 1px solid #332216; border-radius: 18px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .tab-content.active { display: block; }
+
+        .tab-content h3 { color: #a67c52; font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid #332216; padding-bottom: 10px; font-weight: 800; }
+
+        /* المدخلات والأزرار */
+        input, select, button { width: 100%; padding: 12px 15px; margin-bottom: 14px; border-radius: 10px; border: 1px solid #332216; background: #0d0a07; color: #fff; font-size: 14px; outline: none; transition: 0.2s; }
         input:focus, select:focus { border-color: #006c35; }
 
         .btn-submit { background: linear-gradient(135deg, #006c35, #044b25); border: 1px solid #a67c52; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; margin-top: 5px; }
@@ -41,19 +54,18 @@
 
         .btn-cancel { background: #332216; color: #fff; border: none; font-weight: bold; cursor: pointer; margin-bottom: 0; }
 
-        /* الجداول الاحترافية */
+        /* الجداول */
         .table-responsive { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         th, td { text-align: right; padding: 12px 14px; border-bottom: 1px solid #332216; font-size: 13px; }
         th { background: #0d0a07; color: #a67c52; font-weight: 800; }
 
-        .action-btn { padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 11px; margin-left: 4px; display: inline-block; width: auto; margin-bottom: 0; }
+        .action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 11px; margin-left: 4px; display: inline-block; width: auto; margin-bottom: 0; }
         .btn-edit { background: #d97706; color: #fff; }
         .btn-del { background: #dc2626; color: #fff; }
 
         .status-badge { background: rgba(0, 108, 53, 0.3); border: 1px solid #006c35; color: #10b981; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
         .status-paid { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
-        .status-pending { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
 
         #statusAlert { position: fixed; bottom: 20px; right: 20px; padding: 12px 22px; border-radius: 12px; background: #006c35; color: #fff; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 20px rgba(0,0,0,0.8); border: 1px solid #a67c52; }
     </style>
@@ -64,12 +76,12 @@
     <div class="admin-header">
         <h1>⚙️ مركز التحكم والإدارة | RAKAN STUDIOS</h1>
         <div>
-            <!-- المعاينة تفتح في نفس النافذة بدون فتح تبويب جديد -->
+            <!-- المعاينة بنفس النافذة -->
             <a href="index.html" class="btn-view-store">👁️ معاينة المتجر</a>
         </div>
     </div>
 
-    <!-- كروت المبيعات والإحصائيات الشاملة -->
+    <!-- كروت المبيعات والإحصائيات الثابتة -->
     <div class="stats-grid">
         <div class="stat-card">
             <h4>إجمالي المبيعات والأرباح</h4>
@@ -89,50 +101,66 @@
         </div>
     </div>
 
-    <div class="admin-grid">
-        <!-- القائمة الجانبية: إضافة وتعديل الألعاب -->
-        <div>
-            <div class="card-box">
-                <h3 id="formTitle">🎮 إضافة لعبة جديدة</h3>
+    <!-- الهيكل الرئيسي للمركز -->
+    <div class="dashboard-layout">
+        
+        <!-- القائمة الجانبية للتنقل بين الأقسام -->
+        <div class="sidebar-menu">
+            <h3>📌 الأقسام الرئيسية</h3>
+            <button class="tab-btn active" onclick="switchTab('tab-add-game', this)">➕ إضافة لعبة جديدة</button>
+            <button class="tab-btn" onclick="switchTab('tab-games-list', this)">🎮 قائمة الألعاب المتوفرة</button>
+            <button class="tab-btn" onclick="switchTab('tab-orders-list', this)">📊 قسم المبيعات والطلبات</button>
+            <button class="tab-btn" onclick="switchTab('tab-customers-list', this)">👥 قسم الموظفين والعملاء</button>
+        </div>
+
+        <!-- مساحة عرض محتوى القسم -->
+        <div class="content-area">
+            
+            <!-- 1. قسم إضافة لعبة جديدة -->
+            <div id="tab-add-game" class="tab-content active">
+                <h3 id="formTitle">🎮 إضافة لعبة جديدة للسحابة</h3>
                 <input type="hidden" id="editGameIndex">
-                <input type="text" id="g_title" placeholder="اسم اللعبة (مثال: GTA V)">
-                <input type="number" id="g_price" placeholder="السعر بالدولار ($)">
+                <label style="font-size:12px; color:#a67c52; display:block; margin-bottom:5px;">اسم اللعبة:</label>
+                <input type="text" id="g_title" placeholder="مثال: EA Sports FC 25">
+                
+                <label style="font-size:12px; color:#a67c52; display:block; margin-bottom:5px;">السعر بالدولار ($):</label>
+                <input type="number" id="g_price" placeholder="مثال: 60">
+                
+                <label style="font-size:12px; color:#a67c52; display:block; margin-bottom:5px;">المنصة:</label>
                 <select id="g_platform">
                     <option value="PlayStation 5">🎮 PlayStation 5</option>
                     <option value="PC Gaming">💻 PC Gaming</option>
                     <option value="Xbox Series X">🕹️ Xbox Series X</option>
                     <option value="Multi-Platform">🌐 Multi-Platform</option>
                 </select>
-                <button class="btn-submit" onclick="saveGame()" id="saveBtn">حفظ اللعبة 💾</button>
+                
+                <button class="btn-submit" onclick="saveGame()" id="saveBtn">حفظ اللعبة وإرسالها للسحابة 💾</button>
                 <button class="btn-cancel" onclick="resetForm()" id="cancelEditBtn" style="display:none;">إلغاء التعديل</button>
             </div>
-        </div>
 
-        <!-- المنطقة الرئيسية: الألعاب، الطلبات، والموظفين -->
-        <div>
-            <!-- 1. جدول إدارة الألعاب -->
-            <div class="card-box">
-                <h3>🎮 قائمة الألعاب المتاحة بالمتجر</h3>
+            <!-- 2. قسم الألعاب المتوفرة -->
+            <div id="tab-games-list" class="tab-content">
+                <h3>🎮 قائمة الألعاب المسجلة في السحابة</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
-                                <th>اللعبة</th>
+                                <th>اسم اللعبة</th>
                                 <th>المنصة</th>
                                 <th>السعر</th>
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody id="gamesTableBody">
-                            <tr><td colspan="4" style="text-align:center;">جاري تحميل الألعاب...</td></tr>
+                            <tr><td colspan="4" style="text-align:center;">جاري تحميل الألعاب من السحابة...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- 2. جدول المبيعات والطلبات -->
-            <div class="card-box">
-                <h3>📊 سجل المبيعات والطلبات الأخيرة</h3>
+            <!-- 3. قسم المبيعات والطلبات -->
+            <div id="tab-orders-list" class="tab-content">
+                <h3>📊 سجل المبيعات والطلبات الحية</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -150,8 +178,8 @@
                 </div>
             </div>
 
-            <!-- 3. جدول الموظفين والعملاء -->
-            <div class="card-box">
+            <!-- 4. قسم الموظفين والعملاء -->
+            <div id="tab-customers-list" class="tab-content">
                 <h3>👥 قائمة الموظفين والعملاء المسجلين</h3>
                 <div class="table-responsive">
                     <table>
@@ -164,11 +192,12 @@
                             </tr>
                         </thead>
                         <tbody id="customersTableBody">
-                            <tr><td colspan="4" style="text-align:center;">جاري جلب القائمة...</td></tr>
+                            <tr><td colspan="4" style="text-align:center;">جاري جلب القائمة من السحابة...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -179,6 +208,15 @@
     let loadedGames = [];
     let loadedOrders = [];
     let loadedCustomers = [];
+
+    // التنقل بين الأقسام من القائمة الجانبية
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
         loadAllDashboardData();
@@ -199,7 +237,7 @@
             loadedGames = await res.json();
             renderGamesTable();
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب الألعاب</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب البيانات من السحابة</td></tr>';
         }
     }
 
@@ -209,7 +247,7 @@
         document.getElementById('stat_games_count').innerText = loadedGames ? loadedGames.length : 0;
 
         if (!loadedGames || loadedGames.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد ألعاب مضافة.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد ألعاب مضافة بالسحابة.</td></tr>';
             return;
         }
 
@@ -237,7 +275,7 @@
             return alert('يرجى كتابة اسم اللعبة والسعر');
         }
 
-        showNotify("جاري حفظ اللعبة...");
+        showNotify("جاري الإرسال للسحابة...");
         const payload = { type: 'games', title: title, price: String(price), platform: platform };
 
         try {
@@ -246,11 +284,12 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-            showNotify("تم حفظ اللعبة بنجاح! 🚀");
+            showNotify("تم حفظ اللعبة بالسحابة بنجاح! 🚀");
             resetForm();
             fetchGames();
+            calculateStats();
         } catch (e) {
-            alert('حدث خطأ أثناء الاتصال بالسيرفر');
+            alert('حدث خطأ أثناء الاتصال بالسحابة');
         }
     }
 
@@ -258,13 +297,16 @@
         const g = loadedGames[index];
         if (!g) return;
 
+        // الانتقال تلقائياً لتبويب الإضافة والتعديل
+        switchTab('tab-add-game', document.querySelectorAll('.tab-btn')[0]);
+
         document.getElementById('editGameIndex').value = index;
         document.getElementById('g_title').value = g.title || '';
         document.getElementById('g_price').value = g.price || '';
         document.getElementById('g_platform').value = g.platform || 'PlayStation 5';
 
-        document.getElementById('formTitle').innerText = '✏️ تعديل بيانات اللعبة';
-        document.getElementById('saveBtn').innerText = 'تحديث البيانات 🔄';
+        document.getElementById('formTitle').innerText = '✏️ تعديل بيانات اللعبة بالسحابة';
+        document.getElementById('saveBtn').innerText = 'تحديث البيانات بالسحابة 🔄';
         document.getElementById('cancelEditBtn').style.display = 'block';
     }
 
@@ -272,19 +314,20 @@
         document.getElementById('editGameIndex').value = '';
         document.getElementById('g_title').value = '';
         document.getElementById('g_price').value = '';
-        document.getElementById('formTitle').innerText = '🎮 إضافة لعبة جديدة';
-        document.getElementById('saveBtn').innerText = 'حفظ اللعبة 💾';
+        document.getElementById('formTitle').innerText = '🎮 إضافة لعبة جديدة للسحابة';
+        document.getElementById('saveBtn').innerText = 'حفظ اللعبة وإرسالها للسحابة 💾';
         document.getElementById('cancelEditBtn').style.display = 'none';
     }
 
     async function deleteGame(title) {
-        if (!confirm(`هل أنت تأكد من رغبتك في حذف اللعبة (${title})؟`)) return;
+        if (!confirm(`هل أنت تأكد من رغبتك في حذف اللعبة (${title}) من السحابة؟`)) return;
 
-        showNotify("جاري حذف اللعبة...");
+        showNotify("جاري الحذف من السحابة...");
         try {
             await fetch(`${API_URL}?type=games&title=${encodeURIComponent(title)}`, { method: "DELETE" });
             showNotify("تم الحذف بنجاح 🗑️");
             fetchGames();
+            calculateStats();
         } catch (e) {
             fetchGames();
         }
@@ -299,18 +342,17 @@
             
             tbody.innerHTML = '';
             if (!loadedOrders || loadedOrders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد مبيعات حالياً.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد مبيعات مسجلة.</td></tr>';
                 return;
             }
 
             loadedOrders.forEach(o => {
-                const statusClass = (o.status === 'تم الدفع' || !o.status) ? 'status-paid' : 'status-pending';
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${o.customerId || 'عميل'}</strong></td>
                         <td>${o.item || 'منتج رقمي'}</td>
                         <td style="color:#10b981; font-weight:bold;">$${o.total || 0}</td>
-                        <td><span class="status-badge ${statusClass}">${o.status || 'مكتمل'}</span></td>
+                        <td><span class="status-badge status-paid">${o.status || 'مكتمل'}</span></td>
                     </tr>
                 `;
             });
@@ -328,7 +370,7 @@
             
             tbody.innerHTML = '';
             if (!loadedCustomers || loadedCustomers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين/عملاء مسجلين.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين/عملاء مسجلين بالسحابة.</td></tr>';
                 return;
             }
 
@@ -343,11 +385,11 @@
                 `;
             });
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب القائمة</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب القائمة من السحابة</td></tr>';
         }
     }
 
-    /* حساب المبيعات الإجمالية والإحصائيات */
+    /* حساب الإحصائيات */
     function calculateStats() {
         let totalRevenue = 0;
         if (loadedOrders && loadedOrders.length > 0) {
