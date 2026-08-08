@@ -6,63 +6,97 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة</title>
+    <title>🌴 RAKAN STUDIOS | مركز التحكم والإدارة الاحترافي</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0d0a07; color: #ffffff; min-height: 100vh; padding: 20px; }
+        body { background-color: #0d0a07; color: #ffffff; min-height: 100vh; padding: 25px; }
         
-        .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #a67c52; padding-bottom: 15px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
-        .admin-header h1 { font-size: 26px; color: #10b981; font-weight: 900; }
+        /* الهيدر العلوي */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #a67c52; padding-bottom: 18px; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+        .admin-header h1 { font-size: 26px; color: #10b981; font-weight: 900; letter-spacing: 0.5px; }
         
-        .header-btns { display: flex; gap: 10px; }
-        .btn-view-store { background: linear-gradient(135deg, #006c35, #044b25); color: #fff; border: 1px solid #a67c52; padding: 10px 20px; border-radius: 12px; font-weight: bold; text-decoration: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        /* زر المعاينة في نفس النافذة */
+        .btn-view-store { background: linear-gradient(135deg, #006c35, #044b25); color: #fff; border: 1px solid #a67c52; padding: 10px 22px; border-radius: 12px; font-weight: 800; text-decoration: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,108,53,0.3); }
         .btn-view-store:hover { background: #a67c52; color: #0d0a07; }
 
-        .admin-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 25px; }
-        @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
+        /* كروت الإحصائيات العلوية */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 30px; }
+        .stat-card { background: #1c140e; border: 1px solid #332216; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: #006c35; }
+        .stat-card h4 { color: #a67c52; font-size: 13px; margin-bottom: 8px; font-weight: 700; }
+        .stat-card .number { font-size: 28px; font-weight: 900; color: #10b981; }
+
+        /* تقسيم الصفحات */
+        .admin-grid { display: grid; grid-template-columns: 320px 1fr; gap: 25px; }
+        @media (max-width: 980px) { .admin-grid { grid-template-columns: 1fr; } }
 
         .card-box { background: #1c140e; border: 1px solid #332216; border-radius: 18px; padding: 22px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card-box h3 { color: #a67c52; font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #332216; padding-bottom: 8px; font-weight: 800; }
+        .card-box h3 { color: #a67c52; font-size: 17px; margin-bottom: 16px; border-bottom: 1px solid #332216; padding-bottom: 10px; font-weight: 800; display: flex; align-items: center; justify-content: space-between; }
 
-        input, select, button { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #332216; background: #0d0a07; color: #fff; font-size: 14px; outline: none; }
+        input, select, button { width: 100%; padding: 12px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #332216; background: #0d0a07; color: #fff; font-size: 14px; outline: none; transition: 0.2s; }
         input:focus, select:focus { border-color: #006c35; }
 
-        .btn-submit { background: #006c35; border: 1px solid #a67c52; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; margin-top: 5px; }
+        .btn-submit { background: linear-gradient(135deg, #006c35, #044b25); border: 1px solid #a67c52; font-weight: bold; cursor: pointer; transition: 0.3s; color: #fff; margin-top: 5px; }
         .btn-submit:hover { background: #a67c52; color: #0d0a07; }
 
-        .btn-cancel { background: #332216; color: #fff; border: none; font-weight: bold; cursor: pointer; }
+        .btn-cancel { background: #332216; color: #fff; border: none; font-weight: bold; cursor: pointer; margin-bottom: 0; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { text-align: right; padding: 12px; border-bottom: 1px solid #332216; font-size: 13px; }
+        /* الجداول الاحترافية */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        th, td { text-align: right; padding: 12px 14px; border-bottom: 1px solid #332216; font-size: 13px; }
         th { background: #0d0a07; color: #a67c52; font-weight: 800; }
 
-        .action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 11px; margin-left: 5px; }
+        .action-btn { padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; font-size: 11px; margin-left: 4px; display: inline-block; width: auto; margin-bottom: 0; }
         .btn-edit { background: #d97706; color: #fff; }
         .btn-del { background: #dc2626; color: #fff; }
 
-        .status-badge { background: #006c35; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
-        #statusAlert { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: 10px; background: #006c35; color: #fff; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 20px rgba(0,0,0,0.8); }
+        .status-badge { background: rgba(0, 108, 53, 0.3); border: 1px solid #006c35; color: #10b981; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .status-paid { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+        .status-pending { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
+        #statusAlert { position: fixed; bottom: 20px; right: 20px; padding: 12px 22px; border-radius: 12px; background: #006c35; color: #fff; font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 20px rgba(0,0,0,0.8); border: 1px solid #a67c52; }
     </style>
 </head>
 <body>
 
+    <!-- الهيدر الرئيسي -->
     <div class="admin-header">
-        <h1>⚙️ لوحة التحكم وإدارة متجر راكان ستوديوز</h1>
-        <div class="header-btns">
-            <!-- زر معاينة المتجر مع خيار الفتح في تبويب جديد لتسهيل العودة -->
-            <a href="index.html" target="_blank" class="btn-view-store">👁️ معاينة المتجر (نافذة جديدة)</a>
-            <a href="index.html" class="btn-view-store" style="background:#332216;">⬅ العودة للمتجر مباشرة</a>
+        <h1>⚙️ مركز التحكم والإدارة | RAKAN STUDIOS</h1>
+        <div>
+            <!-- المعاينة تفتح في نفس النافذة بدون فتح تبويب جديد -->
+            <a href="index.html" class="btn-view-store">👁️ معاينة المتجر</a>
+        </div>
+    </div>
+
+    <!-- كروت المبيعات والإحصائيات الشاملة -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h4>إجمالي المبيعات والأرباح</h4>
+            <div class="number" id="stat_total_revenue">$0</div>
+        </div>
+        <div class="stat-card">
+            <h4>عدد الطلبات المنفذة</h4>
+            <div class="number" id="stat_orders_count">0</div>
+        </div>
+        <div class="stat-card">
+            <h4>الألعاب المتوفرة</h4>
+            <div class="number" id="stat_games_count">0</div>
+        </div>
+        <div class="stat-card">
+            <h4>الموظفين والعملاء</h4>
+            <div class="number" id="stat_customers_count">0</div>
         </div>
     </div>
 
     <div class="admin-grid">
-        <!-- قسم إضافة / تعديل اللعبة -->
+        <!-- القائمة الجانبية: إضافة وتعديل الألعاب -->
         <div>
             <div class="card-box">
                 <h3 id="formTitle">🎮 إضافة لعبة جديدة</h3>
                 <input type="hidden" id="editGameIndex">
                 <input type="text" id="g_title" placeholder="اسم اللعبة (مثال: GTA V)">
-                <input type="text" id="g_price" placeholder="السعر بالدولار ($)">
+                <input type="number" id="g_price" placeholder="السعر بالدولار ($)">
                 <select id="g_platform">
                     <option value="PlayStation 5">🎮 PlayStation 5</option>
                     <option value="PC Gaming">💻 PC Gaming</option>
@@ -74,42 +108,66 @@
             </div>
         </div>
 
-        <!-- قسم الألعاب والطلبات والموظفين -->
+        <!-- المنطقة الرئيسية: الألعاب، الطلبات، والموظفين -->
         <div>
-            <!-- جدول الألعاب مع الحذف والتعديل -->
+            <!-- 1. جدول إدارة الألعاب -->
             <div class="card-box">
-                <h3>🎮 قائمة الألعاب المتوفرة بالمتجر</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>اسم اللعبة</th>
-                            <th>المنصة</th>
-                            <th>السعر</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gamesTableBody">
-                        <tr><td colspan="4" style="text-align:center;">جاري تحميل الألعاب...</td></tr>
-                    </tbody>
-                </table>
+                <h3>🎮 قائمة الألعاب المتاحة بالمتجر</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اللعبة</th>
+                                <th>المنصة</th>
+                                <th>السعر</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gamesTableBody">
+                            <tr><td colspan="4" style="text-align:center;">جاري تحميل الألعاب...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- جدول الطلبات والموظفين / العملاء -->
+            <!-- 2. جدول المبيعات والطلبات -->
+            <div class="card-box">
+                <h3>📊 سجل المبيعات والطلبات الأخيرة</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>العميل</th>
+                                <th>المنتجات المطلوبة</th>
+                                <th>المبلغ</th>
+                                <th>حالة الطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr><td colspan="4" style="text-align:center;">جاري جلب سجل المبيعات...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. جدول الموظفين والعملاء -->
             <div class="card-box">
                 <h3>👥 قائمة الموظفين والعملاء المسجلين</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>الاسم</th>
-                            <th>المنطقة</th>
-                            <th>المدينة</th>
-                            <th>رقم الهاتف</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customersTableBody">
-                        <tr><td colspan="4" style="text-align:center;">جاري جلب القائمة...</td></tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>المنطقة</th>
+                                <th>المدينة</th>
+                                <th>رقم الهاتف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            <tr><td colspan="4" style="text-align:center;">جاري جلب القائمة...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -119,13 +177,21 @@
 <script>
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let loadedGames = [];
+    let loadedOrders = [];
+    let loadedCustomers = [];
 
     window.addEventListener('DOMContentLoaded', () => {
-        fetchGames();
-        fetchCustomers();
+        loadAllDashboardData();
     });
 
-    // جلب الألعاب
+    async function loadAllDashboardData() {
+        await fetchGames();
+        await fetchOrders();
+        await fetchCustomers();
+        calculateStats();
+    }
+
+    /* 1. جلب وإدارة الألعاب */
     async function fetchGames() {
         const tbody = document.getElementById('gamesTableBody');
         try {
@@ -133,17 +199,17 @@
             loadedGames = await res.json();
             renderGamesTable();
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب البيانات</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب الألعاب</td></tr>';
         }
     }
 
-    // عرض الجدول مع أزرار التعديل والحذف
     function renderGamesTable() {
         const tbody = document.getElementById('gamesTableBody');
         tbody.innerHTML = '';
-        
+        document.getElementById('stat_games_count').innerText = loadedGames ? loadedGames.length : 0;
+
         if (!loadedGames || loadedGames.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد ألعاب مضافة حالياً.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد ألعاب مضافة.</td></tr>';
             return;
         }
 
@@ -162,17 +228,16 @@
         });
     }
 
-    // حفظ أو تعديل لعبة
     async function saveGame() {
         const title = document.getElementById('g_title').value.trim();
         const price = document.getElementById('g_price').value.trim();
         const platform = document.getElementById('g_platform').value;
 
         if (!title || !price) {
-            return alert('يرجى ملء جميع الحقول المطلوبة');
+            return alert('يرجى كتابة اسم اللعبة والسعر');
         }
 
-        showNotify("جاري حفظ البيانات...");
+        showNotify("جاري حفظ اللعبة...");
         const payload = { type: 'games', title: title, price: String(price), platform: platform };
 
         try {
@@ -185,11 +250,10 @@
             resetForm();
             fetchGames();
         } catch (e) {
-            alert('حدث خطأ أثناء الحفظ');
+            alert('حدث خطأ أثناء الاتصال بالسيرفر');
         }
     }
 
-    // تجهيز حقول التعديل
     function editGame(index) {
         const g = loadedGames[index];
         if (!g) return;
@@ -200,7 +264,7 @@
         document.getElementById('g_platform').value = g.platform || 'PlayStation 5';
 
         document.getElementById('formTitle').innerText = '✏️ تعديل بيانات اللعبة';
-        document.getElementById('saveBtn').innerText = 'تحديث اللعبة 🔄';
+        document.getElementById('saveBtn').innerText = 'تحديث البيانات 🔄';
         document.getElementById('cancelEditBtn').style.display = 'block';
     }
 
@@ -213,37 +277,62 @@
         document.getElementById('cancelEditBtn').style.display = 'none';
     }
 
-    // حذف لعبة
     async function deleteGame(title) {
         if (!confirm(`هل أنت تأكد من رغبتك في حذف اللعبة (${title})؟`)) return;
 
         showNotify("جاري حذف اللعبة...");
         try {
-            await fetch(`${API_URL}?type=games&title=${encodeURIComponent(title)}`, {
-                method: "DELETE"
-            });
+            await fetch(`${API_URL}?type=games&title=${encodeURIComponent(title)}`, { method: "DELETE" });
             showNotify("تم الحذف بنجاح 🗑️");
             fetchGames();
         } catch (e) {
-            showNotify("تم تنفيذ أمر الحذف 🗑️");
             fetchGames();
         }
     }
 
-    // جلب قائمة الموظفين والعملاء
+    /* 2. جلب سجل المبيعات والطلبات */
+    async function fetchOrders() {
+        const tbody = document.getElementById('ordersTableBody');
+        try {
+            const res = await fetch(`${API_URL}?type=orders&_t=${Date.now()}`, { cache: "no-store" });
+            loadedOrders = await res.json();
+            
+            tbody.innerHTML = '';
+            if (!loadedOrders || loadedOrders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا توجد مبيعات حالياً.</td></tr>';
+                return;
+            }
+
+            loadedOrders.forEach(o => {
+                const statusClass = (o.status === 'تم الدفع' || !o.status) ? 'status-paid' : 'status-pending';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${o.customerId || 'عميل'}</strong></td>
+                        <td>${o.item || 'منتج رقمي'}</td>
+                        <td style="color:#10b981; font-weight:bold;">$${o.total || 0}</td>
+                        <td><span class="status-badge ${statusClass}">${o.status || 'مكتمل'}</span></td>
+                    </tr>
+                `;
+            });
+        } catch (e) {
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب المبيعات</td></tr>';
+        }
+    }
+
+    /* 3. جلب الموظفين والعملاء */
     async function fetchCustomers() {
         const tbody = document.getElementById('customersTableBody');
         try {
             const res = await fetch(`${API_URL}?type=customers&_t=${Date.now()}`, { cache: "no-store" });
-            const data = await res.json();
+            loadedCustomers = await res.json();
             
             tbody.innerHTML = '';
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين/عملاء مسجلين حالياً.</td></tr>';
+            if (!loadedCustomers || loadedCustomers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين/عملاء مسجلين.</td></tr>';
                 return;
             }
 
-            data.forEach(c => {
+            loadedCustomers.forEach(c => {
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${c.name || 'غير معروف'}</strong></td>
@@ -254,8 +343,20 @@
                 `;
             });
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب البيانات</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#ef4444; text-align:center;">خطأ في جلب القائمة</td></tr>';
         }
+    }
+
+    /* حساب المبيعات الإجمالية والإحصائيات */
+    function calculateStats() {
+        let totalRevenue = 0;
+        if (loadedOrders && loadedOrders.length > 0) {
+            totalRevenue = loadedOrders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+        }
+
+        document.getElementById('stat_total_revenue').innerText = `$${totalRevenue}`;
+        document.getElementById('stat_orders_count').innerText = loadedOrders ? loadedOrders.length : 0;
+        document.getElementById('stat_customers_count').innerText = loadedCustomers ? loadedCustomers.length : 0;
     }
 
     function showNotify(msg) {
