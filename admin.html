@@ -68,7 +68,7 @@
         <a href="index.html" class="btn-view-store">👁️ معاينة المتجر</a>
     </div>
 
-    <!-- الإحصائيات -->
+    <!-- الإحصائيات الحقيقية من السحابة -->
     <div class="stats-grid">
         <div class="stat-card">
             <h4>إجمالي الأرباح والمبيعات</h4>
@@ -83,7 +83,7 @@
             <div class="number" id="stat_games_count">0</div>
         </div>
         <div class="stat-card">
-            <h4>طاقم الموظفين</h4>
+            <h4>طاقم الموظفين (من السحابة)</h4>
             <div class="number" id="stat_emp_count">0</div>
         </div>
     </div>
@@ -101,7 +101,7 @@
 
         <div class="content-area">
             
-            <!-- 1. قسم الألعاب المدمج -->
+            <!-- 1. قسم الألعاب -->
             <div id="tab-games" class="tab-content active">
                 <h3>🎮 إدارة الألعاب بالكامل</h3>
                 
@@ -118,7 +118,7 @@
                             <option value="Multi-Platform">Multi-Platform</option>
                         </select>
                     </div>
-                    <button class="btn-submit" onclick="saveGame()" id="g_saveBtn">حفظ اللعبة 💾</button>
+                    <button class="btn-submit" onclick="saveGame()" id="g_saveBtn">حفظ اللعبة للسحابة 💾</button>
                 </div>
 
                 <table>
@@ -134,7 +134,7 @@
                 </table>
             </div>
 
-            <!-- 2. قسم المبيعات والطلبات -->
+            <!-- 2. قسم المبيعات -->
             <div id="tab-orders" class="tab-content">
                 <h3>📊 سجل المبيعات والطلبات</h3>
                 <table>
@@ -150,18 +150,19 @@
                 </table>
             </div>
 
-            <!-- 3. قسم الموظفين والرواتب -->
+            <!-- 3. قسم الموظفين والرواتب المربوط بالسحابة 100% -->
             <div id="tab-staff" class="tab-content">
-                <h3>👥 قسم الموظفين والرواتب</h3>
+                <h3>👥 قسم الموظفين والرواتب (مربوط بالسحابة)</h3>
                 
                 <div class="form-box">
-                    <h4 style="color:var(--accent); margin-bottom:10px;">إضافة / تعديل موظف</h4>
+                    <h4 id="emp_formTitle" style="color:var(--accent); margin-bottom:10px;">إضافة / تعديل بيانات موظف</h4>
+                    <input type="hidden" id="editStaffKey">
                     <div class="form-grid">
                         <input type="text" id="emp_name" placeholder="اسم الموظف">
-                        <input type="text" id="emp_role" placeholder="المنصب (مثال: مدعم فني)">
+                        <input type="text" id="emp_role" placeholder="المنصب المكتبي">
                         <input type="number" id="emp_salary" placeholder="الراتب الشهري ($)">
                     </div>
-                    <button class="btn-submit" onclick="saveStaff()">حفظ الموظف 💾</button>
+                    <button class="btn-submit" onclick="saveStaff()" id="emp_saveBtn">حفظ الموظف بالسحابة 💾</button>
                 </div>
 
                 <table>
@@ -179,7 +180,7 @@
 
             <!-- 4. قسم العملاء -->
             <div id="tab-customers" class="tab-content">
-                <h3>🧑‍🤝‍🧑 قائمة العملاء المسجلين</h3>
+                <h3>🧑‍🤝‍🧑 قائمة العملاء المسجلين بالسحابة</h3>
                 <table>
                     <thead>
                         <tr>
@@ -256,7 +257,7 @@
 
         if(!title || !price) return alert('الرجاء تعبئة الاسم والسعر');
         
-        showNotify("جاري الحفظ...");
+        showNotify("جاري الحفظ بالسحابة...");
         if(oldKey) {
             try { await fetch(`${API_URL}?type=games&title=${encodeURIComponent(oldKey)}`, { method: "DELETE" }); } catch(e){}
         }
@@ -269,7 +270,7 @@
         document.getElementById('editGameKey').value = '';
         document.getElementById('g_title').value = '';
         document.getElementById('g_price').value = '';
-        showNotify("تم حفظ اللعبة 🚀");
+        showNotify("تم الحفظ بالسحابة 🚀");
         fetchGames();
     }
 
@@ -282,9 +283,9 @@
     }
 
     async function deleteGame(title) {
-        if(!confirm(`حذف اللعبة (${title})؟`)) return;
+        if(!confirm(`حذف اللعبة (${title}) من السحابة؟`)) return;
         await fetch(`${API_URL}?type=games&title=${encodeURIComponent(title)}`, { method: "DELETE" });
-        showNotify("تم الحذف 🗑️");
+        showNotify("تم الحذف من السحابة 🗑️");
         fetchGames();
     }
 
@@ -301,55 +302,95 @@
                         <td><strong>${o.customerId || 'عميل'}</strong></td>
                         <td>${o.item || 'منتج'}</td>
                         <td style="color:#10b981; font-weight:bold;">$${o.total || 0}</td>
-                        <td><button class="action-btn btn-del" onclick="deleteOrder(${idx})">حذف 🗑️</button></td>
+                        <td><button class="action-btn btn-del" onclick="deleteOrder('${o.customerId}')">حذف 🗑️</button></td>
                     </tr>`;
             });
         } catch(e){}
     }
 
-    function deleteOrder(idx) {
-        ordersData.splice(idx, 1);
+    async function deleteOrder(id) {
+        await fetch(`${API_URL}?type=orders&title=${encodeURIComponent(id)}`, { method: "DELETE" });
         fetchOrders();
         calcStats();
     }
 
-    /* 👥 قسم الموظفين والرواتب */
+    /* 👥 قسم الموظفين - جلب تعديل وحذف مباشر بالسحابة 100% */
     async function fetchStaff() {
         const tbody = document.getElementById('staffTableBody');
-        tbody.innerHTML = '';
-        if(staffData.length === 0) {
-            staffData = [
-                { name: "راكان", role: "المدير العام", salary: "5000" },
-                { name: "فهد", role: "دعم فني", salary: "1500" }
-            ];
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جاري الجلب من السحابة...</td></tr>';
+        
+        try {
+            const res = await fetch(`${API_URL}?type=staff&_t=${Date.now()}`);
+            staffData = await res.json();
+            tbody.innerHTML = '';
+            
+            document.getElementById('stat_emp_count').innerText = staffData ? staffData.length : 0;
+            
+            if(!staffData || staffData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#d4c5b9;">لا يوجد موظفين مسجلين بالسحابة. أضف موظفاً جديداً الآن.</td></tr>';
+                return;
+            }
+
+            staffData.forEach((s, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${s.name || s.title || 'موظف'}</strong></td>
+                        <td>${s.role || s.platform || 'عضو طاقم'}</td>
+                        <td style="color:#10b981; font-weight:bold;">$${s.salary || s.price || 0}</td>
+                        <td>
+                            <button class="action-btn btn-edit" onclick="editStaff(${idx})">تعديل ✏️</button>
+                            <button class="action-btn btn-del" onclick="deleteStaff('${s.name || s.title}')">حذف 🗑️</button>
+                        </td>
+                    </tr>`;
+            });
+        } catch(e) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ef4444;">خطأ في جلب بيانات الموظفين من السحابة.</td></tr>';
         }
-        document.getElementById('stat_emp_count').innerText = staffData.length;
-        staffData.forEach((s, idx) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${s.name}</strong></td>
-                    <td>${s.role}</td>
-                    <td style="color:#10b981; font-weight:bold;">$${s.salary}</td>
-                    <td><button class="action-btn btn-del" onclick="deleteStaff(${idx})">حذف 🗑️</button></td>
-                </tr>`;
-        });
     }
 
-    function saveStaff() {
+    async function saveStaff() {
         const name = document.getElementById('emp_name').value.trim();
         const role = document.getElementById('emp_role').value.trim();
         const salary = document.getElementById('emp_salary').value.trim();
-        if(!name) return alert('ادخل اسم الموظف');
+        const oldKey = document.getElementById('editStaffKey').value;
 
-        staffData.push({ name, role, salary });
+        if(!name) return alert('يرجى كتابة اسم الموظف');
+
+        showNotify("جاري حفظ بيانات الموظف بالسحابة...");
+
+        if(oldKey) {
+            try { await fetch(`${API_URL}?type=staff&title=${encodeURIComponent(oldKey)}`, { method: "DELETE" }); } catch(e){}
+        }
+
+        await fetch(API_URL, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: 'staff', name: name, title: name, role: role, platform: role, salary: String(salary), price: String(salary) })
+        });
+
+        document.getElementById('editStaffKey').value = '';
         document.getElementById('emp_name').value = '';
         document.getElementById('emp_role').value = '';
         document.getElementById('emp_salary').value = '';
+        document.getElementById('emp_formTitle').innerText = 'إضافة / تعديل بيانات موظف';
+        
+        showNotify("تم التحديث بالسحابة بنجاح! 🚀");
         fetchStaff();
     }
 
-    function deleteStaff(idx) {
-        staffData.splice(idx, 1);
+    function editStaff(idx) {
+        const s = staffData[idx];
+        document.getElementById('editStaffKey').value = s.name || s.title;
+        document.getElementById('emp_name').value = s.name || s.title || '';
+        document.getElementById('emp_role').value = s.role || s.platform || '';
+        document.getElementById('emp_salary').value = s.salary || s.price || '';
+        document.getElementById('emp_formTitle').innerText = '✏️ تعديل بيانات الموظف بالسحابة';
+    }
+
+    async function deleteStaff(name) {
+        if(!confirm(`هل أنت تأكد من حذف الموظف (${name}) من السحابة؟`)) return;
+        showNotify("جاري الحذف من السحابة...");
+        await fetch(`${API_URL}?type=staff&title=${encodeURIComponent(name)}`, { method: "DELETE" });
+        showNotify("تم حذف الموظف 🗑️");
         fetchStaff();
     }
 
@@ -367,21 +408,22 @@
                         <td>${c.region || '-'}</td>
                         <td>${c.city || '-'}</td>
                         <td>${c.phone || '-'}</td>
-                        <td><button class="action-btn btn-del" onclick="deleteCustomer(${idx})">حذف 🗑️</button></td>
+                        <td><button class="action-btn btn-del" onclick="deleteCustomer('${c.name}')">حذف 🗑️</button></td>
                     </tr>`;
             });
         } catch(e){}
     }
 
-    function deleteCustomer(idx) {
-        customersData.splice(idx, 1);
+    async function deleteCustomer(name) {
+        if(!confirm(`حذف العميل (${name})؟`)) return;
+        await fetch(`${API_URL}?type=customers&title=${encodeURIComponent(name)}`, { method: "DELETE" });
         fetchCustomers();
     }
 
     function calcStats() {
-        let rev = ordersData.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+        let rev = ordersData ? ordersData.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0) : 0;
         document.getElementById('stat_total_revenue').innerText = `$${rev}`;
-        document.getElementById('stat_orders_count').innerText = ordersData.length;
+        document.getElementById('stat_orders_count').innerText = ordersData ? ordersData.length : 0;
     }
 
     function showNotify(msg) {
