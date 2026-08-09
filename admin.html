@@ -188,14 +188,22 @@
                     <input type="hidden" id="e_oldName">
                     <div class="form-grid">
                         <input type="text" id="e_name" placeholder="اسم الموظف">
-                        <input type="text" id="e_role" placeholder="المنصب المكتبي">
+                        <select id="e_role">
+                            <option value="Senior Developer">مطور رئيسي (Senior Developer)</option>
+                            <option value="Junior Developer">مطور مبتدئ (Junior Developer)</option>
+                            <option value="Sales Manager">مدير مبيعات (Sales Manager)</option>
+                            <option value="Sales Specialist">أخصائي مبيعات (Sales Specialist)</option>
+                            <option value="Lead Designer">مصمم رئيسي (Lead Designer)</option>
+                            <option value="IT Support Lead">رئيس الدعم الفني (IT Support Lead)</option>
+                            <option value="Executive Manager">إدارة تنفيذية (Executive Manager)</option>
+                        </select>
                         <input type="number" id="e_salary" placeholder="الراتب الشهري ($)">
                     </div>
                     <button class="btn-action-main" onclick="saveData('employees')">حفظ الموظف بالسحابة 💾</button>
                 </div>
                 <div class="card-panel">
                     <table>
-                        <thead><tr><th>اسم الموظف</th><th>المنصب</th><th>الراتب</th><th>الإجراءات والتحكم</th></tr></thead>
+                        <thead><tr><th>اسم الموظف</th><th>المسمى الوظيفي</th><th>الراتب</th><th>الإجراءات والتحكم</th></tr></thead>
                         <tbody id="employees_table"></tbody>
                     </table>
                 </div>
@@ -333,7 +341,7 @@
                 if (type === 'games') {
                     cells = `<td><strong>${item.title || '-'}</strong></td><td>${item.platform || 'PlayStation 5'}</td><td>$${item.price || 0}</td>`;
                 } else if (type === 'employees') {
-                    cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.role || '-'}</td><td>$${item.salary || 0}</td>`;
+                    cells = `<td><strong>${item.name || '-'}</strong></td><td><strong style="color:var(--gold-primary)">${item.role || 'Senior Developer'}</strong></td><td>$${item.salary || 0}</td>`;
                 } else if (type === 'customers') {
                     cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'جدة'}</td><td>${item.phone || '-'}</td>`;
                 } else {
@@ -363,7 +371,7 @@
             document.getElementById('e_oldId').value = item.id || item.pkValue || item.name || '';
             document.getElementById('e_oldName').value = item.name || '';
             document.getElementById('e_name').value = item.name || '';
-            document.getElementById('e_role').value = item.role || '';
+            document.getElementById('e_role').value = item.role || 'Senior Developer';
             document.getElementById('e_salary').value = item.salary || '';
         } else if (type === 'customers') {
             document.getElementById('c_oldId').value = item.id || item.pkValue || item.name || '';
@@ -380,7 +388,6 @@
             document.getElementById('o_status').value = item.status === 'لم يتم الدفع' ? 'لم يتم الدفع' : 'تم الدفع';
         }
 
-        // التعديل الجديد: الانتقال التلقائي لأعلى الشاشة
         const mainArea = document.getElementById('mainContentArea');
         if (mainArea) {
             mainArea.scrollTo({ top: 0, behavior: 'smooth' });
@@ -425,7 +432,7 @@
         } else if (type === 'employees') {
             payload.name = document.getElementById('e_name').value.trim();
             payload.title = payload.name;
-            payload.role = document.getElementById('e_role').value.trim();
+            payload.role = document.getElementById('e_role').value;
             payload.salary = document.getElementById('e_salary').value.trim();
             oldId = document.getElementById('e_oldId').value;
             oldTitle = document.getElementById('e_oldName').value;
@@ -457,7 +464,7 @@
         });
 
         if (type === 'games') { document.getElementById('g_oldId').value = ''; document.getElementById('g_oldTitle').value = ''; document.getElementById('g_title').value = ''; document.getElementById('g_price').value = ''; }
-        else if (type === 'employees') { document.getElementById('e_oldId').value = ''; document.getElementById('e_oldName').value = ''; document.getElementById('e_name').value = ''; document.getElementById('e_role').value = ''; document.getElementById('e_salary').value = ''; }
+        else if (type === 'employees') { document.getElementById('e_oldId').value = ''; document.getElementById('e_oldName').value = ''; document.getElementById('e_name').value = ''; document.getElementById('e_salary').value = ''; }
         else if (type === 'customers') { document.getElementById('c_oldId').value = ''; document.getElementById('c_oldName').value = ''; document.getElementById('c_name').value = ''; document.getElementById('c_phone').value = ''; }
         else if (type === 'orders') { document.getElementById('o_oldId').value = ''; document.getElementById('o_customerId').value = ''; document.getElementById('o_item').value = ''; document.getElementById('o_total').value = ''; }
 
