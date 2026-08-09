@@ -62,7 +62,8 @@
         
         /* القائمة الجانبية */
         .sidebar { width: 290px; background: var(--card-bg); border-left: 2px solid var(--border-color); padding: 35px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-        .brand-logo { text-align: center; margin-bottom: 35px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .brand-logo { text-align: center; margin-bottom: 35px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; cursor: pointer; transition: 0.3s; }
+        .brand-logo:hover { opacity: 0.85; transform: scale(0.98); }
         .brand-logo .brand-emblem { font-size: 45px; margin-bottom: 5px; filter: drop-shadow(0 0 8px var(--gold-light)); }
         .brand-logo h2 { font-size: 20px; font-weight: 900; color: var(--gold-primary); }
 
@@ -124,7 +125,6 @@
 </head>
 <body>
 
-    <!-- شاشة الدخول المحدثة -->
     <div id="loginModal">
         <div class="login-card">
             <span class="emblem-icon">🌴</span>
@@ -144,16 +144,14 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم الداخلية -->
     <div id="appWrapper">
         <div class="sidebar">
-            <div class="brand-logo">
+            <div class="brand-logo" onclick="switchTab('dashboard', event)" title="الرجوع لصفحة الإحصائيات الرئيسية">
                 <div class="brand-emblem">🌴</div>
                 <h2>RAKAN STUDIOS</h2>
             </div>
 
-            <button class="nav-btn active" data-tab="dashboard" onclick="switchTab('dashboard', event)">📊 الإحصائيات العامة</button>
-            <button class="nav-btn" data-tab="games" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
+            <button class="nav-btn active" data-tab="games" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
             <button class="nav-btn" data-tab="employees" onclick="switchTab('employees', event)">👥 الموظفين والرواتب</button>
             <button class="nav-btn" data-tab="customers" onclick="switchTab('customers', event)">🏢 العملاء المسجلين</button>
             <button class="nav-btn" data-tab="orders" onclick="switchTab('orders', event)">📦 الطلبات والمبيعات</button>
@@ -163,7 +161,6 @@
 
         <div class="main-content" id="mainContentArea">
             
-            <!-- قسم الإحصائيات الرئيسية -->
             <div id="dashboard" class="tab-content active">
                 <div class="content-header">
                     <h1>📊 نظرة عامة وإحصائيات المتجر</h1>
@@ -209,7 +206,6 @@
                 </div>
             </div>
 
-            <!-- قسم الألعاب -->
             <div id="games" class="tab-content">
                 <div class="content-header">
                     <h1>🎮 إدارة مكتبة الألعاب</h1>
@@ -237,7 +233,6 @@
                 </div>
             </div>
 
-            <!-- قسم الموظفين -->
             <div id="employees" class="tab-content">
                 <div class="content-header">
                     <h1>👥 إدارة الموظفين والرواتب</h1>
@@ -268,7 +263,6 @@
                 </div>
             </div>
 
-            <!-- قسم العملاء -->
             <div id="customers" class="tab-content">
                 <div class="content-header">
                     <h1>🏢 قائمة العملاء المسجلين</h1>
@@ -302,7 +296,6 @@
                 </div>
             </div>
 
-            <!-- قسم الطلبات والمبيعات -->
             <div id="orders" class="tab-content">
                 <div class="content-header">
                     <h1>📦 إدارة المبيعات والطلبات</h1>
@@ -339,8 +332,8 @@
         if (localStorage.getItem('adminSession') === 'true') {
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
-            const lastTab = localStorage.getItem('activeAdminTab') || 'dashboard';
-            switchTab(lastTab);
+            // الدخول التلقائي دائماً على شاشة الإحصائيات عند التحميل
+            switchTab('dashboard');
         }
     });
 
@@ -373,7 +366,7 @@
         const targetBtn = document.querySelector(`.sidebar .nav-btn[data-tab="${tab}"]`);
         if (targetBtn) {
             targetBtn.classList.add('active');
-        } else if (evt && evt.target) {
+        } else if (evt && evt.target && evt.target.classList.contains('nav-btn')) {
             evt.target.classList.add('active');
         }
         
