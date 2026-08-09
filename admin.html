@@ -2,82 +2,97 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>⚡ Rakan Gaming Studios | لوحة الإدارة</title>
+    <title>⚡ Rakan Studios | Admin Pro</title>
     <style>
-        * { box-sizing: border-box; font-family: sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; }
-        #appWrapper { display: none; flex: 1; flex-direction: row; }
-        .sidebar { width: 250px; background: #131b2e; padding: 20px; }
-        .nav-btn { display: block; width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; color: #fff; border: none; text-align: right; cursor: pointer; }
-        .nav-btn.active { background: #1f2937; }
-        .main-content { flex: 1; padding: 20px; overflow-y: auto; }
-        .card { background: #131b2e; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; background: #131b2e; }
-        th, td { padding: 10px; border-bottom: 1px solid #1f2937; text-align: right; }
-        button { padding: 8px; cursor: pointer; border-radius: 4px; border: none; }
-        .btn-add { background: #059669; color: white; }
-        .btn-del { background: #dc2626; color: white; }
-        .btn-edit { background: #d97706; color: white; margin-left: 5px; }
+        :root { --bg: #0f172a; --panel: #1e293b; --accent: #38bdf8; --text: #f1f5f9; --danger: #ef4444; --success: #22c55e; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; margin: 0; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: #0f172a; border-left: 1px solid #334155; padding: 20px; }
+        .nav-btn { display: block; width: 100%; padding: 12px; margin-bottom: 10px; background: #1e293b; color: white; border: none; border-radius: 8px; cursor: pointer; text-align: right; transition: 0.3s; }
+        .nav-btn.active { background: var(--accent); color: var(--bg); font-weight: bold; }
+        
+        /* Main */
+        .main { flex: 1; padding: 30px; overflow-y: auto; }
+        .card { background: var(--panel); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        input { padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; width: 200px; margin-left: 10px; }
+        button { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-main { background: var(--accent); color: var(--bg); }
+        .btn-edit { background: #f59e0b; color: white; }
+        .btn-del { background: var(--danger); color: white; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #1e293b; padding: 12px; text-align: right; }
+        td { padding: 12px; border-bottom: 1px solid #334155; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
 
-<div id="loginModal" style="position:fixed; top:0; width:100%; height:100%; background:#0b0f19; display:flex; justify-content:center; align-items:center;">
-    <div style="background:#131b2e; padding:30px; border-radius:10px;">
-        <h2>تسجيل الدخول</h2>
-        <input type="text" id="username" placeholder="المستخدم">
-        <input type="password" id="password" placeholder="كلمة المرور">
-        <button onclick="checkLogin()">دخول</button>
+<div id="loginModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:99; display:flex; justify-content:center; align-items:center;">
+    <div class="card" style="width:300px; text-align:center;">
+        <h2>دخول الإدارة</h2>
+        <input type="text" id="username" placeholder="المستخدم" style="width:100%; margin-bottom:10px;">
+        <input type="password" id="password" placeholder="المرور" style="width:100%; margin-bottom:10px;">
+        <button onclick="checkLogin()" class="btn-main" style="width:100%;">دخول</button>
     </div>
 </div>
 
-<div id="appWrapper">
+<div id="appWrapper" style="display:none; width:100%; display:flex;">
     <div class="sidebar">
+        <h2 style="margin-bottom:20px; color:var(--accent);">Rakan Studios</h2>
         <button class="nav-btn active" onclick="switchTab('games', event)">🎮 الألعاب</button>
         <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين</button>
         <button class="nav-btn" onclick="switchTab('customers', event)">🏢 العملاء</button>
         <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات</button>
+        <a href="index.html" style="color:var(--accent); text-decoration:none; margin-top:20px; display:block;">👁️ معاينة المتجر</a>
     </div>
+
     <div class="main-content">
         <div id="games" class="tab-content active">
+            <h2>إدارة مكتبة الألعاب</h2>
             <div class="card">
                 <input type="hidden" id="g_old">
                 <input type="text" id="g_title" placeholder="اسم اللعبة">
                 <input type="number" id="g_price" placeholder="السعر">
-                <button class="btn-add" onclick="saveData('games')">حفظ / تحديث</button>
+                <button class="btn-main" onclick="saveData('games')">حفظ / تحديث</button>
             </div>
-            <table><thead><tr><th>الاسم</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="games_table"></tbody></table>
+            <table><thead><tr><th>الاسم</th><th>السعر</th><th>الإجراءات</th></tr></thead><tbody id="games_table"></tbody></table>
         </div>
-        
+
         <div id="employees" class="tab-content">
+            <h2>إدارة الموظفين</h2>
             <div class="card">
                 <input type="hidden" id="e_old">
                 <input type="text" id="e_name" placeholder="اسم الموظف">
                 <input type="text" id="e_role" placeholder="المنصب">
                 <input type="number" id="e_salary" placeholder="الراتب">
-                <button class="btn-add" onclick="saveData('employees')">حفظ / تحديث</button>
+                <button class="btn-main" onclick="saveData('employees')">حفظ / تحديث</button>
             </div>
-            <table><thead><tr><th>الاسم</th><th>المنصب</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="employees_table"></tbody></table>
+            <table><thead><tr><th>الاسم</th><th>المنصب</th><th>الراتب</th><th>الإجراءات</th></tr></thead><tbody id="employees_table"></tbody></table>
         </div>
 
         <div id="customers" class="tab-content">
+            <h2>سجل العملاء</h2>
             <div class="card">
                 <input type="hidden" id="c_old">
                 <input type="text" id="c_name" placeholder="اسم العميل">
-                <input type="text" id="c_phone" placeholder="الهاتف">
-                <button class="btn-add" onclick="saveData('customers')">حفظ / تحديث</button>
+                <input type="text" id="c_phone" placeholder="رقم الهاتف">
+                <button class="btn-main" onclick="saveData('customers')">حفظ / تحديث</button>
             </div>
-            <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التحكم</th></tr></thead><tbody id="customers_table"></tbody></table>
+            <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>الإجراءات</th></tr></thead><tbody id="customers_table"></tbody></table>
         </div>
 
         <div id="orders" class="tab-content">
+            <h2>إدارة الطلبات</h2>
             <div class="card">
                 <input type="hidden" id="o_old">
                 <input type="text" id="o_customerId" placeholder="اسم العميل">
                 <input type="number" id="o_total" placeholder="المبلغ">
-                <button class="btn-add" onclick="saveData('orders')">حفظ / تحديث</button>
+                <button class="btn-main" onclick="saveData('orders')">حفظ / تحديث</button>
             </div>
-            <table><thead><tr><th>العميل</th><th>المبلغ</th><th>التحكم</th></tr></thead><tbody id="orders_table"></tbody></table>
+            <table><thead><tr><th>العميل</th><th>المبلغ</th><th>الإجراءات</th></tr></thead><tbody id="orders_table"></tbody></table>
         </div>
     </div>
 </div>
@@ -86,21 +101,12 @@
     const API = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let currentData = {};
 
-    window.onload = () => {
-        if(localStorage.getItem('isLogged')) {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('appWrapper').style.display = 'flex';
-            switchTab('games');
-        }
-    }
-
     function checkLogin() {
         if(document.getElementById('username').value == "Rakan" && document.getElementById('password').value == "Rakan12345") {
-            localStorage.setItem('isLogged', 'true');
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
             switchTab('games');
-        } else alert("خطأ");
+        } else alert("خطأ!");
     }
 
     function switchTab(tab, evt) {
@@ -119,31 +125,29 @@
         currentData[type].forEach((item, index) => {
             let row = document.createElement('tr');
             let pk = item.title || item.name || item.customerId;
-            if(type === 'games') row.innerHTML = `<td>${item.title}</td><td>$${item.price}</td><td><button class="btn-edit" onclick="editItem('games', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
-            else if(type === 'employees') row.innerHTML = `<td>${item.name}</td><td>${item.role}</td><td>$${item.salary}</td><td><button class="btn-edit" onclick="editItem('employees', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
-            else if(type === 'customers') row.innerHTML = `<td>${item.name}</td><td>${item.phone}</td><td><button class="btn-edit" onclick="editItem('customers', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
-            else row.innerHTML = `<td>${item.customerId}</td><td>$${item.total}</td><td><button class="btn-edit" onclick="editItem('orders', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
+            let cells = type=='games'?`<td>${item.title}</td><td>$${item.price}</td>`:type=='employees'?`<td>${item.name}</td><td>${item.role}</td><td>$${item.salary}</td>`:type=='customers'?`<td>${item.name}</td><td>${item.phone}</td>`:`<td>${item.customerId}</td><td>$${item.total}</td>`;
+            row.innerHTML = cells + `<td><button class="btn-edit" onclick="editItem('${type}', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
             tbody.appendChild(row);
         });
     }
 
     function editItem(type, index) {
         const item = currentData[type][index];
-        if(type === 'games') { document.getElementById('g_old').value = item.title; document.getElementById('g_title').value = item.title; document.getElementById('g_price').value = item.price; }
-        else if(type === 'employees') { document.getElementById('e_old').value = item.name; document.getElementById('e_name').value = item.name; document.getElementById('e_role').value = item.role; document.getElementById('e_salary').value = item.salary; }
-        else if(type === 'customers') { document.getElementById('c_old').value = item.name; document.getElementById('c_name').value = item.name; document.getElementById('c_phone').value = item.phone; }
-        else if(type === 'orders') { document.getElementById('o_old').value = item.customerId; document.getElementById('o_customerId').value = item.customerId; document.getElementById('o_total').value = item.total; }
+        if(type=='games'){ document.getElementById('g_old').value=item.title; document.getElementById('g_title').value=item.title; document.getElementById('g_price').value=item.price; }
+        else if(type=='employees'){ document.getElementById('e_old').value=item.name; document.getElementById('e_name').value=item.name; document.getElementById('e_role').value=item.role; document.getElementById('e_salary').value=item.salary; }
+        else if(type=='customers'){ document.getElementById('c_old').value=item.name; document.getElementById('c_name').value=item.name; document.getElementById('c_phone').value=item.phone; }
+        else if(type=='orders'){ document.getElementById('o_old').value=item.customerId; document.getElementById('o_customerId').value=item.customerId; document.getElementById('o_total').value=item.total; }
     }
 
     async function saveData(type) {
         let body = { type: type };
-        let oldPk = "";
-        if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; oldPk = document.getElementById('g_old').value; }
-        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.role = document.getElementById('e_role').value; body.salary = document.getElementById('e_salary').value; body.title = body.name; oldPk = document.getElementById('e_old').value; }
-        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; body.title = body.name; oldPk = document.getElementById('c_old').value; }
-        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; body.title = body.customerId; oldPk = document.getElementById('o_old').value; }
+        let pk = "";
+        if(type=='games'){ body.title=document.getElementById('g_title').value; body.price=document.getElementById('g_price').value; pk=document.getElementById('g_old').value; }
+        else if(type=='employees'){ body.name=document.getElementById('e_name').value; body.role=document.getElementById('e_role').value; body.salary=document.getElementById('e_salary').value; body.title=body.name; pk=document.getElementById('e_old').value; }
+        else if(type=='customers'){ body.name=document.getElementById('c_name').value; body.phone=document.getElementById('c_phone').value; body.title=body.name; pk=document.getElementById('c_old').value; }
+        else if(type=='orders'){ body.customerId=document.getElementById('o_customerId').value; body.total=document.getElementById('o_total').value; body.title=body.customerId; pk=document.getElementById('o_old').value; }
 
-        if(oldPk) await fetch(`${API}?type=${type}&title=${encodeURIComponent(oldPk)}`, { method: "DELETE" });
+        if(pk) await fetch(`${API}?type=${type}&title=${encodeURIComponent(pk)}`, { method: "DELETE" });
         await fetch(API, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
         loadData(type);
     }
