@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ RAKAN STUDIOS | مركز القيادة والإدارة الملكي</title>
+    <title>⚔️ RAKAN STUDIOS | لوحة التحكم والإدارة الملكية</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
@@ -341,11 +341,16 @@
             oldKey = document.getElementById('o_oldId').value;
         }
 
-        // الحذف أولاً للتعديل حتى لا تتكرر البيانات
+        // الحذف أولاً بنفس طريقة POST لمنع التكرار نهائياً
         if (oldKey) {
-            await fetch(`${API}?type=${type}&title=${encodeURIComponent(oldKey)}`, { method: "DELETE" });
+            await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type: type, action: "delete", title: oldKey, id: oldKey })
+            });
         }
 
+        // حفظ البيانات الجديدة
         await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -363,7 +368,11 @@
 
     async function deleteItem(type, key) {
         if (!confirm(`هل أنت متأكد من حذف (${key}) نهائياً؟`)) return;
-        await fetch(`${API}?type=${type}&title=${encodeURIComponent(key)}`, { method: "DELETE" });
+        await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: type, action: "delete", title: key, id: key })
+        });
         loadData(type);
     }
 </script>
