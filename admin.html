@@ -6,16 +6,15 @@
     <title>⚡ Rakan Gaming Studios | لوحة الإدارة</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; }
 
         #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.98); display: flex; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px); }
         .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7); }
-        .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 22px; font-weight: 800; }
         .login-box input { width: 100%; padding: 13px 16px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; text-align: right; }
 
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
-        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; cursor: pointer; }
         .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
 
         .main-content { flex: 1; padding: 35px; }
@@ -23,6 +22,8 @@
         .btn-add { background: #059669; color: white; padding: 11px 22px; border-radius: 8px; cursor: pointer; border:none; margin-top: 5px; }
         .btn-del { background: #dc2626; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; margin-left:5px; }
         .btn-edit { background: #d97706; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; }
+        .btn-refresh { background: #334155; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; margin-right: 10px; }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid #1f2937; }
         .tab-content { display: none; }
@@ -52,6 +53,7 @@
         <div class="main-content">
             <!-- مكتبة الألعاب -->
             <div id="games" class="tab-content active">
+                <div class="header"><h1>🎮 مكتبة الألعاب <button class="btn-refresh" onclick="loadData('games')">🔄 تحديث</button></h1></div>
                 <div class="card">
                     <input type="hidden" id="g_pk">
                     <input type="text" id="g_title" placeholder="اسم اللعبة">
@@ -63,6 +65,7 @@
 
             <!-- الموظفين -->
             <div id="employees" class="tab-content">
+                <div class="header"><h1>👥 الموظفين <button class="btn-refresh" onclick="loadData('employees')">🔄 تحديث</button></h1></div>
                 <div class="card">
                     <input type="hidden" id="e_pk">
                     <input type="text" id="e_name" placeholder="اسم الموظف">
@@ -75,6 +78,7 @@
 
             <!-- العملاء -->
             <div id="customers" class="tab-content">
+                <div class="header"><h1>🏢 العملاء <button class="btn-refresh" onclick="loadData('customers')">🔄 تحديث</button></h1></div>
                 <div class="card">
                     <input type="hidden" id="c_pk">
                     <input type="text" id="c_name" placeholder="اسم العميل">
@@ -86,6 +90,7 @@
 
             <!-- الطلبات -->
             <div id="orders" class="tab-content">
+                <div class="header"><h1>📦 الطلبات <button class="btn-refresh" onclick="loadData('orders')">🔄 تحديث</button></h1></div>
                 <div class="card">
                     <input type="hidden" id="o_pk">
                     <input type="text" id="o_customerId" placeholder="اسم العميل">
@@ -111,7 +116,9 @@
 
     function switchTab(tab, evt) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
+        if(evt) evt.target.classList.add('active');
         loadData(tab);
     }
 
@@ -125,10 +132,10 @@
             let row = document.createElement('tr');
             let pk = item.id || item.title || item.name || item.customerId;
             let cells = "";
-            if(type === 'games') cells = `<td>${item.title}</td><td>$${item.price}</td>`;
-            else if(type === 'employees') cells = `<td>${item.name}</td><td>${item.role}</td><td>$${item.salary}</td>`;
-            else if(type === 'customers') cells = `<td>${item.name}</td><td>${item.phone}</td>`;
-            else cells = `<td>${item.customerId}</td><td>$${item.total}</td>`;
+            if(type === 'games') cells = `<td>${item.title || '-'}</td><td>$${item.price || '0'}</td>`;
+            else if(type === 'employees') cells = `<td>${item.name || '-'}</td><td>${item.role || '-'}</td><td>$${item.salary || '0'}</td>`;
+            else if(type === 'customers') cells = `<td>${item.name || '-'}</td><td>${item.phone || '-'}</td>`;
+            else cells = `<td>${item.customerId || '-'}</td><td>$${item.total || '0'}</td>`;
             
             row.innerHTML = cells + `<td>
                 <button class="btn-edit" onclick="editItem('${type}', ${index})">تعديل</button>
@@ -150,13 +157,11 @@
         let body = { type: type };
         let pk = "";
         if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; pk = document.getElementById('g_pk').value; }
-        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.role = document.getElementById('e_role').value; body.salary = document.getElementById('e_salary').value; pk = document.getElementById('e_pk').value; }
-        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; pk = document.getElementById('c_pk').value; }
-        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; pk = document.getElementById('o_pk').value; }
+        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.role = document.getElementById('e_role').value; body.salary = document.getElementById('e_salary').value; pk = document.getElementById('e_pk').value; body.title = body.name; }
+        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; pk = document.getElementById('c_pk').value; body.title = body.name; }
+        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; pk = document.getElementById('o_pk').value; body.title = body.customerId; }
 
-        // حذف القديم إذا كان تعديل
         if(pk) await fetch(`${API_URL}?type=${type}&title=${encodeURIComponent(pk)}`, { method: "DELETE" });
-        
         await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
         loadData(type);
     }
