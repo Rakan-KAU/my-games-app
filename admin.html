@@ -211,19 +211,31 @@
                     <input type="hidden" id="c_oldName">
                     <div class="form-grid">
                         <input type="text" id="c_name" placeholder="اسم العميل">
+                        <select id="c_region">
+                            <option value="منطقة مكة المكرمة">منطقة مكة المكرمة</option>
+                            <option value="منطقة الرياض">منطقة الرياض</option>
+                            <option value="المنطقة الشرقية">المنطقة الشرقية</option>
+                            <option value="منطقة عسير">منطقة عسير</option>
+                        </select>
+                        <select id="c_city">
+                            <option value="جدة">جدة</option>
+                            <option value="الرياض">الرياض</option>
+                            <option value="مكة المكرمة">مكة المكرمة</option>
+                            <option value="الدمام">الدمام</option>
+                        </select>
                         <input type="text" id="c_phone" placeholder="رقم الهاتف">
                     </div>
                     <button class="btn-action-main" onclick="saveData('customers')">حفظ بيانات العميل 💾</button>
                 </div>
                 <div class="card-panel">
                     <table>
-                        <thead><tr><th>اسم العميل</th><th>رقم الهاتف</th><th>الإجراءات والتحكم</th></tr></thead>
+                        <thead><tr><th>اسم العميل</th><th>المنطقة</th><th>المدينة</th><th>رقم الهاتف</th><th>الإجراءات والتحكم</th></tr></thead>
                         <tbody id="customers_table"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- قسم الطلبات -->
+            <!-- قسم الطلبات والمبيعات -->
             <div id="orders" class="tab-content">
                 <div class="content-header">
                     <h1>📦 إدارة المبيعات والطلبات</h1>
@@ -231,14 +243,20 @@
                 <div class="card-panel">
                     <input type="hidden" id="o_oldId">
                     <div class="form-grid">
-                        <input type="text" id="o_customerId" placeholder="اسم العميل">
-                        <input type="number" id="o_total" placeholder="المبلغ ($)">
+                        <input type="text" id="o_customerId" placeholder="اسم العميل (CustomerId)">
+                        <input type="text" id="o_item" placeholder="اسم المنتج / اللعبة">
+                        <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
+                        <select id="o_status">
+                            <option value="Completed">مكتمل (Completed)</option>
+                            <option value="Pending">قيد المعالجة (Pending)</option>
+                            <option value="Cancelled">ملغي (Cancelled)</option>
+                        </select>
                     </div>
                     <button class="btn-action-main" onclick="saveData('orders')">حفظ الطلب بالسحابة 💾</button>
                 </div>
                 <div class="card-panel">
                     <table>
-                        <thead><tr><th>العميل</th><th>المبلغ</th><th>الإجراءات والتحكم</th></tr></thead>
+                        <thead><tr><th>اسم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات والتحكم</th></tr></thead>
                         <tbody id="orders_table"></tbody>
                     </table>
                 </div>
@@ -303,7 +321,7 @@
             tbody.innerHTML = '';
 
             if(!storeCache[type] || storeCache[type].length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد بيانات مسجلة.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">لا توجد بيانات مسجلة.</td></tr>';
                 return;
             }
 
@@ -315,8 +333,8 @@
 
                 if (type === 'games') cells = `<td><strong>${item.title || '-'}</strong></td><td>${item.platform || 'PlayStation 5'}</td><td>$${item.price || 0}</td>`;
                 else if (type === 'employees') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.role || '-'}</td><td>$${item.salary || 0}</td>`;
-                else if (type === 'customers') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.phone || '-'}</td>`;
-                else cells = `<td><strong>${item.customerId || '-'}</strong></td><td>$${item.total || 0}</td>`;
+                else if (type === 'customers') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'جدة'}</td><td>${item.phone || '-'}</td>`;
+                else cells = `<td><strong>${item.customerId || '-'}</strong></td><td>${item.item || '-'}</td><td>$${item.total || 0}</td><td><strong style="color:#10b981">${item.status || 'Completed'}</strong></td>`;
 
                 row.innerHTML = cells + `<td>
                     <button class="btn-tb-edit" onclick="prepareEdit('${type}', ${idx})">تعديل ✏️</button>
@@ -345,11 +363,15 @@
             document.getElementById('c_oldId').value = item.id || item.pkValue || item.name || '';
             document.getElementById('c_oldName').value = item.name || '';
             document.getElementById('c_name').value = item.name || '';
+            document.getElementById('c_region').value = item.region || 'منطقة مكة المكرمة';
+            document.getElementById('c_city').value = item.city || 'جدة';
             document.getElementById('c_phone').value = item.phone || '';
         } else if (type === 'orders') {
             document.getElementById('o_oldId').value = item.id || item.pkValue || item.customerId || '';
             document.getElementById('o_customerId').value = item.customerId || '';
+            document.getElementById('o_item').value = item.item || '';
             document.getElementById('o_total').value = item.total || '';
+            document.getElementById('o_status').value = item.status || 'Completed';
         }
     }
 
@@ -358,7 +380,6 @@
         const targetTitle = titleVal || idVal;
         if (!targetId) return;
 
-        // 1. الحذف بأمر POST
         await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -373,7 +394,6 @@
             })
         }).catch(e => {});
 
-        // 2. الحذف بطلب DELETE عبر URL المعلمات
         await fetch(`${API}?type=${type}&title=${encodeURIComponent(targetTitle)}`, { method: "DELETE" }).catch(e => {});
         await fetch(`${API}?type=${type}&id=${encodeURIComponent(targetId)}`, { method: "DELETE" }).catch(e => {});
     }
@@ -399,33 +419,34 @@
         } else if (type === 'customers') {
             payload.name = document.getElementById('c_name').value.trim();
             payload.title = payload.name;
+            payload.region = document.getElementById('c_region').value;
+            payload.city = document.getElementById('c_city').value;
             payload.phone = document.getElementById('c_phone').value.trim();
             oldId = document.getElementById('c_oldId').value;
             oldTitle = document.getElementById('c_oldName').value;
         } else if (type === 'orders') {
             payload.customerId = document.getElementById('o_customerId').value.trim();
             payload.title = payload.customerId;
+            payload.item = document.getElementById('o_item').value.trim();
             payload.total = document.getElementById('o_total').value.trim();
+            payload.status = document.getElementById('o_status').value;
             oldId = document.getElementById('o_oldId').value;
         }
 
-        // مسح السجل القديم أولاً إذا كانت العملية تعديل
         if (oldId || oldTitle) {
             await purgeRecord(type, oldId, oldTitle);
         }
 
-        // إضافة البيانات الجديدة للسحابة
         await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        // تنظيف الحقول
         if (type === 'games') { document.getElementById('g_oldId').value = ''; document.getElementById('g_oldTitle').value = ''; document.getElementById('g_title').value = ''; document.getElementById('g_price').value = ''; }
         else if (type === 'employees') { document.getElementById('e_oldId').value = ''; document.getElementById('e_oldName').value = ''; document.getElementById('e_name').value = ''; document.getElementById('e_role').value = ''; document.getElementById('e_salary').value = ''; }
         else if (type === 'customers') { document.getElementById('c_oldId').value = ''; document.getElementById('c_oldName').value = ''; document.getElementById('c_name').value = ''; document.getElementById('c_phone').value = ''; }
-        else if (type === 'orders') { document.getElementById('o_oldId').value = ''; document.getElementById('o_customerId').value = ''; document.getElementById('o_total').value = ''; }
+        else if (type === 'orders') { document.getElementById('o_oldId').value = ''; document.getElementById('o_customerId').value = ''; document.getElementById('o_item').value = ''; document.getElementById('o_total').value = ''; }
 
         loadData(type);
     }
