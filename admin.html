@@ -2,173 +2,155 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ Rakan Gaming Studios | لوحة الإدارة</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; }
-
-        #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.98); display: flex; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px); }
-        .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7); }
-        .login-box input { width: 100%; padding: 13px 16px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; text-align: right; }
-
-        #appWrapper { display: none; flex: 1; width: 100%; }
-        .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
-        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; cursor: pointer; }
-        .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
-
-        .main-content { flex: 1; padding: 35px; }
-        .card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; margin-bottom: 22px; }
-        .btn-add { background: #059669; color: white; padding: 11px 22px; border-radius: 8px; cursor: pointer; border:none; margin-top: 5px; }
-        .btn-del { background: #dc2626; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; margin-left:5px; }
-        .btn-edit { background: #d97706; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; }
-        .btn-refresh { background: #334155; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; margin-right: 10px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid #1f2937; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        * { box-sizing: border-box; font-family: sans-serif; margin: 0; padding: 0; }
+        body { background-color: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; height: 100vh; }
+        #appWrapper { display: none; flex: 1; flex-direction: row; }
+        .sidebar { width: 250px; background: #131b2e; padding: 20px; }
+        .nav-btn { display: block; width: 100%; padding: 10px; margin-bottom: 5px; background: transparent; color: #fff; border: none; text-align: right; cursor: pointer; }
+        .nav-btn.active { background: #1f2937; }
+        .main-content { flex: 1; padding: 20px; overflow-y: auto; }
+        .card { background: #131b2e; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #131b2e; }
+        th, td { padding: 10px; border-bottom: 1px solid #1f2937; text-align: right; }
+        button { padding: 8px; cursor: pointer; border-radius: 4px; border: none; }
+        .btn-add { background: #059669; color: white; }
+        .btn-del { background: #dc2626; color: white; }
+        .btn-edit { background: #d97706; color: white; margin-left: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="loginModal">
-        <div class="login-box">
-            <h2>تسجيل دخول الإدارة</h2>
-            <input type="text" id="username" placeholder="اسم المستخدم">
-            <input type="password" id="password" placeholder="كلمة المرور">
-            <button onclick="checkLogin()" style="background:#0284c7; width:100%; padding:12px; color:white; border:none; border-radius:8px; cursor:pointer;">دخول</button>
+<div id="loginModal" style="position:fixed; top:0; width:100%; height:100%; background:#0b0f19; display:flex; justify-content:center; align-items:center;">
+    <div style="background:#131b2e; padding:30px; border-radius:10px;">
+        <h2>تسجيل الدخول</h2>
+        <input type="text" id="username" placeholder="المستخدم">
+        <input type="password" id="password" placeholder="كلمة المرور">
+        <button onclick="checkLogin()">دخول</button>
+    </div>
+</div>
+
+<div id="appWrapper">
+    <div class="sidebar">
+        <button class="nav-btn active" onclick="switchTab('games', event)">🎮 الألعاب</button>
+        <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين</button>
+        <button class="nav-btn" onclick="switchTab('customers', event)">🏢 العملاء</button>
+        <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات</button>
+    </div>
+    <div class="main-content">
+        <div id="games" class="tab-content active">
+            <div class="card">
+                <input type="hidden" id="g_old">
+                <input type="text" id="g_title" placeholder="اسم اللعبة">
+                <input type="number" id="g_price" placeholder="السعر">
+                <button class="btn-add" onclick="saveData('games')">حفظ / تحديث</button>
+            </div>
+            <table><thead><tr><th>الاسم</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="games_table"></tbody></table>
+        </div>
+        
+        <div id="employees" class="tab-content">
+            <div class="card">
+                <input type="hidden" id="e_old">
+                <input type="text" id="e_name" placeholder="اسم الموظف">
+                <input type="text" id="e_role" placeholder="المنصب">
+                <input type="number" id="e_salary" placeholder="الراتب">
+                <button class="btn-add" onclick="saveData('employees')">حفظ / تحديث</button>
+            </div>
+            <table><thead><tr><th>الاسم</th><th>المنصب</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="employees_table"></tbody></table>
+        </div>
+
+        <div id="customers" class="tab-content">
+            <div class="card">
+                <input type="hidden" id="c_old">
+                <input type="text" id="c_name" placeholder="اسم العميل">
+                <input type="text" id="c_phone" placeholder="الهاتف">
+                <button class="btn-add" onclick="saveData('customers')">حفظ / تحديث</button>
+            </div>
+            <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التحكم</th></tr></thead><tbody id="customers_table"></tbody></table>
+        </div>
+
+        <div id="orders" class="tab-content">
+            <div class="card">
+                <input type="hidden" id="o_old">
+                <input type="text" id="o_customerId" placeholder="اسم العميل">
+                <input type="number" id="o_total" placeholder="المبلغ">
+                <button class="btn-add" onclick="saveData('orders')">حفظ / تحديث</button>
+            </div>
+            <table><thead><tr><th>العميل</th><th>المبلغ</th><th>التحكم</th></tr></thead><tbody id="orders_table"></tbody></table>
         </div>
     </div>
-
-    <div id="appWrapper">
-        <div class="sidebar">
-            <h2>⚡ RAKAN STUDIOS</h2>
-            <button class="nav-btn active" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
-            <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين</button>
-            <button class="nav-btn" onclick="switchTab('customers', event)">🏢 العملاء</button>
-            <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات</button>
-        </div>
-
-        <div class="main-content">
-            <!-- مكتبة الألعاب -->
-            <div id="games" class="tab-content active">
-                <div class="header"><h1>🎮 مكتبة الألعاب <button class="btn-refresh" onclick="loadData('games')">🔄 تحديث</button></h1></div>
-                <div class="card">
-                    <input type="hidden" id="g_pk">
-                    <input type="text" id="g_title" placeholder="اسم اللعبة">
-                    <input type="number" id="g_price" placeholder="السعر">
-                    <button class="btn-add" onclick="saveData('games')">حفظ اللعبة</button>
-                </div>
-                <table><thead><tr><th>الاسم</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="games_table"></tbody></table>
-            </div>
-
-            <!-- الموظفين -->
-            <div id="employees" class="tab-content">
-                <div class="header"><h1>👥 الموظفين <button class="btn-refresh" onclick="loadData('employees')">🔄 تحديث</button></h1></div>
-                <div class="card">
-                    <input type="hidden" id="e_pk">
-                    <input type="text" id="e_name" placeholder="اسم الموظف">
-                    <input type="text" id="e_role" placeholder="المنصب">
-                    <input type="number" id="e_salary" placeholder="الراتب">
-                    <button class="btn-add" onclick="saveData('employees')">حفظ الموظف</button>
-                </div>
-                <table><thead><tr><th>الاسم</th><th>المنصب</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="employees_table"></tbody></table>
-            </div>
-
-            <!-- العملاء -->
-            <div id="customers" class="tab-content">
-                <div class="header"><h1>🏢 العملاء <button class="btn-refresh" onclick="loadData('customers')">🔄 تحديث</button></h1></div>
-                <div class="card">
-                    <input type="hidden" id="c_pk">
-                    <input type="text" id="c_name" placeholder="اسم العميل">
-                    <input type="text" id="c_phone" placeholder="الهاتف">
-                    <button class="btn-add" onclick="saveData('customers')">حفظ العميل</button>
-                </div>
-                <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التحكم</th></tr></thead><tbody id="customers_table"></tbody></table>
-            </div>
-
-            <!-- الطلبات -->
-            <div id="orders" class="tab-content">
-                <div class="header"><h1>📦 الطلبات <button class="btn-refresh" onclick="loadData('orders')">🔄 تحديث</button></h1></div>
-                <div class="card">
-                    <input type="hidden" id="o_pk">
-                    <input type="text" id="o_customerId" placeholder="اسم العميل">
-                    <input type="number" id="o_total" placeholder="المبلغ">
-                    <button class="btn-add" onclick="saveData('orders')">حفظ الطلب</button>
-                </div>
-                <table><thead><tr><th>العميل</th><th>المبلغ</th><th>التحكم</th></tr></thead><tbody id="orders_table"></tbody></table>
-            </div>
-        </div>
-    </div>
+</div>
 
 <script>
-    const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+    const API = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let currentData = {};
 
-    function checkLogin() {
-        if (document.getElementById('username').value === "Rakan" && document.getElementById('password').value === "Rakan12345") {
+    window.onload = () => {
+        if(localStorage.getItem('isLogged')) {
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
             switchTab('games');
-        } else alert("خطأ في البيانات");
+        }
+    }
+
+    function checkLogin() {
+        if(document.getElementById('username').value == "Rakan" && document.getElementById('password').value == "Rakan12345") {
+            localStorage.setItem('isLogged', 'true');
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'flex';
+            switchTab('games');
+        } else alert("خطأ");
     }
 
     function switchTab(tab, evt) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
         if(evt) evt.target.classList.add('active');
         loadData(tab);
     }
 
     async function loadData(type) {
-        const res = await fetch(`${API_URL}?type=${type}&_t=${Date.now()}`);
-        const data = await res.json();
-        currentData[type] = data;
+        const res = await fetch(`${API}?type=${type}&_t=${Date.now()}`);
+        currentData[type] = await res.json();
         const tbody = document.getElementById(`${type}_table`);
         tbody.innerHTML = '';
-        data.forEach((item, index) => {
+        currentData[type].forEach((item, index) => {
             let row = document.createElement('tr');
-            let pk = item.id || item.title || item.name || item.customerId;
-            let cells = "";
-            if(type === 'games') cells = `<td>${item.title || '-'}</td><td>$${item.price || '0'}</td>`;
-            else if(type === 'employees') cells = `<td>${item.name || '-'}</td><td>${item.role || '-'}</td><td>$${item.salary || '0'}</td>`;
-            else if(type === 'customers') cells = `<td>${item.name || '-'}</td><td>${item.phone || '-'}</td>`;
-            else cells = `<td>${item.customerId || '-'}</td><td>$${item.total || '0'}</td>`;
-            
-            row.innerHTML = cells + `<td>
-                <button class="btn-edit" onclick="editItem('${type}', ${index})">تعديل</button>
-                <button class="btn-del" onclick="deleteItem('${type}', '${pk}')">حذف</button>
-            </td>`;
+            let pk = item.title || item.name || item.customerId;
+            if(type === 'games') row.innerHTML = `<td>${item.title}</td><td>$${item.price}</td><td><button class="btn-edit" onclick="editItem('games', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
+            else if(type === 'employees') row.innerHTML = `<td>${item.name}</td><td>${item.role}</td><td>$${item.salary}</td><td><button class="btn-edit" onclick="editItem('employees', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
+            else if(type === 'customers') row.innerHTML = `<td>${item.name}</td><td>${item.phone}</td><td><button class="btn-edit" onclick="editItem('customers', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
+            else row.innerHTML = `<td>${item.customerId}</td><td>$${item.total}</td><td><button class="btn-edit" onclick="editItem('orders', ${index})">تعديل</button><button class="btn-del" onclick="del('${type}', '${pk}')">حذف</button></td>`;
             tbody.appendChild(row);
         });
     }
 
     function editItem(type, index) {
         const item = currentData[type][index];
-        if(type === 'games') { document.getElementById('g_pk').value = item.title; document.getElementById('g_title').value = item.title; document.getElementById('g_price').value = item.price; }
-        else if(type === 'employees') { document.getElementById('e_pk').value = item.name; document.getElementById('e_name').value = item.name; document.getElementById('e_role').value = item.role; document.getElementById('e_salary').value = item.salary; }
-        else if(type === 'customers') { document.getElementById('c_pk').value = item.name; document.getElementById('c_name').value = item.name; document.getElementById('c_phone').value = item.phone; }
-        else if(type === 'orders') { document.getElementById('o_pk').value = item.customerId; document.getElementById('o_customerId').value = item.customerId; document.getElementById('o_total').value = item.total; }
+        if(type === 'games') { document.getElementById('g_old').value = item.title; document.getElementById('g_title').value = item.title; document.getElementById('g_price').value = item.price; }
+        else if(type === 'employees') { document.getElementById('e_old').value = item.name; document.getElementById('e_name').value = item.name; document.getElementById('e_role').value = item.role; document.getElementById('e_salary').value = item.salary; }
+        else if(type === 'customers') { document.getElementById('c_old').value = item.name; document.getElementById('c_name').value = item.name; document.getElementById('c_phone').value = item.phone; }
+        else if(type === 'orders') { document.getElementById('o_old').value = item.customerId; document.getElementById('o_customerId').value = item.customerId; document.getElementById('o_total').value = item.total; }
     }
 
     async function saveData(type) {
         let body = { type: type };
-        let pk = "";
-        if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; pk = document.getElementById('g_pk').value; }
-        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.role = document.getElementById('e_role').value; body.salary = document.getElementById('e_salary').value; pk = document.getElementById('e_pk').value; body.title = body.name; }
-        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; pk = document.getElementById('c_pk').value; body.title = body.name; }
-        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; pk = document.getElementById('o_pk').value; body.title = body.customerId; }
+        let oldPk = "";
+        if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; oldPk = document.getElementById('g_old').value; }
+        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.role = document.getElementById('e_role').value; body.salary = document.getElementById('e_salary').value; body.title = body.name; oldPk = document.getElementById('e_old').value; }
+        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; body.title = body.name; oldPk = document.getElementById('c_old').value; }
+        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; body.title = body.customerId; oldPk = document.getElementById('o_old').value; }
 
-        if(pk) await fetch(`${API_URL}?type=${type}&title=${encodeURIComponent(pk)}`, { method: "DELETE" });
-        await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
+        if(oldPk) await fetch(`${API}?type=${type}&title=${encodeURIComponent(oldPk)}`, { method: "DELETE" });
+        await fetch(API, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
         loadData(type);
     }
 
-    async function deleteItem(type, id) {
+    async function del(type, pk) {
         if(!confirm("أكيد تبي تحذف؟")) return;
-        await fetch(`${API_URL}?type=${type}&title=${encodeURIComponent(id)}`, { method: "DELETE" });
+        await fetch(`${API}?type=${type}&title=${encodeURIComponent(pk)}`, { method: "DELETE" });
         loadData(type);
     }
 </script>
