@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة الملكية</title>
+    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
@@ -39,8 +39,7 @@
         }
         
         .emblem-icon { font-size: 55px; margin-bottom: 10px; display: block; filter: drop-shadow(0 0 10px var(--gold-light)); }
-        .login-card h2 { font-size: 26px; font-weight: 900; color: var(--text-main); letter-spacing: 0.5px; }
-        .login-card p { color: var(--gold-primary); font-size: 13px; font-weight: 700; margin-bottom: 25px; margin-top: 4px; }
+        .login-card h2 { font-size: 26px; font-weight: 900; color: var(--text-main); letter-spacing: 0.5px; margin-bottom: 25px; }
         
         .input-group { margin-bottom: 20px; text-align: right; }
         .input-group label { display: block; font-size: 13px; font-weight: 800; color: var(--gold-primary); margin-bottom: 8px; }
@@ -125,26 +124,27 @@
 </head>
 <body>
 
+    <!-- شاشة الدخول المحدثة -->
     <div id="loginModal">
         <div class="login-card">
             <span class="emblem-icon">🌴</span>
             <h2>RAKAN STUDIOS</h2>
-            <p>لوحة الإدارة والتحكم السحابية</p>
             
             <div class="input-group">
                 <label>اسم المستخدم</label>
-                <input type="text" id="username" placeholder="Rakan">
+                <input type="text" id="username" placeholder="">
             </div>
             
             <div class="input-group">
                 <label>كلمة المرور</label>
-                <input type="password" id="password" placeholder="••••••••">
+                <input type="password" id="password" placeholder="">
             </div>
 
-            <button class="btn-login" onclick="checkLogin()">تسجيل الدخول للنظام 🚀</button>
+            <button class="btn-login" onclick="checkLogin()">تسجيل الدخول</button>
         </div>
     </div>
 
+    <!-- لوحة التحكم الداخلية -->
     <div id="appWrapper">
         <div class="sidebar">
             <div class="brand-logo">
@@ -163,6 +163,7 @@
 
         <div class="main-content" id="mainContentArea">
             
+            <!-- قسم الإحصائيات الرئيسية -->
             <div id="dashboard" class="tab-content active">
                 <div class="content-header">
                     <h1>📊 نظرة عامة وإحصائيات المتجر</h1>
@@ -208,6 +209,7 @@
                 </div>
             </div>
 
+            <!-- قسم الألعاب -->
             <div id="games" class="tab-content">
                 <div class="content-header">
                     <h1>🎮 إدارة مكتبة الألعاب</h1>
@@ -235,6 +237,7 @@
                 </div>
             </div>
 
+            <!-- قسم الموظفين -->
             <div id="employees" class="tab-content">
                 <div class="content-header">
                     <h1>👥 إدارة الموظفين والرواتب</h1>
@@ -265,6 +268,7 @@
                 </div>
             </div>
 
+            <!-- قسم العملاء -->
             <div id="customers" class="tab-content">
                 <div class="content-header">
                     <h1>🏢 قائمة العملاء المسجلين</h1>
@@ -298,6 +302,7 @@
                 </div>
             </div>
 
+            <!-- قسم الطلبات والمبيعات -->
             <div id="orders" class="tab-content">
                 <div class="content-header">
                     <h1>📦 إدارة المبيعات والطلبات</h1>
