@@ -105,6 +105,9 @@
 
         .btn-tb-edit { background: var(--warning); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 5px; }
         .btn-tb-del { background: var(--danger); color: #fff; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        
+        .status-paid { color: #10b981; font-weight: 800; }
+        .status-unpaid { color: #ef4444; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -247,16 +250,15 @@
                         <input type="text" id="o_item" placeholder="اسم المنتج / اللعبة">
                         <input type="number" id="o_total" placeholder="المبلغ الإجمالي ($)">
                         <select id="o_status">
-                            <option value="Completed">مكتمل (Completed)</option>
-                            <option value="Pending">قيد المعالجة (Pending)</option>
-                            <option value="Cancelled">ملغي (Cancelled)</option>
+                            <option value="تم الدفع">تم الدفع</option>
+                            <option value="لم يتم الدفع">لم يتم الدفع</option>
                         </select>
                     </div>
                     <button class="btn-action-main" onclick="saveData('orders')">حفظ الطلب بالسحابة 💾</button>
                 </div>
                 <div class="card-panel">
                     <table>
-                        <thead><tr><th>اسم العميل</th><th>المنتج</th><th>المبلغ</th><th>الحالة</th><th>الإجراءات والتحكم</th></tr></thead>
+                        <thead><tr><th>اسم العميل</th><th>المنتج</th><th>المبلغ</th><th>حالة الدفع</th><th>الإجراءات والتحكم</th></tr></thead>
                         <tbody id="orders_table"></tbody>
                     </table>
                 </div>
@@ -331,10 +333,17 @@
                 let itemTitle = item.title || item.name || item.customerId || '';
                 let cells = "";
 
-                if (type === 'games') cells = `<td><strong>${item.title || '-'}</strong></td><td>${item.platform || 'PlayStation 5'}</td><td>$${item.price || 0}</td>`;
-                else if (type === 'employees') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.role || '-'}</td><td>$${item.salary || 0}</td>`;
-                else if (type === 'customers') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'جدة'}</td><td>${item.phone || '-'}</td>`;
-                else cells = `<td><strong>${item.customerId || '-'}</strong></td><td>${item.item || '-'}</td><td>$${item.total || 0}</td><td><strong style="color:#10b981">${item.status || 'Completed'}</strong></td>`;
+                if (type === 'games') {
+                    cells = `<td><strong>${item.title || '-'}</strong></td><td>${item.platform || 'PlayStation 5'}</td><td>$${item.price || 0}</td>`;
+                } else if (type === 'employees') {
+                    cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.role || '-'}</td><td>$${item.salary || 0}</td>`;
+                } else if (type === 'customers') {
+                    cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.region || 'منطقة مكة المكرمة'}</td><td>${item.city || 'جدة'}</td><td>${item.phone || '-'}</td>`;
+                } else {
+                    const st = item.status === 'لم يتم الدفع' ? 'status-unpaid' : 'status-paid';
+                    const stText = item.status || 'تم الدفع';
+                    cells = `<td><strong>${item.customerId || '-'}</strong></td><td>${item.item || '-'}</td><td>$${item.total || 0}</td><td><span class="${st}">${stText}</span></td>`;
+                }
 
                 row.innerHTML = cells + `<td>
                     <button class="btn-tb-edit" onclick="prepareEdit('${type}', ${idx})">تعديل ✏️</button>
@@ -371,7 +380,7 @@
             document.getElementById('o_customerId').value = item.customerId || '';
             document.getElementById('o_item').value = item.item || '';
             document.getElementById('o_total').value = item.total || '';
-            document.getElementById('o_status').value = item.status || 'Completed';
+            document.getElementById('o_status').value = item.status === 'لم يتم الدفع' ? 'لم يتم الدفع' : 'تم الدفع';
         }
     }
 
