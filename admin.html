@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة</title>
+    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة الملكية</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
@@ -86,7 +86,7 @@
         .content-header h1 { font-size: 24px; font-weight: 900; color: var(--gold-primary); }
 
         .card-panel { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
 
         input, select {
             width: 100%; padding: 13px 16px; border-radius: 12px; border: 1px solid var(--border-color);
@@ -156,16 +156,23 @@
                     <h1>🎮 إدارة مكتبة الألعاب</h1>
                 </div>
                 <div class="card-panel">
+                    <input type="hidden" id="g_oldId">
                     <input type="hidden" id="g_oldTitle">
                     <div class="form-grid">
                         <input type="text" id="g_title" placeholder="اسم اللعبة">
+                        <select id="g_platform">
+                            <option value="PlayStation 5">PlayStation 5</option>
+                            <option value="PC Gaming">PC Gaming</option>
+                            <option value="Xbox Series X">Xbox Series X</option>
+                            <option value="Multi-Platform">Multi-Platform (متعدد المنصات)</option>
+                        </select>
                         <input type="number" id="g_price" placeholder="السعر بالدولار ($)">
                     </div>
                     <button class="btn-action-main" onclick="saveData('games')">حفظ اللعبة بالسحابة 💾</button>
                 </div>
                 <div class="card-panel">
                     <table>
-                        <thead><tr><th>اسم اللعبة</th><th>السعر</th><th>الإجراءات والتحكم</th></tr></thead>
+                        <thead><tr><th>اسم اللعبة</th><th>المنصة</th><th>السعر</th><th>الإجراءات والتحكم</th></tr></thead>
                         <tbody id="games_table"></tbody>
                     </table>
                 </div>
@@ -177,6 +184,7 @@
                     <h1>👥 إدارة الموظفين والرواتب</h1>
                 </div>
                 <div class="card-panel">
+                    <input type="hidden" id="e_oldId">
                     <input type="hidden" id="e_oldName">
                     <div class="form-grid">
                         <input type="text" id="e_name" placeholder="اسم الموظف">
@@ -199,6 +207,7 @@
                     <h1>🏢 قائمة العملاء المسجلين</h1>
                 </div>
                 <div class="card-panel">
+                    <input type="hidden" id="c_oldId">
                     <input type="hidden" id="c_oldName">
                     <div class="form-grid">
                         <input type="text" id="c_name" placeholder="اسم العميل">
@@ -242,7 +251,6 @@
     const API = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let storeCache = {};
 
-    // التأكد من حالة تسجيل الدخول عند تحميل الصفحة أو عمل Refresh
     window.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('adminSession') === 'true') {
             document.getElementById('loginModal').style.display = 'none';
@@ -301,17 +309,18 @@
 
             storeCache[type].forEach((item, idx) => {
                 let row = document.createElement('tr');
-                let key = item.title || item.name || item.customerId;
+                let itemId = item.id || item.pkValue || item.title || item.name || item.customerId;
+                let itemTitle = item.title || item.name || item.customerId || '';
                 let cells = "";
 
-                if (type === 'games') cells = `<td><strong>${item.title || '-'}</strong></td><td>$${item.price || 0}</td>`;
+                if (type === 'games') cells = `<td><strong>${item.title || '-'}</strong></td><td>${item.platform || 'PlayStation 5'}</td><td>$${item.price || 0}</td>`;
                 else if (type === 'employees') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.role || '-'}</td><td>$${item.salary || 0}</td>`;
                 else if (type === 'customers') cells = `<td><strong>${item.name || '-'}</strong></td><td>${item.phone || '-'}</td>`;
                 else cells = `<td><strong>${item.customerId || '-'}</strong></td><td>$${item.total || 0}</td>`;
 
                 row.innerHTML = cells + `<td>
                     <button class="btn-tb-edit" onclick="prepareEdit('${type}', ${idx})">تعديل ✏️</button>
-                    <button class="btn-tb-del" onclick="deleteItem('${type}', '${key}')">حذف 🗑️</button>
+                    <button class="btn-tb-del" onclick="deleteItem('${type}', '${itemId}', '${itemTitle}')">حذف 🗑️</button>
                 </td>`;
                 tbody.appendChild(row);
             });
@@ -321,80 +330,110 @@
     function prepareEdit(type, idx) {
         const item = storeCache[type][idx];
         if (type === 'games') {
+            document.getElementById('g_oldId').value = item.id || item.pkValue || item.title || '';
             document.getElementById('g_oldTitle').value = item.title || '';
             document.getElementById('g_title').value = item.title || '';
+            document.getElementById('g_platform').value = item.platform || 'PlayStation 5';
             document.getElementById('g_price').value = item.price || '';
         } else if (type === 'employees') {
+            document.getElementById('e_oldId').value = item.id || item.pkValue || item.name || '';
             document.getElementById('e_oldName').value = item.name || '';
             document.getElementById('e_name').value = item.name || '';
             document.getElementById('e_role').value = item.role || '';
             document.getElementById('e_salary').value = item.salary || '';
         } else if (type === 'customers') {
+            document.getElementById('c_oldId').value = item.id || item.pkValue || item.name || '';
             document.getElementById('c_oldName').value = item.name || '';
             document.getElementById('c_name').value = item.name || '';
             document.getElementById('c_phone').value = item.phone || '';
         } else if (type === 'orders') {
-            document.getElementById('o_oldId').value = item.customerId || '';
+            document.getElementById('o_oldId').value = item.id || item.pkValue || item.customerId || '';
             document.getElementById('o_customerId').value = item.customerId || '';
             document.getElementById('o_total').value = item.total || '';
         }
     }
 
+    async function purgeRecord(type, idVal, titleVal) {
+        const targetId = idVal || titleVal;
+        const targetTitle = titleVal || idVal;
+        if (!targetId) return;
+
+        // 1. الحذف بأمر POST
+        await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                type: type,
+                action: "delete",
+                id: targetId,
+                pkValue: targetId,
+                title: targetTitle,
+                name: targetTitle,
+                customerId: targetTitle
+            })
+        }).catch(e => {});
+
+        // 2. الحذف بطلب DELETE عبر URL المعلمات
+        await fetch(`${API}?type=${type}&title=${encodeURIComponent(targetTitle)}`, { method: "DELETE" }).catch(e => {});
+        await fetch(`${API}?type=${type}&id=${encodeURIComponent(targetId)}`, { method: "DELETE" }).catch(e => {});
+    }
+
     async function saveData(type) {
         let payload = { type: type };
-        let oldKey = "";
+        let oldId = "";
+        let oldTitle = "";
 
         if (type === 'games') {
             payload.title = document.getElementById('g_title').value.trim();
+            payload.platform = document.getElementById('g_platform').value;
             payload.price = document.getElementById('g_price').value.trim();
-            oldKey = document.getElementById('g_oldTitle').value;
+            oldId = document.getElementById('g_oldId').value;
+            oldTitle = document.getElementById('g_oldTitle').value;
         } else if (type === 'employees') {
             payload.name = document.getElementById('e_name').value.trim();
             payload.title = payload.name;
             payload.role = document.getElementById('e_role').value.trim();
             payload.salary = document.getElementById('e_salary').value.trim();
-            oldKey = document.getElementById('e_oldName').value;
+            oldId = document.getElementById('e_oldId').value;
+            oldTitle = document.getElementById('e_oldName').value;
         } else if (type === 'customers') {
             payload.name = document.getElementById('c_name').value.trim();
             payload.title = payload.name;
             payload.phone = document.getElementById('c_phone').value.trim();
-            oldKey = document.getElementById('c_oldName').value;
+            oldId = document.getElementById('c_oldId').value;
+            oldTitle = document.getElementById('c_oldName').value;
         } else if (type === 'orders') {
             payload.customerId = document.getElementById('o_customerId').value.trim();
             payload.title = payload.customerId;
             payload.total = document.getElementById('o_total').value.trim();
-            oldKey = document.getElementById('o_oldId').value;
+            oldId = document.getElementById('o_oldId').value;
         }
 
-        if (oldKey) {
-            await fetch(API, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type: type, action: "delete", title: oldKey, id: oldKey })
-            });
+        // مسح السجل القديم أولاً إذا كانت العملية تعديل
+        if (oldId || oldTitle) {
+            await purgeRecord(type, oldId, oldTitle);
         }
 
+        // إضافة البيانات الجديدة للسحابة
         await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        if (type === 'games') { document.getElementById('g_oldTitle').value = ''; document.getElementById('g_title').value = ''; document.getElementById('g_price').value = ''; }
-        else if (type === 'employees') { document.getElementById('e_oldName').value = ''; document.getElementById('e_name').value = ''; document.getElementById('e_role').value = ''; document.getElementById('e_salary').value = ''; }
-        else if (type === 'customers') { document.getElementById('c_oldName').value = ''; document.getElementById('c_name').value = ''; document.getElementById('c_phone').value = ''; }
+        // تنظيف الحقول
+        if (type === 'games') { document.getElementById('g_oldId').value = ''; document.getElementById('g_oldTitle').value = ''; document.getElementById('g_title').value = ''; document.getElementById('g_price').value = ''; }
+        else if (type === 'employees') { document.getElementById('e_oldId').value = ''; document.getElementById('e_oldName').value = ''; document.getElementById('e_name').value = ''; document.getElementById('e_role').value = ''; document.getElementById('e_salary').value = ''; }
+        else if (type === 'customers') { document.getElementById('c_oldId').value = ''; document.getElementById('c_oldName').value = ''; document.getElementById('c_name').value = ''; document.getElementById('c_phone').value = ''; }
         else if (type === 'orders') { document.getElementById('o_oldId').value = ''; document.getElementById('o_customerId').value = ''; document.getElementById('o_total').value = ''; }
 
         loadData(type);
     }
 
-    async function deleteItem(type, key) {
-        if (!confirm(`هل أنت متأكد من حذف (${key}) نهائياً؟`)) return;
-        await fetch(API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ type: type, action: "delete", title: key, id: key })
-        });
+    async function deleteItem(type, itemId, itemTitle) {
+        if (!confirm(`هل أنت متأكد من حذف (${itemTitle || itemId}) نهائياً من السحابة؟`)) return;
+        
+        await purgeRecord(type, itemId, itemTitle);
         loadData(type);
     }
 </script>
