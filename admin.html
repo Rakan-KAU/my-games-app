@@ -15,14 +15,15 @@
 
         #appWrapper { display: none; flex: 1; width: 100%; }
         .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
-        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; cursor: pointer; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; font-size: 14px; font-weight: 600; cursor: pointer; }
         .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
 
         .main-content { flex: 1; padding: 35px; }
         .card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; margin-bottom: 22px; }
-        .btn-add { background: #059669; color: white; padding: 11px 22px; border-radius: 8px; cursor: pointer; border:none; }
-        .btn-del { background: #dc2626; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; }
-        table { width: 100%; border-collapse: collapse; }
+        .btn-add { background: #059669; color: white; padding: 11px 22px; border-radius: 8px; cursor: pointer; border:none; margin-top: 5px; }
+        .btn-del { background: #dc2626; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; margin-left:5px; }
+        .btn-edit { background: #d97706; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid #1f2937; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
@@ -49,9 +50,10 @@
         </div>
 
         <div class="main-content">
+            <!-- مكتبة الألعاب -->
             <div id="games" class="tab-content active">
                 <div class="card">
-                    <input type="hidden" id="g_id">
+                    <input type="hidden" id="g_pk">
                     <input type="text" id="g_title" placeholder="اسم اللعبة">
                     <input type="number" id="g_price" placeholder="السعر">
                     <button class="btn-add" onclick="saveData('games')">حفظ اللعبة</button>
@@ -59,19 +61,22 @@
                 <table><thead><tr><th>الاسم</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="games_table"></tbody></table>
             </div>
 
+            <!-- الموظفين -->
             <div id="employees" class="tab-content">
                 <div class="card">
-                    <input type="hidden" id="e_id">
+                    <input type="hidden" id="e_pk">
                     <input type="text" id="e_name" placeholder="اسم الموظف">
+                    <input type="text" id="e_role" placeholder="المنصب">
                     <input type="number" id="e_salary" placeholder="الراتب">
                     <button class="btn-add" onclick="saveData('employees')">حفظ الموظف</button>
                 </div>
-                <table><thead><tr><th>الاسم</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="employees_table"></tbody></table>
+                <table><thead><tr><th>الاسم</th><th>المنصب</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="employees_table"></tbody></table>
             </div>
 
+            <!-- العملاء -->
             <div id="customers" class="tab-content">
                 <div class="card">
-                    <input type="hidden" id="c_id">
+                    <input type="hidden" id="c_pk">
                     <input type="text" id="c_name" placeholder="اسم العميل">
                     <input type="text" id="c_phone" placeholder="الهاتف">
                     <button class="btn-add" onclick="saveData('customers')">حفظ العميل</button>
@@ -79,9 +84,10 @@
                 <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التحكم</th></tr></thead><tbody id="customers_table"></tbody></table>
             </div>
 
+            <!-- الطلبات -->
             <div id="orders" class="tab-content">
                 <div class="card">
-                    <input type="hidden" id="o_id">
+                    <input type="hidden" id="o_pk">
                     <input type="text" id="o_customerId" placeholder="اسم العميل">
                     <input type="number" id="o_total" placeholder="المبلغ">
                     <button class="btn-add" onclick="saveData('orders')">حفظ الطلب</button>
@@ -93,7 +99,7 @@
 
 <script>
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
-    const PIN = "1234";
+    let currentData = {};
 
     function checkLogin() {
         if (document.getElementById('username').value === "Rakan" && document.getElementById('password').value === "Rakan12345") {
@@ -112,32 +118,52 @@
     async function loadData(type) {
         const res = await fetch(`${API_URL}?type=${type}&_t=${Date.now()}`);
         const data = await res.json();
+        currentData[type] = data;
         const tbody = document.getElementById(`${type}_table`);
         tbody.innerHTML = '';
-        data.forEach(item => {
-            const row = document.createElement('tr');
-            if(type === 'games') row.innerHTML = `<td>${item.title}</td><td>$${item.price}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.id || item.title}')">حذف</button></td>`;
-            else if(type === 'employees') row.innerHTML = `<td>${item.name}</td><td>$${item.salary}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.name}')">حذف</button></td>`;
-            else if(type === 'customers') row.innerHTML = `<td>${item.name}</td><td>${item.phone}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.name}')">حذف</button></td>`;
-            else row.innerHTML = `<td>${item.customerId}</td><td>$${item.total}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.customerId}')">حذف</button></td>`;
+        data.forEach((item, index) => {
+            let row = document.createElement('tr');
+            let pk = item.id || item.title || item.name || item.customerId;
+            let cells = "";
+            if(type === 'games') cells = `<td>${item.title}</td><td>$${item.price}</td>`;
+            else if(type === 'employees') cells = `<td>${item.name}</td><td>${item.role}</td><td>$${item.salary}</td>`;
+            else if(type === 'customers') cells = `<td>${item.name}</td><td>${item.phone}</td>`;
+            else cells = `<td>${item.customerId}</td><td>$${item.total}</td>`;
+            
+            row.innerHTML = cells + `<td>
+                <button class="btn-edit" onclick="editItem('${type}', ${index})">تعديل</button>
+                <button class="btn-del" onclick="deleteItem('${type}', '${pk}')">حذف</button>
+            </td>`;
             tbody.appendChild(row);
         });
     }
 
+    function editItem(type, index) {
+        const item = currentData[type][index];
+        if(type === 'games') { document.getElementById('g_pk').value = item.title; document.getElementById('g_title').value = item.title; document.getElementById('g_price').value = item.price; }
+        else if(type === 'employees') { document.getElementById('e_pk').value = item.name; document.getElementById('e_name').value = item.name; document.getElementById('e_role').value = item.role; document.getElementById('e_salary').value = item.salary; }
+        else if(type === 'customers') { document.getElementById('c_pk').value = item.name; document.getElementById('c_name').value = item.name; document.getElementById('c_phone').value = item.phone; }
+        else if(type === 'orders') { document.getElementById('o_pk').value = item.customerId; document.getElementById('o_customerId').value = item.customerId; document.getElementById('o_total').value = item.total; }
+    }
+
     async function saveData(type) {
         let body = { type: type };
-        if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; }
-        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.salary = document.getElementById('e_salary').value; }
-        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; }
-        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; }
+        let pk = "";
+        if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; pk = document.getElementById('g_pk').value; }
+        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.role = document.getElementById('e_role').value; body.salary = document.getElementById('e_salary').value; pk = document.getElementById('e_pk').value; }
+        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; pk = document.getElementById('c_pk').value; }
+        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; pk = document.getElementById('o_pk').value; }
 
+        // حذف القديم إذا كان تعديل
+        if(pk) await fetch(`${API_URL}?type=${type}&title=${encodeURIComponent(pk)}`, { method: "DELETE" });
+        
         await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
         loadData(type);
     }
 
-    async function deleteData(type, id) {
-        if(prompt("أدخل رمز PIN") !== PIN) return alert("خطأ!");
-        await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ type: type, action: "delete", id: id }) });
+    async function deleteItem(type, id) {
+        if(!confirm("أكيد تبي تحذف؟")) return;
+        await fetch(`${API_URL}?type=${type}&title=${encodeURIComponent(id)}`, { method: "DELETE" });
         loadData(type);
     }
 </script>
