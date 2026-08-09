@@ -76,7 +76,7 @@
         .nav-btn.active { background: linear-gradient(135deg, var(--green-saudi), #024b23); color: #fff; border-color: var(--gold-primary); font-weight: 800; box-shadow: 0 4px 15px var(--green-glow); }
 
         /* منطقة المحتوى الرئيسي */
-        .main-content { flex: 1; padding: 35px; overflow-y: auto; }
+        .main-content { flex: 1; padding: 35px; overflow-y: auto; scroll-behavior: smooth; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -148,7 +148,7 @@
             <button class="nav-btn" style="margin-top:auto; color:var(--danger);" onclick="logout()">تسجيل الخروج 🚪</button>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" id="mainContentArea">
             
             <!-- قسم الألعاب -->
             <div id="games" class="tab-content active">
@@ -379,6 +379,13 @@
             document.getElementById('o_total').value = item.total || '';
             document.getElementById('o_status').value = item.status === 'لم يتم الدفع' ? 'لم يتم الدفع' : 'تم الدفع';
         }
+
+        // التعديل الجديد: الانتقال التلقائي لأعلى الشاشة
+        const mainArea = document.getElementById('mainContentArea');
+        if (mainArea) {
+            mainArea.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     async function purgeRecord(type, idVal, titleVal) {
