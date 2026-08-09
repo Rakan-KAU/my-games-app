@@ -2,128 +2,144 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>⚡ Rakan Gaming Studios | الإدارة الاحترافية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Rakan Gaming Studios | لوحة الإدارة</title>
     <style>
-        :root { --primary: #006c35; --danger: #dc2626; --bg-main: #0b0f19; --bg-card: #131b2e; --accent: #38bdf8; --text: #f1f5f9; }
-        body { background: var(--bg-main); color: var(--text); padding: 25px; font-family: sans-serif; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #0b0f19; color: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.98); display: flex; justify-content: center; align-items: center; z-index: 1001; backdrop-filter: blur(10px); }
+        .login-box { background: #131b2e; border: 1px solid #1f2937; padding: 40px; border-radius: 20px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7); }
+        .login-box h2 { color: #38bdf8; margin-bottom: 20px; font-size: 22px; font-weight: 800; }
+        .login-box input { width: 100%; padding: 13px 16px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #334155; background: #0b0f19; color: #fff; text-align: right; }
+
+        #appWrapper { display: none; flex: 1; width: 100%; }
+        .sidebar { width: 270px; background: #131b2e; border-left: 1px solid #1f2937; padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; }
+        .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px 15px; border-radius: 8px; text-align: right; cursor: pointer; }
+        .nav-btn.active { background: #1f2937; color: #38bdf8; border-right: 3px solid #38bdf8; }
+
+        .main-content { flex: 1; padding: 35px; }
+        .card { background: #131b2e; border: 1px solid #1f2937; border-radius: 16px; padding: 22px; margin-bottom: 22px; }
+        .btn-add { background: #059669; color: white; padding: 11px 22px; border-radius: 8px; cursor: pointer; border:none; }
+        .btn-del { background: #dc2626; color: white; padding: 6px 12px; cursor: pointer; border:none; border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid #1f2937; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .card { background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #1f2937; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid #1f2937; text-align: right; }
-        button { padding: 8px 12px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; margin-left: 5px; }
-        .btn-edit { background: #d97706; color: white; }
-        .btn-del { background: var(--danger); color: white; }
-        input, select { padding: 10px; margin: 5px; background: #000; color: white; border: 1px solid #334155; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-<div style="display:flex; gap:25px;">
-    <!-- القائمة الجانبية -->
-    <div style="width:250px;">
-        <button onclick="showTab('games', this)" class="nav-btn active">🎮 قسم الألعاب</button>
-        <button onclick="showTab('orders', this)" class="nav-btn">📊 قسم الطلبات</button>
-        <button onclick="showTab('staff', this)" class="nav-btn">👥 قسم الموظفين</button>
-        <button onclick="showTab('customers', this)" class="nav-btn">🧑‍🤝‍🧑 قسم العملاء</button>
-        <a href="index.html" style="display:block; margin-top:30px; color:var(--accent); text-decoration:none;">👁️ معاينة المتجر</a>
-    </div>
-
-    <!-- المحتوى -->
-    <div style="flex:1;">
-        <!-- قسم الألعاب -->
-        <div id="games" class="tab-content active">
-            <div class="card">
-                <h3>إدارة الألعاب (إضافة/تعديل)</h3>
-                <input type="text" id="g_title" placeholder="اسم اللعبة">
-                <input type="number" id="g_price" placeholder="السعر">
-                <select id="g_platform"><option value="PS5">PS5</option><option value="PC">PC</option></select>
-                <button onclick="saveItem('games')" class="btn-edit">حفظ</button>
-            </div>
-            <table><thead><tr><th>الاسم</th><th>المنصة</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="body_games"></tbody></table>
-        </div>
-
-        <!-- قسم الطلبات -->
-        <div id="orders" class="tab-content">
-            <h3>سجل الطلبات</h3>
-            <table><thead><tr><th>العميل</th><th>المنتج</th><th>المبلغ</th><th>التحكم</th></tr></thead><tbody id="body_orders"></tbody></table>
-        </div>
-
-        <!-- قسم الموظفين -->
-        <div id="staff" class="tab-content">
-            <div class="card">
-                <h3>إدارة الموظفين (رواتب ومناصب)</h3>
-                <input type="text" id="s_name" placeholder="اسم الموظف">
-                <input type="text" id="s_role" placeholder="المنصب">
-                <input type="number" id="s_salary" placeholder="الراتب">
-                <button onclick="saveItem('staff')" class="btn-edit">حفظ الموظف</button>
-            </div>
-            <table><thead><tr><th>الاسم</th><th>المنصب</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="body_staff"></tbody></table>
-        </div>
-
-        <!-- قسم العملاء -->
-        <div id="customers" class="tab-content">
-            <h3>العملاء المسجلين</h3>
-            <table><thead><tr><th>الاسم</th><th>المنطقة</th><th>المدينة</th><th>الهاتف</th><th>التحكم</th></tr></thead><tbody id="body_customers"></tbody></table>
+    <div id="loginModal">
+        <div class="login-box">
+            <h2>تسجيل دخول الإدارة</h2>
+            <input type="text" id="username" placeholder="اسم المستخدم">
+            <input type="password" id="password" placeholder="كلمة المرور">
+            <button onclick="checkLogin()" style="background:#0284c7; width:100%; padding:12px; color:white; border:none; border-radius:8px; cursor:pointer;">دخول</button>
         </div>
     </div>
-</div>
+
+    <div id="appWrapper">
+        <div class="sidebar">
+            <h2>⚡ RAKAN STUDIOS</h2>
+            <button class="nav-btn active" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
+            <button class="nav-btn" onclick="switchTab('employees', event)">👥 الموظفين</button>
+            <button class="nav-btn" onclick="switchTab('customers', event)">🏢 العملاء</button>
+            <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات</button>
+        </div>
+
+        <div class="main-content">
+            <div id="games" class="tab-content active">
+                <div class="card">
+                    <input type="hidden" id="g_id">
+                    <input type="text" id="g_title" placeholder="اسم اللعبة">
+                    <input type="number" id="g_price" placeholder="السعر">
+                    <button class="btn-add" onclick="saveData('games')">حفظ اللعبة</button>
+                </div>
+                <table><thead><tr><th>الاسم</th><th>السعر</th><th>التحكم</th></tr></thead><tbody id="games_table"></tbody></table>
+            </div>
+
+            <div id="employees" class="tab-content">
+                <div class="card">
+                    <input type="hidden" id="e_id">
+                    <input type="text" id="e_name" placeholder="اسم الموظف">
+                    <input type="number" id="e_salary" placeholder="الراتب">
+                    <button class="btn-add" onclick="saveData('employees')">حفظ الموظف</button>
+                </div>
+                <table><thead><tr><th>الاسم</th><th>الراتب</th><th>التحكم</th></tr></thead><tbody id="employees_table"></tbody></table>
+            </div>
+
+            <div id="customers" class="tab-content">
+                <div class="card">
+                    <input type="hidden" id="c_id">
+                    <input type="text" id="c_name" placeholder="اسم العميل">
+                    <input type="text" id="c_phone" placeholder="الهاتف">
+                    <button class="btn-add" onclick="saveData('customers')">حفظ العميل</button>
+                </div>
+                <table><thead><tr><th>الاسم</th><th>الهاتف</th><th>التحكم</th></tr></thead><tbody id="customers_table"></tbody></table>
+            </div>
+
+            <div id="orders" class="tab-content">
+                <div class="card">
+                    <input type="hidden" id="o_id">
+                    <input type="text" id="o_customerId" placeholder="اسم العميل">
+                    <input type="number" id="o_total" placeholder="المبلغ">
+                    <button class="btn-add" onclick="saveData('orders')">حفظ الطلب</button>
+                </div>
+                <table><thead><tr><th>العميل</th><th>المبلغ</th><th>التحكم</th></tr></thead><tbody id="orders_table"></tbody></table>
+            </div>
+        </div>
+    </div>
 
 <script>
-    const API = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
-    
-    function showTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(btn) btn.classList.add('active');
-        fetchData(id);
+    const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
+    const PIN = "1234";
+
+    function checkLogin() {
+        if (document.getElementById('username').value === "Rakan" && document.getElementById('password').value === "Rakan12345") {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'flex';
+            switchTab('games');
+        } else alert("خطأ في البيانات");
     }
 
-    async function fetchData(type) {
-        const res = await fetch(`${API}?type=${type}`);
+    function switchTab(tab, evt) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+        loadData(tab);
+    }
+
+    async function loadData(type) {
+        const res = await fetch(`${API_URL}?type=${type}&_t=${Date.now()}`);
         const data = await res.json();
-        const tbody = document.querySelector(`#body_${type}`);
+        const tbody = document.getElementById(`${type}_table`);
         tbody.innerHTML = '';
-        
         data.forEach(item => {
             const row = document.createElement('tr');
-            if(type === 'games') {
-                row.innerHTML = `<td>${item.title}</td><td>${item.platform}</td><td>$${item.price}</td><td><button onclick="del('games','${item.title}')" class="btn-del">حذف</button></td>`;
-            } else if(type === 'staff') {
-                row.innerHTML = `<td>${item.name}</td><td>${item.role}</td><td>$${item.salary}</td><td><button onclick="del('staff','${item.name}')" class="btn-del">حذف</button></td>`;
-            } else if(type === 'orders') {
-                row.innerHTML = `<td>${item.customerId}</td><td>${item.item}</td><td>$${item.total}</td><td><button onclick="del('orders','${item.customerId}')" class="btn-del">حذف</button></td>`;
-            } else {
-                row.innerHTML = `<td>${item.name}</td><td>${item.region}</td><td>${item.city}</td><td>${item.phone}</td><td><button onclick="del('customers','${item.name}')" class="btn-del">حذف</button></td>`;
-            }
+            if(type === 'games') row.innerHTML = `<td>${item.title}</td><td>$${item.price}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.id || item.title}')">حذف</button></td>`;
+            else if(type === 'employees') row.innerHTML = `<td>${item.name}</td><td>$${item.salary}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.name}')">حذف</button></td>`;
+            else if(type === 'customers') row.innerHTML = `<td>${item.name}</td><td>${item.phone}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.name}')">حذف</button></td>`;
+            else row.innerHTML = `<td>${item.customerId}</td><td>$${item.total}</td><td><button class="btn-del" onclick="deleteData('${type}', '${item.customerId}')">حذف</button></td>`;
             tbody.appendChild(row);
         });
     }
 
-    async function saveItem(type) {
-        let payload = { type: type };
-        if(type === 'games') {
-            payload.title = document.getElementById('g_title').value;
-            payload.price = document.getElementById('g_price').value;
-            payload.platform = document.getElementById('g_platform').value;
-        } else {
-            payload.name = document.getElementById('s_name').value;
-            payload.role = document.getElementById('s_role').value;
-            payload.salary = document.getElementById('s_salary').value;
-            payload.title = payload.name;
-        }
-        await fetch(API, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(payload)});
-        fetchData(type);
+    async function saveData(type) {
+        let body = { type: type };
+        if(type === 'games') { body.title = document.getElementById('g_title').value; body.price = document.getElementById('g_price').value; }
+        else if(type === 'employees') { body.name = document.getElementById('e_name').value; body.salary = document.getElementById('e_salary').value; }
+        else if(type === 'customers') { body.name = document.getElementById('c_name').value; body.phone = document.getElementById('c_phone').value; }
+        else if(type === 'orders') { body.customerId = document.getElementById('o_customerId').value; body.total = document.getElementById('o_total').value; }
+
+        await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
+        loadData(type);
     }
 
-    async function del(type, title) {
-        if(!confirm("أكيد تبي تحذف؟")) return;
-        await fetch(`${API}?type=${type}&title=${encodeURIComponent(title)}`, { method: "DELETE" });
-        fetchData(type);
+    async function deleteData(type, id) {
+        if(prompt("أدخل رمز PIN") !== PIN) return alert("خطأ!");
+        await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ type: type, action: "delete", id: id }) });
+        loadData(type);
     }
-
-    showTab('games');
 </script>
 </body>
 </html>
