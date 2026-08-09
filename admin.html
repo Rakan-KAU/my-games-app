@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ RAKAN STUDIOS | لوحة التحكم والإدارة الملكية</title>
+    <title>🌴 RAKAN STUDIOS | لوحة التحكم والإدارة</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
@@ -24,7 +24,7 @@
         * { box-sizing: border-box; font-family: 'Tajawal', 'Segoe UI', sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; overflow-x: hidden; }
 
-        /* شاشة تسجيل الدخول الملكية */
+        /* شاشة تسجيل الدخول */
         #loginModal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at center, #101c12 0%, #040805 100%);
@@ -64,7 +64,7 @@
         /* القائمة الجانبية */
         .sidebar { width: 290px; background: var(--card-bg); border-left: 2px solid var(--border-color); padding: 35px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
         .brand-logo { text-align: center; margin-bottom: 35px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        .brand-logo .brand-emblem { font-size: 40px; margin-bottom: 5px; }
+        .brand-logo .brand-emblem { font-size: 45px; margin-bottom: 5px; filter: drop-shadow(0 0 8px var(--gold-light)); }
         .brand-logo h2 { font-size: 20px; font-weight: 900; color: var(--gold-primary); }
         .brand-logo span { font-size: 11px; color: #fff; background: var(--green-saudi); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--gold-primary); font-weight: 800; margin-top: 8px; display: inline-block; }
 
@@ -97,7 +97,7 @@
         .btn-action-main { background: linear-gradient(135deg, var(--green-saudi), #024b23); color: #fff; border: 1px solid var(--gold-primary); padding: 12px 28px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-action-main:hover { background: var(--gold-primary); color: #000; }
 
-        /* الجداول الملكية */
+        /* الجداول */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 14px 16px; text-align: right; border-bottom: 1px solid var(--border-color); font-size: 14px; }
         th { background: rgba(7, 9, 7, 0.8); color: var(--gold-primary); font-weight: 800; }
@@ -112,9 +112,9 @@
     <!-- شاشة الدخول -->
     <div id="loginModal">
         <div class="login-card">
-            <span class="emblem-icon">⚔️🌴</span>
+            <span class="emblem-icon">🌴</span>
             <h2>RAKAN STUDIOS</h2>
-            <p>مركز القيادة والإدارة السحابية الموحد</p>
+            <p>لوحة الإدارة والتحكم السحابية</p>
             
             <div class="input-group">
                 <label>اسم المستخدم</label>
@@ -134,9 +134,9 @@
     <div id="appWrapper">
         <div class="sidebar">
             <div class="brand-logo">
-                <div class="brand-emblem">⚔️🌴</div>
+                <div class="brand-emblem">🌴</div>
                 <h2>RAKAN STUDIOS</h2>
-                <span>المملكة العربية السعودية 🇸🇦</span>
+                <span>المتجر الرقمي الموحد 🇸🇦</span>
             </div>
 
             <button class="nav-btn active" onclick="switchTab('games', event)">🎮 مكتبة الألعاب</button>
@@ -145,7 +145,7 @@
             <button class="nav-btn" onclick="switchTab('orders', event)">📦 الطلبات والمبيعات</button>
             
             <a href="index.html" class="nav-btn" style="text-decoration:none; color:var(--gold-primary); margin-top:20px;">👁️ معاينة المتجر</a>
-            <button class="nav-btn" style="margin-top:auto; color:var(--danger);" onclick="location.reload()">تسجيل الخروج 🚪</button>
+            <button class="nav-btn" style="margin-top:auto; color:var(--danger);" onclick="logout()">تسجيل الخروج 🚪</button>
         </div>
 
         <div class="main-content">
@@ -242,10 +242,21 @@
     const API = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let storeCache = {};
 
+    // التأكد من حالة تسجيل الدخول عند تحميل الصفحة أو عمل Refresh
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('adminSession') === 'true') {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('appWrapper').style.display = 'flex';
+            const lastTab = localStorage.getItem('activeAdminTab') || 'games';
+            switchTab(lastTab);
+        }
+    });
+
     function checkLogin() {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value.trim();
         if (u === "Rakan" && p === "Rakan12345") {
+            localStorage.setItem('adminSession', 'true');
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('appWrapper').style.display = 'flex';
             switchTab('games');
@@ -254,11 +265,25 @@
         }
     }
 
+    function logout() {
+        localStorage.removeItem('adminSession');
+        localStorage.removeItem('activeAdminTab');
+        location.reload();
+    }
+
     function switchTab(tab, evt) {
+        localStorage.setItem('activeAdminTab', tab);
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tab).classList.add('active');
-        if (evt) evt.target.classList.add('active');
+        
+        if (evt) {
+            evt.target.classList.add('active');
+        } else {
+            const btns = document.querySelectorAll('.sidebar .nav-btn');
+            const idx = tab === 'games' ? 0 : tab === 'employees' ? 1 : tab === 'customers' ? 2 : 3;
+            if (btns[idx]) btns[idx].classList.add('active');
+        }
         loadData(tab);
     }
 
@@ -341,7 +366,6 @@
             oldKey = document.getElementById('o_oldId').value;
         }
 
-        // الحذف أولاً بنفس طريقة POST لمنع التكرار نهائياً
         if (oldKey) {
             await fetch(API, {
                 method: "POST",
@@ -350,14 +374,12 @@
             });
         }
 
-        // حفظ البيانات الجديدة
         await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        // تنظيف الخانات
         if (type === 'games') { document.getElementById('g_oldTitle').value = ''; document.getElementById('g_title').value = ''; document.getElementById('g_price').value = ''; }
         else if (type === 'employees') { document.getElementById('e_oldName').value = ''; document.getElementById('e_name').value = ''; document.getElementById('e_role').value = ''; document.getElementById('e_salary').value = ''; }
         else if (type === 'customers') { document.getElementById('c_oldName').value = ''; document.getElementById('c_name').value = ''; document.getElementById('c_phone').value = ''; }
