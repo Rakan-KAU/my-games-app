@@ -36,7 +36,7 @@
         .btn-continue { padding: 20px 60px; background: linear-gradient(135deg, #006c35, #044b25); color: #ffffff; border: 1px solid #a67c52; border-radius: 40px; font-size: 20px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0, 108, 53, 0.4); text-transform: uppercase; }
         .btn-continue:hover { transform: translateY(-4px); background: #a67c52; color: #0d0a07; }
 
-        /* السلة الجانبية الاحترافية Sliding Drawer Cart بدون سكرول */
+        /* السلة الجانبية الاحترافية Sliding Drawer Cart */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.35s ease; backdrop-filter: blur(8px); }
         .cart-overlay.active { opacity: 1; pointer-events: auto; }
         
@@ -50,7 +50,6 @@
         .cart-drawer-header h3 { font-size: 17px; color: #ffffff; font-weight: 900; }
         .close-drawer-btn { background: transparent; border: none; color: #a67c52; font-size: 20px; cursor: pointer; font-weight: bold; }
 
-        /* قائمة عناصر السلة */
         .cart-items-body { flex: 1; overflow-y: auto; margin: 12px 0; padding-right: 3px; }
         .cart-item-card { background: #0d0a07; border: 1px solid #332216; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
         .cart-item-card:hover { border-color: #a67c52; }
@@ -60,7 +59,6 @@
         .btn-delete-item { background: rgba(127, 29, 29, 0.3); border: 1px solid #7f1d1d; color: #ef4444; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: 0.2s; font-weight: bold; }
         .btn-delete-item:hover { background: #7f1d1d; color: #fff; }
 
-        /* footer السلة والمجموع النهائي المباشر */
         .cart-drawer-footer { border-top: 1px solid #332216; padding-top: 12px; }
         .summary-row.total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; color: #ffffff; margin-bottom: 12px; }
         .summary-row.total span:last-child { color: #10b981; }
@@ -82,6 +80,28 @@
         .login-box button:hover { background: #a67c52; color: #0d0a07; }
 
         .card-row { display: flex; gap: 10px; }
+
+        /* زر الدعم الفني العائم في زاوية الشاشة */
+        .floating-support-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: linear-gradient(135deg, #006c35, #044b25);
+            color: #ffffff;
+            border: 1px solid #a67c52;
+            padding: 12px 18px;
+            border-radius: 50px;
+            font-weight: 900;
+            cursor: pointer;
+            z-index: 1500;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        html[dir="ltr"] .floating-support-btn { right: auto; left: 25px; }
+        .floating-support-btn:hover { background: #a67c52; color: #0d0a07; transform: translateY(-3px); }
 
         /* واجهة المتجر الرئيسية */
         #storeWrapper { display: none; padding: 40px 30px; max-width: 1440px; margin: 0 auto; width: 100%; }
@@ -110,11 +130,9 @@
         .game-badge { background: #0d0a07; color: #a67c52; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 20px; border: 1px solid #332216; }
         .game-price { font-size: 24px; font-weight: 900; color: #10b981; margin-bottom: 18px; }
 
-        /* زر الشراء العادي الأصلي */
         .btn-buy { background: linear-gradient(135deg, #006c35, #044b25); color: #ffffff; border: 1px solid #a67c52; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.3s; font-size: 14px; }
         .btn-buy:hover { background: #a67c52; color: #0d0a07; }
 
-        /* قسم المميزات أسفل الموقع */
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 50px; border-top: 1px solid #332216; padding-top: 35px; }
         .feature-box { background: #1c140e; border: 1px solid #332216; border-radius: 16px; padding: 20px; text-align: center; }
         .feature-icon { font-size: 32px; margin-bottom: 10px; }
@@ -151,6 +169,31 @@
         <button class="cart-btn-top" onclick="toggleCartDrawer(true)" id="cartNavBtn">
             🛒 <span id="cartNavText">السلة</span> <span class="cart-badge-count" id="cartCountBadge">0</span>
         </button>
+    </div>
+
+    <!-- زر الدعم الفني العائم في زاوية الشاشة -->
+    <button class="floating-support-btn" onclick="toggleSupportModal(true)">
+        🎧 <span id="t_supportBtnText">الدعم الفني</span>
+    </button>
+
+    <!-- نافذة الدعم الفني المنبثقة Modal -->
+    <div class="custom-modal" id="supportModal" onclick="closeSupportOnOverlay(event)">
+        <div class="login-box" style="max-width: 380px;">
+            <h2 id="t_supportTitle">🎧 تواصل مع الدعم الفني</h2>
+            <p style="color:#d4c5b9; font-size:14px; margin-bottom:20px;" id="t_supportSub">نحن هنا لمساعدتك على مدار الساعة عبر القنوات التالية:</p>
+            
+            <div style="background:#0d0a07; border:1px solid #332216; padding:15px; border-radius:12px; margin-bottom:15px; text-align:right;">
+                <p style="color:#10b981; font-weight:bold; margin-bottom:8px;">📧 البريد الإلكتروني:</p>
+                <p style="color:#ffffff; font-size:15px;">Rkoony360@gmail.com</p>
+            </div>
+
+            <div style="background:#0d0a07; border:1px solid #332216; padding:15px; border-radius:12px; margin-bottom:20px; text-align:right;">
+                <p style="color:#10b981; font-weight:bold; margin-bottom:8px;">📞 رقم الهاتف:</p>
+                <p style="color:#ffffff; font-size:15px;" dir="ltr">+966 50 686 9794</p>
+            </div>
+
+            <button onclick="toggleSupportModal(false)" id="t_supportCloseBtn" style="background:#332216; color:#fff; margin-top:0;">إغلاق</button>
+        </div>
     </div>
 
     <div id="heroScreen">
@@ -267,7 +310,6 @@
     const API_URL = "https://rakan-games-97-g6hxapcfg7h6fjfk.centralindia-01.azurewebsites.net/api/GameApi";
     let allStoreGames = [];
     
-    // استرجاع السلة المحفوظة من ذاكرة المتصفح
     let shoppingCart = JSON.parse(localStorage.getItem('rakan_saved_cart')) || [];
     
     let currentLang = 'ar';
@@ -289,16 +331,29 @@
             feat1Title: "تسليم فورّي", feat1Sub: "تصلك بيانات الحساب بلمح البصر على بريدك الإلكتروني",
             feat2Title: "دفع آمن 100%", feat2Sub: "تشفير تام ومعتمد لجميع العمليات المصرفية",
             feat3Title: "دعم فني محترف", feat3Sub: "فريقنا متواجد دائماً لخدمتك ومساعدتك على مدار الساعة",
-            cartNavText: "السلة", drawerTitle: "🛒 حقيبة المشتريات | RAKAN STUDIOS", checkoutBtn: "متابعة إتمام الطلب 🚀", emptyCartText: "حقيبة المشتريات فارغة حالياً", total: "الإجمالي الكلي:"
+            cartNavText: "السلة", drawerTitle: "🛒 حقيبة المشتريات | RAKAN STUDIOS", checkoutBtn: "متابعة إتمام الطلب 🚀", emptyCartText: "حقيبة المشتريات فارغة حالياً", total: "الإجمالي الكلي:",
+            supportBtnText: "الدعم الفني", supportTitle: "🎧 تواصل مع الدعم الفني", supportSub: "نحن هنا لمساعدتك على مدار الساعة عبر القنوات التالية:", supportCloseBtn: "إغلاق"
         },
         en: {
             heroTitle: "Rakan Gaming Studio", continueBtn: "Enter Store ⬅", checkoutTitle: "🛒 Checkout Order", nextPayBtn: "Proceed to Payment 💳", cancelBtn: "Cancel", paymentTitle: "💳 Secure Payment Gateway", paymentSub: "Enter Credit Card Details", confirmBtn: "Confirm Payment 🔒", backBtn: "Back to Details", storeHeaderTitle: "🌴 RAKAN STUDIOS STORE", platformsHeader: "🎮 Platforms", filterAll: "🔥 All Games", buyBtnText: "Add to Cart 🛒", loadingText: "Fetching Games...", noGamesText: "No games available.", inputName: "Full Name", inputEmail: "Email Address", inputPhone: "Phone Number", inputCardName: "Cardholder Name", inputCardNum: "Card Number", successTitle: "✨ Payment Successful", successSub: "Thank you for shopping! Details sent to your email:", successNotice: "Please check your inbox 📥", backToStoreBtn: "Back to Store 🚀",
             feat1Title: "Instant Delivery", feat1Sub: "Account credentials delivered instantly to your inbox",
             feat2Title: "100% Secure Payment", feat2Sub: "Fully encrypted and certified banking transactions",
             feat3Title: "Professional Support", feat3Sub: "Our team is available 24/7 to assist you",
-            cartNavText: "Cart", drawerTitle: "🛒 Shopping Bag | RAKAN STUDIOS", checkoutBtn: "Proceed to Checkout 🚀", emptyCartText: "Shopping bag is empty", total: "Grand Total:"
+            cartNavText: "Cart", drawerTitle: "🛒 Shopping Bag | RAKAN STUDIOS", checkoutBtn: "Proceed to Checkout 🚀", emptyCartText: "Shopping bag is empty", total: "Grand Total:",
+            supportBtnText: "Support", supportTitle: "🎧 Technical Support", supportSub: "We are here to help you 24/7 through the following channels:", supportCloseBtn: "Close"
         }
     };
+
+    function toggleSupportModal(show) {
+        const modal = document.getElementById('supportModal');
+        modal.style.display = show ? 'flex' : 'none';
+    }
+
+    function closeSupportOnOverlay(e) {
+        if (e.target.id === 'supportModal') {
+            toggleSupportModal(false);
+        }
+    }
 
     function changeCurrency(curr) {
         currentCurrency = curr;
@@ -347,6 +402,10 @@
         document.getElementById('t_feat3Sub').innerText = t.feat3Sub;
 
         document.getElementById('cartNavText').innerText = t.cartNavText;
+        document.getElementById('t_supportBtnText').innerText = t.supportBtnText;
+        document.getElementById('t_supportTitle').innerText = t.supportTitle;
+        document.getElementById('t_supportSub').innerText = t.supportSub;
+        document.getElementById('t_supportCloseBtn').innerText = t.supportCloseBtn;
 
         document.getElementById('chk_name').placeholder = t.inputName;
         document.getElementById('chk_email').placeholder = t.inputEmail;
@@ -358,7 +417,6 @@
         updateCartUI();
     }
 
-    /* حفظ واسترجاع السلة بذاكرة المتصفح */
     function saveCartToStorage() {
         localStorage.setItem('rakan_saved_cart', JSON.stringify(shoppingCart));
     }
@@ -379,7 +437,6 @@
         }
     }
 
-    /* إضافة اللعبة للسلة بشكل عادي */
     function addToCart(title, price) {
         const existing = shoppingCart.find(item => item.title === title);
         if (existing) {
